@@ -41,6 +41,41 @@
   a{color:var(--accent);text-decoration:none}
   a:hover{text-decoration:underline}
   .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+  body.ultrawide .wrap{max-width:none;padding:0 24px}
+  body.ultrawide{padding-bottom:0}
+
+  /* ultrawide layout — fit without scrolling */
+  body.ultrawide header.top{position:static;border-bottom:1px solid var(--line)}
+  body.ultrawide .glance{grid-template-columns:repeat(10,1fr);gap:10px;margin-top:12px}
+  body.ultrawide .tile{min-height:auto;padding:12px 13px}
+  body.ultrawide .tile .big{font-size:28px;margin:6px 0 1px}
+  body.ultrawide .tile .lbl{font-size:10px}
+  body.ultrawide h2.section{margin:16px 2px 8px;font-size:11.5px}
+  body.ultrawide .grid.g2{grid-template-columns:repeat(4,1fr)}
+  body.ultrawide .grid.g3{grid-template-columns:repeat(6,1fr)}
+  body.ultrawide .card{padding:13px}
+  body.ultrawide .card h3{font-size:13px;margin:0 0 9px}
+  body.ultrawide .card table{font-size:12.5px}
+  body.ultrawide th,body.ultrawide td{padding:5px 6px;font-size:12px}
+  body.ultrawide .hstrip{gap:6px}
+  body.ultrawide .hcol{flex:0 0 60px;padding:7px 5px}
+  body.ultrawide .hcol .t{font-size:10px}
+  body.ultrawide .hcol .em{font-size:16px;margin:2px 0}
+  body.ultrawide .hcol .v{font-size:11.5px}
+  body.ultrawide .daily .d{padding:6px 2px;gap:8px}
+  body.ultrawide .daily .dow{width:38px;font-size:12px}
+  body.ultrawide .daily .em{font-size:18px;width:22px}
+  body.ultrawide .daily .rng{font-size:12px}
+  body.ultrawide .daily .wind{font-size:11.5px;min-width:88px}
+  body.ultrawide .embed{height:380px}
+  body.ultrawide .cam-grid{grid-template-columns:repeat(6,1fr);gap:10px}
+  body.ultrawide .cam-card-media{min-height:200px;padding-top:0}
+  body.ultrawide .foot{margin-top:16px;font-size:11px}
+  body.ultrawide .linkrow{gap:6px}
+  body.ultrawide .linkrow a{padding:6px 10px;font-size:11.5px}
+  body.ultrawide .tiny{font-size:10.5px}
+  body.ultrawide .muted{font-size:12px}
+  body.ultrawide button.refresh{padding:7px 11px;font-size:12px}
 
   header.top{
     position:sticky;top:0;z-index:20;
@@ -326,6 +361,15 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 <script>
+/* ============================================================
+   Ultra-wide mode detection
+   ============================================================ */
+const params = new URLSearchParams(window.location.search);
+if (params.has('ultrawide')) {
+  document.documentElement.setAttribute('data-ultrawide', 'true');
+  document.body.classList.add('ultrawide');
+}
+
 /* ============================================================
    CONFIG — everything location-specific lives here.
    ============================================================ */
