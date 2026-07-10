@@ -1,35 +1,33 @@
 /* Layered on top of ultrawide.css for the /kiosk route.
-   Bumps typography ~35% for readability on 10-15" panels. */
+   Bumps typography ~20% for readability on 10-15" panels. */
 
-body.ultrawide .tile .big { font-size: 45px; }
-body.ultrawide .tile .lbl { font-size: 16px; }
-body.ultrawide .tile .sub { font-size: 17px; }
-body.ultrawide .tile .big small { font-size: 20px; }
+body.ultrawide .tile .big { font-size: 40px; }
+body.ultrawide .tile .lbl { font-size: 14px; }
+body.ultrawide .tile .sub { font-size: 15px; }
+body.ultrawide .tile .big small { font-size: 18px; }
 
-body.ultrawide .warnbar { font-size: 20px; }
+body.ultrawide .warnbar { font-size: 18px; }
 
-body.ultrawide .card { font-size: 20px; }
-body.ultrawide .card h3 { font-size: 20px; }
-body.ultrawide .card table { font-size: 19px; }
-body.ultrawide th, body.ultrawide td { font-size: 19px; padding: 4px 5px; }
-body.ultrawide th { font-size: 16px; }
+body.ultrawide .card { font-size: 18px; }
+body.ultrawide .card h3 { font-size: 18px; }
+body.ultrawide .card table { font-size: 17px; }
+body.ultrawide th, body.ultrawide td { font-size: 17px; padding: 3px 4px; }
+body.ultrawide th { font-size: 14px; }
 
-body.ultrawide .hcol { flex: 0 0 120px; padding: 8px 4px; font-size: 19px; }
-body.ultrawide .hcol .t { font-size: 17px; }
-body.ultrawide .hcol .em { font-size: 31px; }
-body.ultrawide .hcol .v { font-size: 22px; }
-body.ultrawide .hcol .w { font-size: 17px; }
+body.ultrawide .hcol { flex: 0 0 105px; padding: 6px 3px; font-size: 17px; }
+body.ultrawide .hcol .t { font-size: 15px; }
+body.ultrawide .hcol .em { font-size: 27px; }
+body.ultrawide .hcol .v { font-size: 19px; }
+body.ultrawide .hcol .w { font-size: 15px; }
 
-body.ultrawide .daily .d { padding: 4px 0; gap: 5px; }
-body.ultrawide .daily .dow { width: 52px; font-size: 17px; }
-body.ultrawide .daily .em { font-size: 26px; width: 30px; }
-body.ultrawide .daily .rng { font-size: 17px; }
-body.ultrawide .daily .wind { font-size: 16px; min-width: 140px; }
+body.ultrawide .daily .d { padding: 3px 0; gap: 4px; }
+body.ultrawide .daily .dow { width: 46px; font-size: 15px; }
+body.ultrawide .daily .em { font-size: 23px; width: 26px; }
+body.ultrawide .daily .rng { font-size: 15px; }
+body.ultrawide .daily .wind { font-size: 14px; min-width: 125px; }
 
-body.ultrawide .tiny { font-size: 16px; }
-body.ultrawide .muted { font-size: 17px; }
-body.ultrawide button.refresh { font-size: 17px; padding: 6px 14px; }
+body.ultrawide .tiny { font-size: 14px; }
+body.ultrawide .muted { font-size: 15px; }
+body.ultrawide button.refresh { font-size: 15px; padding: 5px 12px; }
 
-/* Wallpaper's 600px header cap is aesthetic — on a kiosk let the
-   header content breathe up to 900px. */
-body.ultrawide .top .wrap { max-width: 900px; }
+body.ultrawide .top .wrap { max-width: 800px; }
