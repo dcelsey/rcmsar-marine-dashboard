@@ -52,19 +52,19 @@
   a{color:var(--accent);text-decoration:none}
   a:hover{text-decoration:underline}
   .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
-  body.ultrawide .wrap{max-width:none;padding:6px 9px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;grid-auto-rows:max-content;align-content:start;height:100%;overflow:hidden}
+  body.ultrawide .wrap{max-width:none;padding:6px 9px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;grid-auto-rows:1fr;align-content:stretch;height:100%;overflow:hidden}
   body.ultrawide h2.section{display:none !important}
-  body.ultrawide .warnbar{grid-column:1/-1;margin:0;padding:5px 8px;font-size:8.5px}
-  body.ultrawide .glance{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin:0;margin-top:2px}
-  body.ultrawide .tile{min-height:auto;padding:5px 6px}
+  body.ultrawide .warnbar{grid-column:1/-1;margin:0;padding:5px 8px;font-size:8.5px;height:auto}
+  body.ultrawide .glance{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin:0;margin-top:2px;height:auto}
+  body.ultrawide .tile{min-height:auto;padding:5px 6px;height:auto}
   body.ultrawide .tile .big{font-size:19px;margin:0.5px 0 0;line-height:1}
   body.ultrawide .tile .lbl{font-size:7px;margin-bottom:0.25px}
   body.ultrawide .tile .sub{font-size:7.5px;margin-top:0.25px;line-height:1}
   body.ultrawide .grid{display:contents}
   body.ultrawide .grid.g3:nth-of-type(2){display:grid;grid-column:1/-1;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
   body.ultrawide .grid.g2:nth-of-type(3){display:grid;grid-column:1/-1;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
-  body.ultrawide .card{padding:6px;font-size:8.5px;overflow:hidden;display:flex;flex-direction:column;line-height:1.05}
-  body.ultrawide .card h3{font-size:8.5px;margin:0 0 4px;font-weight:600;white-space:nowrap}
+  body.ultrawide .card{padding:6px;font-size:8.5px;overflow:hidden;display:flex;flex-direction:column;line-height:1.05;min-height:0}
+  body.ultrawide .card h3{font-size:8.5px;margin:0 0 4px;font-weight:600;white-space:nowrap;flex-shrink:0}
   body.ultrawide .card table{font-size:8px}
   body.ultrawide th,body.ultrawide td{padding:1px 2px;font-size:8px}
   body.ultrawide th{font-size:7px;padding-top:0;padding-bottom:0.25px}
@@ -75,15 +75,15 @@
   body.ultrawide .wrap > .card:nth-of-type(9),
   body.ultrawide .wrap > .card:nth-of-type(10),
   body.ultrawide .wrap > .foot{display:none !important}
-  body.ultrawide #wind-table tbody{max-height:90px;display:block;overflow-y:auto;border-top:1px solid rgba(37,65,95,.3)}
-  body.ultrawide #wind-table thead{display:table;width:100%;table-layout:fixed}
-  body.ultrawide .hstrip{gap:0.5px;padding-bottom:0.25px;overflow-x:auto;flex:1;overflow-y:hidden;max-height:88px}
+  body.ultrawide #wind-table tbody{display:block;overflow-y:visible;border-top:1px solid rgba(37,65,95,.3);flex:1}
+  body.ultrawide #wind-table thead{display:table;width:100%;table-layout:fixed;flex-shrink:0}
+  body.ultrawide .hstrip{gap:0.5px;padding-bottom:0.25px;overflow-x:auto;flex:1;overflow-y:visible;min-height:0}
   body.ultrawide .hcol{flex:0 0 44px;padding:2px 1px;font-size:7px;text-align:center}
   body.ultrawide .hcol .t{font-size:6px}
   body.ultrawide .hcol .em{font-size:11px;margin:0;line-height:1}
   body.ultrawide .hcol .v{font-size:7.5px;font-weight:600;line-height:1}
   body.ultrawide .hcol .w{font-size:6.5px;line-height:0.85}
-  body.ultrawide .daily{font-size:8px;overflow-y:auto;flex:1;max-height:90px}
+  body.ultrawide .daily{font-size:8px;overflow-y:visible;flex:1;min-height:0}
   body.ultrawide .daily .d{padding:1px 0;gap:2px;border-bottom:1px solid rgba(37,65,95,.3)}
   body.ultrawide .daily .dow{width:22px;font-size:7.5px;flex-shrink:0;font-weight:600;white-space:nowrap}
   body.ultrawide .daily .em{font-size:11px;width:12px;flex-shrink:0}
@@ -99,10 +99,10 @@
   body.ultrawide .tiny{font-size:7px}
   body.ultrawide .muted{font-size:7.5px}
   body.ultrawide button.refresh{padding:2px 6px;font-size:7.5px}
-  body.ultrawide #tide-chart{margin-bottom:2px}
-  body.ultrawide #tide-table{margin-top:0;max-height:76px;overflow-y:auto}
-  body.ultrawide #marine-table tbody{max-height:76px;overflow-y:auto;display:block}
-  body.ultrawide #marine-table thead{display:table;width:100%;table-layout:fixed}
+  body.ultrawide #tide-chart{margin-bottom:2px;flex-shrink:0}
+  body.ultrawide #tide-table{margin-top:0;overflow-y:visible;flex:1;min-height:0}
+  body.ultrawide #marine-table tbody{overflow-y:visible;display:block;flex:1}
+  body.ultrawide #marine-table thead{display:table;width:100%;table-layout:fixed;flex-shrink:0}
   body.ultrawide #marine-table ~ p{font-size:6.5px;margin:2px 0 0}
 
   header.top{
