@@ -16,10 +16,13 @@ body.ultrawide {
 }
 
 body.ultrawide .top .wrap {
-  max-width: 850px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 6px 16px;
 }
+
+body.ultrawide .view-switch { padding: 4px; gap: 3px; }
+body.ultrawide .view-tab { padding: 7px 13px; font-size: 13.5px; }
 
 body.ultrawide > .wrap {
   flex: 1;
