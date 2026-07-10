@@ -1,0 +1,29 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title?: string;
+  bodyClass?: string;
+  themeColor?: string;
+}
+const {
+  title = 'RCMSAR 33 Oak Bay — Local Conditions',
+  bodyClass = '',
+  themeColor = '#0b1622',
+} = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="RCMSAR Unit 33 Oak Bay local marine conditions dashboard for wind, weather, tides, and sea state." />
+  <meta name="theme-color" content={themeColor} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <title>{title}</title>
+</head>
+<body class={bodyClass}>
+  <slot />
+</body>
+</html>

@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Warnbar from '../components/Warnbar.astro';
+import Glance from '../components/Glance.astro';
+import WindByLocation from '../components/WindByLocation.astro';
+import TideAndLight from '../components/TideAndLight.astro';
+import HourlyStrip from '../components/HourlyStrip.astro';
+import SevenDayOutlook from '../components/SevenDayOutlook.astro';
+import '../styles/ultrawide.css';
+---
+<Base bodyClass="ultrawide">
+  <Header />
+  <div class="wrap">
+    <Warnbar />
+    <Glance />
+    <WindByLocation />
+    <TideAndLight />
+    <HourlyStrip />
+    <SevenDayOutlook />
+  </div>
+</Base>
+
+<script>
+  import '../scripts/refresh';
+</script>
