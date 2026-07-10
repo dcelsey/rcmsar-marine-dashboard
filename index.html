@@ -247,7 +247,7 @@
   <h2 class="section">Official marine forecast &amp; warnings — ECCC</h2>
   <div class="card">
     <h3>Environment Canada — the authoritative sea-state &amp; warnings source</h3>
-    <p class="tiny muted" style="margin:0 0 10px">These bulletins carry official gale/storm warnings and the plain-language sea-state ("seas 1 metre…"). They are not CORS-fetchable, so they are linked here; see the spec for a one-file proxy that pulls the text inline.</p>
+    <p class="tiny muted" style="margin:0 0 10px">These bulletins carry official gale/storm warnings and the plain-language sea-state ("seas 1 metre…").</p>
     <div class="linkrow">
       <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=06100" target="_blank" rel="noopener">Haro Strait ↗</a>
       <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=07003" target="_blank" rel="noopener">Juan de Fuca Strait — east entrance ↗</a>
@@ -480,7 +480,7 @@ function renderTide(tides){
     const d = pts.map((p,i)=>(i?"L":"M")+X(p.t).toFixed(1)+" "+Y(p.v).toFixed(1)).join(" ");
     const nowX = X(Date.now());
     $("#tide-chart").innerHTML =
-      `<div class="tide-chart-wrap" style="position:relative">
+      `<div class="tide-chart-wrap" style="position:relative;touch-action:pan-y;cursor:crosshair">
         <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:64px;display:block">
           <path d="${d} L ${w} ${h} L 0 ${h} Z" fill="rgba(55,182,255,.14)"/>
           <path d="${d}" fill="none" stroke="#37b6ff" stroke-width="1.4"/>
@@ -495,9 +495,9 @@ function renderTide(tides){
     const line = wrap.querySelector(".tide-hover-line");
     const dot  = wrap.querySelector(".tide-hover-dot");
     const tip  = wrap.querySelector(".tide-tooltip");
-    wrap.addEventListener("pointermove", e=>{
+    const showAt = clientX => {
       const rect = wrap.getBoundingClientRect();
-      const frac = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const frac = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
       const targetT = minT + frac*(maxT-minT);
       let nearest = pts[0], nd = Infinity;
       for(const p of pts){ const d = Math.abs(p.t-targetT); if(d<nd){ nd=d; nearest=p; } }
@@ -510,10 +510,11 @@ function renderTide(tides){
       const tipHalf = tip.offsetWidth/2;
       const clampedX = Math.max(tipHalf, Math.min(rect.width - tipHalf, frac*rect.width));
       tip.style.left = `${clampedX}px`;
-    });
-    wrap.addEventListener("pointerleave", ()=>{
-      line.style.display = dot.style.display = tip.style.display = "none";
-    });
+    };
+    const hide = ()=>{ line.style.display = dot.style.display = tip.style.display = "none"; };
+    wrap.addEventListener("pointerdown", e=> showAt(e.clientX));
+    wrap.addEventListener("pointermove", e=> showAt(e.clientX));
+    wrap.addEventListener("pointerleave", e=>{ if(e.pointerType === "mouse") hide(); });
   }
 }
 
