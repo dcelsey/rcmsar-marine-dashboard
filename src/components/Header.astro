@@ -1,14 +1,26 @@
 ---
 import type { StationConfig } from '../lib/stations';
-interface Props { station: StationConfig }
-const { station } = Astro.props;
+export type Variant = 'standard' | 'kiosk' | 'widescreen';
+interface Props { station: StationConfig; variant: Variant }
+const { station, variant } = Astro.props;
 const { brand } = station;
+const views: { key: Variant; label: string; href: string }[] = [
+  { key: 'standard',   label: 'Standard',   href: `/${station.slug}/` },
+  { key: 'kiosk',      label: 'Kiosk',      href: `/${station.slug}/kiosk` },
+  { key: 'widescreen', label: 'Widescreen', href: `/${station.slug}/widescreen` },
+];
 ---
 <header class="top">
   <div class="wrap">
     <img class="brand-logo" src={brand.logoSrc} alt={brand.logoAlt} />
     <div class="brand"><b>{brand.short}</b><span>{brand.tagline}</span></div>
     <div class="spacer"></div>
+    <nav class="view-switch" aria-label="View">
+      {views.map(v => (
+        <a href={v.href} class:list={['view-tab', { active: v.key === variant }]}
+           aria-current={v.key === variant ? 'page' : undefined}>{v.label}</a>
+      ))}
+    </nav>
     <div class="updated" id="updated">Loading…</div>
     <button class="refresh" id="refreshBtn" title="Refresh now">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">

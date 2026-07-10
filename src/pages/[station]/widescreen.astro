@@ -17,7 +17,7 @@ export const getStaticPaths = () =>
 const station = getStation(Astro.params.station!);
 ---
 <Base station={station} bodyClass="ultrawide">
-  <Header station={station} />
+  <Header station={station} variant="widescreen" />
   <div class="wrap">
     <Warnbar />
     <Glance station={station} />
