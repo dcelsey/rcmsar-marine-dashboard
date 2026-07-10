@@ -38,11 +38,15 @@
     font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased; padding:0 0 60px;
   }
+  body.ultrawide *{margin:0;padding:0}
   body.ultrawide{
+    width:100vw;
+    height:100vh;
+    margin:0;
+    padding:0;
     padding-bottom:0;
     display:flex;
     flex-direction:column;
-    min-height:100vh;
     overflow:hidden;
   }
   body.ultrawide > .wrap{
@@ -392,6 +396,12 @@
    Ultra-wide mode detection
    ============================================================ */
 const params = new URLSearchParams(window.location.search);
+if (params.has('debug')) {
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;z-index:9999;background:#000;color:#0f0;font:14px monospace;padding:8px;border:1px solid #0f0';
+  const update = () => { d.textContent = `innerWidth=${innerWidth} innerHeight=${innerHeight} dpr=${devicePixelRatio} screen=${screen.width}x${screen.height}`; };
+  update(); addEventListener('resize', update); document.body.appendChild(d);
+}
 if (params.has('ultrawide')) {
   document.documentElement.setAttribute('data-ultrawide', 'true');
   document.body.classList.add('ultrawide');
