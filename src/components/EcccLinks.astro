@@ -1,4 +1,7 @@
 ---
+import type { StationConfig } from '../lib/stations';
+interface Props { station: StationConfig }
+const { station } = Astro.props;
 ---
 <h2 class="section">Official marine forecast &amp; warnings — ECCC</h2>
 <div class="card">
@@ -7,7 +10,9 @@
     These bulletins carry official gale/storm warnings and the plain-language sea-state ("seas 1 metre…").
   </p>
   <div class="linkrow">
-    <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=06100" target="_blank" rel="noopener">Haro Strait ↗</a>
-    <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=07003" target="_blank" rel="noopener">Juan de Fuca Strait — east entrance ↗</a>
+    {station.eccc.map(zone => (
+      <a href={`https://weather.gc.ca/marine/forecast_e.html?mapID=${zone.mapId}&siteID=${zone.siteId}`}
+         target="_blank" rel="noopener">{zone.label} ↗</a>
+    ))}
   </div>
 </div>

@@ -1,29 +1,36 @@
 ---
 import '../styles/globals.css';
+import type { StationConfig } from '../lib/stations';
 
 interface Props {
+  station?: StationConfig;
   title?: string;
   bodyClass?: string;
-  themeColor?: string;
 }
-const {
-  title = 'RCMSAR 33 Oak Bay — Local Conditions',
-  bodyClass = '',
-  themeColor = '#0b1622',
-} = Astro.props;
+const { station, title, bodyClass = '' } = Astro.props;
+
+const pageTitle = title ?? station?.meta.title ?? 'RCMSAR Marine Conditions';
+const description = station?.meta.description ?? 'Local marine conditions dashboard for RCMSAR units — wind, weather, tides, and sea state.';
+const themeColor = station?.brand.themeColor ?? '#0b1622';
+const faviconSrc = station?.brand.faviconSrc ?? '/favicon.png';
+const appleTouchIconSrc = station?.brand.appleTouchIconSrc ?? '/apple-touch-icon.png';
+const bodyStyle = station ? `--accent: ${station.brand.accent}` : undefined;
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="RCMSAR Unit 33 Oak Bay local marine conditions dashboard for wind, weather, tides, and sea state." />
+  <meta name="description" content={description} />
   <meta name="theme-color" content={themeColor} />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <title>{title}</title>
+  <link rel="icon" type="image/png" href={faviconSrc} />
+  <link rel="apple-touch-icon" href={appleTouchIconSrc} />
+  <title>{pageTitle}</title>
+  {station && (
+    <script is:inline id="station-config" type="application/json" set:html={JSON.stringify(station)} />
+  )}
 </head>
-<body class={bodyClass}>
+<body class={bodyClass} style={bodyStyle}>
   <slot />
 </body>
 </html>

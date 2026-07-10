@@ -1,9 +1,12 @@
 ---
+import type { StationConfig } from '../lib/stations';
+interface Props { station: StationConfig }
+const { station } = Astro.props;
 ---
 <h2 class="section">7-day outlook</h2>
 <div class="grid g2 daily-marine">
   <div class="card daily">
-    <h3>Forecast <span class="r">Oak Bay</span></h3>
+    <h3>Forecast <span class="r">{station.labels.forecastLocation}</span></h3>
     <div id="daily"><span class="skel">Loading…</span></div>
   </div>
   <div class="card marine-card">

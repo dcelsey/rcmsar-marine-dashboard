@@ -1,10 +1,15 @@
 import SunCalc from 'suncalc';
-import { CONFIG } from '../lib/config';
+import type { StationConfig } from '../lib/stations';
 import { fmtTime, fmtDay, fmtNow, compass, wmo } from '../lib/format';
 import {
   loadWeather, loadWindByLocation, loadMarine, loadTides,
   type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle,
 } from '../lib/sources';
+
+const station: StationConfig = JSON.parse(
+  document.getElementById('station-config')!.textContent!,
+);
+const tz = station.tz;
 
 const $ = <T extends Element = HTMLElement>(sel: string) =>
   document.querySelector<T>(sel);
@@ -67,13 +72,13 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
       const verb = rising === null ? '' : rising ? 'rising to' : 'falling to';
       gTide.innerHTML = `${arrow} ${next.value.toFixed(1)}<small> m</small>`;
       if (gTideSub) {
-        gTideSub.innerHTML = `${verb} <b>${next.value.toFixed(2)} m</b> at <b>${fmtTime(next.eventDate)}</b>`;
+        gTideSub.innerHTML = `${verb} <b>${next.value.toFixed(2)} m</b> at <b>${fmtTime(next.eventDate, tz)}</b>`;
       }
     }
     gTide.classList.remove('skel');
   }
 
-  const times = SunCalc.getTimes(new Date(), CONFIG.center.lat, CONFIG.center.lon);
+  const times = SunCalc.getTimes(new Date(), station.center.lat, station.center.lon);
   const nowD = new Date();
   const isDay = nowD > times.sunrise && nowD < times.sunset;
   const gSun = $('#g-sun');
@@ -84,15 +89,15 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
   const gSunSub = $('#g-sun-sub');
   if (gSunSub) {
     gSunSub.innerHTML = isDay
-      ? `sunset <b>${fmtTime(times.sunset)}</b>`
-      : `sunrise <b>${fmtTime(times.sunrise)}</b>`;
+      ? `sunset <b>${fmtTime(times.sunset, tz)}</b>`
+      : `sunrise <b>${fmtTime(times.sunrise, tz)}</b>`;
   }
 }
 
 function renderWindTable(rows: WindPointResponse[]): void {
   const table = $<HTMLTableElement>('#wind-table');
   if (!table) return;
-  const body = CONFIG.points.map((p, i) => {
+  const body = station.points.map((p, i) => {
     const c = rows[i]?.current;
     if (!c) return `<tr><td>${p.name}</td><td colspan="3" class="err">n/a</td></tr>`;
     const spd = Math.round(c.wind_speed_10m);
@@ -121,7 +126,7 @@ function renderTide(tides: TideBundle): void {
         const isHigh = t.value > 1.7;
         return `<tr><td>${isHigh ? '⬆ High' : '⬇ Low'}</td>`
           + `<td class="num">${t.value.toFixed(2)} m</td>`
-          + `<td class="num">${fmtTime(t.eventDate)}</td></tr>`;
+          + `<td class="num">${fmtTime(t.eventDate, tz)}</td></tr>`;
       }).join('') || '<tr><td colspan="3" class="muted">No data</td></tr>';
     }
   }
@@ -155,9 +160,9 @@ function renderTide(tides: TideBundle): void {
       <div class="tide-tooltip" style="position:absolute;top:-30px;left:0;transform:translateX(-50%);background:rgba(0,0,0,.82);color:var(--ink);padding:3px 8px;border-radius:6px;font-size:12px;font-variant-numeric:tabular-nums;pointer-events:none;white-space:nowrap;display:none;border:1px solid var(--line)"></div>
      </div>
      <div class="tiny muted" style="display:flex;justify-content:space-between">
-       <span>${fmtTime(pts[0]!.t)}</span>
+       <span>${fmtTime(pts[0]!.t, tz)}</span>
        <span style="color:var(--warn)">now</span>
-       <span>${fmtTime(pts[pts.length - 1]!.t)}</span>
+       <span>${fmtTime(pts[pts.length - 1]!.t, tz)}</span>
      </div>`;
 
   const wrap = chart.querySelector<HTMLDivElement>('.tide-chart-wrap');
@@ -182,7 +187,7 @@ function renderTide(tides: TideBundle): void {
     dot.setAttribute('cx', String(hx));
     dot.setAttribute('cy', String(hy));
     line.style.display = dot.style.display = 'block';
-    tip.textContent = `${nearest.v.toFixed(2)} m · ${fmtTime(nearest.t)}`;
+    tip.textContent = `${nearest.v.toFixed(2)} m · ${fmtTime(nearest.t, tz)}`;
     tip.style.display = 'block';
     const tipHalf = tip.offsetWidth / 2;
     const clampedX = Math.max(tipHalf, Math.min(rect.width - tipHalf, frac * rect.width));
@@ -199,7 +204,7 @@ function renderTide(tides: TideBundle): void {
 function renderSun(): void {
   const sunTable = $<HTMLTableElement>('#sun-table');
   if (!sunTable) return;
-  const { lat, lon } = CONFIG.center;
+  const { lat, lon } = station.center;
   const d = new Date();
   const t = SunCalc.getTimes(d, lat, lon);
   const rows: [string, Date][] = [
@@ -222,7 +227,7 @@ function renderSun(): void {
     : phase < .78 ? 'Last quarter'
     : 'Waning crescent';
   sunTable.innerHTML = '<tbody>'
-    + rows.map(([k, v]) => `<tr><td>${k}</td><td class="num">${v && !isNaN(v.getTime()) ? fmtTime(v) : '—'}</td></tr>`).join('')
+    + rows.map(([k, v]) => `<tr><td>${k}</td><td class="num">${v && !isNaN(v.getTime()) ? fmtTime(v, tz) : '—'}</td></tr>`).join('')
     + `<tr><td>Moon</td><td class="num">${pn} · ${Math.round(mi.fraction * 100)}%</td></tr>`
     + '</tbody>';
 }
@@ -241,7 +246,7 @@ function renderHourly(wx: WeatherResponse): void {
     const vis = H.visibility[i];
     const visStr = vis != null ? `${Math.round(vis / 1000)}km` : '—';
     return `<div class="hcol">
-      <div class="t">${fmtTime(H.time[i]!)}</div>
+      <div class="t">${fmtTime(H.time[i]!, tz)}</div>
       <div class="em">${em}</div>
       <div class="v">${Math.round(H.wind_speed_10m[i]!)}<span class="muted tiny"> kn</span></div>
       <div class="w">g${Math.round(H.wind_gusts_10m[i]!)} ${compass(H.wind_direction_10m[i]!)}</div>
@@ -257,7 +262,7 @@ function renderDaily(wx: WeatherResponse, marine: MarineResponse | null): void {
     daily.innerHTML = D.time.map((t, i) => {
       const [em] = wmo(D.weather_code[i]!);
       return `<div class="d">
-        <div class="dow">${i === 0 ? 'Today' : fmtDay(t)}</div>
+        <div class="dow">${i === 0 ? 'Today' : fmtDay(t, tz)}</div>
         <div class="em">${em}</div>
         <div class="rng">${Math.round(D.temperature_2m_min[i]!)}° – <b>${Math.round(D.temperature_2m_max[i]!)}°</b>
           <span class="muted tiny"> · rain ${D.precipitation_probability_max[i] ?? 0}%</span></div>
@@ -275,14 +280,14 @@ function renderDaily(wx: WeatherResponse, marine: MarineResponse | null): void {
         const wh = M.wave_height_max[i];
         const wp = M.wave_period_max?.[i];
         const wd = M.wave_direction_dominant?.[i];
-        return `<tr><td>${i === 0 ? 'Today' : fmtDay(t)}</td>
+        return `<tr><td>${i === 0 ? 'Today' : fmtDay(t, tz)}</td>
           <td class="num">${wh != null ? wh.toFixed(1) + ' m' : '—'}</td>
           <td class="num">${wp != null ? Math.round(wp) + ' s' : '—'}</td>
           <td>${wd != null ? compass(wd) : '—'}</td></tr>`;
       }).join('')
       + '</tbody>';
     const mr = $('#marine-r');
-    if (mr) mr.textContent = CONFIG.marinePoint.name;
+    if (mr) mr.textContent = station.marinePoint.name;
   } else {
     marineTable.innerHTML = `<tbody><tr><td class="muted">No wave-model data at this coastal point — use the ECCC marine forecast for sea state.</td></tr></tbody>`;
   }
@@ -292,7 +297,7 @@ function setUpdated(ok: boolean): void {
   const el = $('#updated');
   if (!el) return;
   el.innerHTML = ok
-    ? `Updated <b>${fmtNow()}</b>`
+    ? `Updated <b>${fmtNow(tz)}</b>`
     : `<span class="err">Update failed</span> · showing ${lastGood ? 'data from ' + lastGood : '—'}`;
 }
 
@@ -301,10 +306,10 @@ async function refresh(): Promise<void> {
   btn?.classList.add('spin');
 
   const results = await Promise.allSettled([
-    loadWeather(),
-    loadWindByLocation(),
-    loadMarine(),
-    loadTides(),
+    loadWeather(station),
+    loadWindByLocation(station),
+    loadMarine(station),
+    loadTides(station),
   ]);
   const [wxR, windR, marR, tideR] = results;
   const wx = wxR!.status === 'fulfilled' ? wxR!.value as WeatherResponse : null;
@@ -325,7 +330,7 @@ async function refresh(): Promise<void> {
     if (wb) {
       if (maxWind >= 25) {
         wb.className = 'warnbar show alert';
-        if (wt) wt.innerHTML = `⚠ Gusts to <b>${maxWind} kn</b> at Oak Bay right now — check the ECCC marine forecast for active warnings.`;
+        if (wt) wt.innerHTML = `⚠ Gusts to <b>${maxWind} kn</b> at ${station.labels.marineWarningLocation} right now — check the ECCC marine forecast for active warnings.`;
       } else {
         wb.className = 'warnbar';
       }
@@ -335,7 +340,7 @@ async function refresh(): Promise<void> {
   }
 
   const anyOk = results.some(r => r.status === 'fulfilled');
-  if (anyOk) lastGood = fmtNow();
+  if (anyOk) lastGood = fmtNow(tz);
   setUpdated(results.every(r => r.status === 'fulfilled'));
   results
     .filter(r => r.status === 'rejected')
@@ -346,7 +351,7 @@ async function refresh(): Promise<void> {
 
 $<HTMLButtonElement>('#refreshBtn')?.addEventListener('click', () => { void refresh(); });
 void refresh();
-setInterval(() => { void refresh(); }, CONFIG.refreshMs);
+setInterval(() => { void refresh(); }, station.refreshMs);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) void refresh();
 });

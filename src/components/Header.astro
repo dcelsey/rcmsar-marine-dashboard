@@ -1,9 +1,13 @@
 ---
+import type { StationConfig } from '../lib/stations';
+interface Props { station: StationConfig }
+const { station } = Astro.props;
+const { brand } = station;
 ---
 <header class="top">
   <div class="wrap">
-    <img class="brand-logo" src="/logo-obsr.png" alt="RCMSAR 33 Oak Bay Sea Rescue Society" />
-    <div class="brand"><b>RCMSAR 33 · Oak Bay</b><span>Local Marine Conditions</span></div>
+    <img class="brand-logo" src={brand.logoSrc} alt={brand.logoAlt} />
+    <div class="brand"><b>{brand.short}</b><span>{brand.tagline}</span></div>
     <div class="spacer"></div>
     <div class="updated" id="updated">Loading…</div>
     <button class="refresh" id="refreshBtn" title="Refresh now">

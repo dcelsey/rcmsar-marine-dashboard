@@ -1,36 +1,62 @@
 ---
 import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import Warnbar from '../components/Warnbar.astro';
-import Glance from '../components/Glance.astro';
-import WindByLocation from '../components/WindByLocation.astro';
-import TideAndLight from '../components/TideAndLight.astro';
-import HourlyStrip from '../components/HourlyStrip.astro';
-import SevenDayOutlook from '../components/SevenDayOutlook.astro';
-import EcccLinks from '../components/EcccLinks.astro';
-import WindyEmbed from '../components/WindyEmbed.astro';
-import Webcams from '../components/Webcams.astro';
-import DeepDiveLinks from '../components/DeepDiveLinks.astro';
-import Foot from '../components/Foot.astro';
+import { stationList } from '../lib/stations';
+
+const stations = stationList();
 ---
-<Base>
-  <Header />
-  <div class="wrap">
-    <Warnbar />
-    <Glance />
-    <WindByLocation />
-    <TideAndLight />
-    <HourlyStrip />
-    <SevenDayOutlook />
-    <EcccLinks />
-    <WindyEmbed />
-    <Webcams />
-    <DeepDiveLinks />
-    <Foot />
+<Base title="RCMSAR Marine Conditions">
+  <div class="wrap" style="padding-top:60px;padding-bottom:60px">
+    <h1 style="font-size:28px;margin:0 0 8px;letter-spacing:.2px">RCMSAR Marine Conditions</h1>
+    <p class="muted" style="margin:0 0 30px;font-size:15px">
+      Local marine conditions dashboards for RCMSAR units. Pick a station.
+    </p>
+    <div class="station-grid">
+      {stations.map(s => (
+        <div class="card station-card">
+          <a href={`/${s.slug}/`} class="station-primary">
+            <img class="station-logo" src={s.brand.logoSrc} alt={s.brand.logoAlt} />
+            <div>
+              <b>{s.brand.short}</b>
+              <span class="muted tiny">{s.brand.tagline}</span>
+            </div>
+          </a>
+          <div class="linkrow" style="margin-top:14px">
+            <a href={`/${s.slug}/kiosk`}>Kiosk view ↗</a>
+            <a href={`/${s.slug}/ultrawide`}>Wallpaper view ↗</a>
+          </div>
+        </div>
+      ))}
+    </div>
   </div>
 </Base>
 
-<script>
-  import '../scripts/refresh';
-  import '../scripts/webcams';
-</script>
+<style>
+  .station-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .station-card { padding: 20px; }
+  .station-primary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .station-primary:hover { text-decoration: none; }
+  .station-primary:hover b { text-decoration: underline; }
+  .station-logo {
+    height: 44px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    background: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-sizing: content-box;
+    flex-shrink: 0;
+  }
+  .station-primary b { display: block; font-size: 17px; }
+  .station-primary span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+</style>

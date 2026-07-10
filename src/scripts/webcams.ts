@@ -1,4 +1,4 @@
-function scaleDallasCamElement(container: HTMLElement | null): void {
+function scaleContainer(container: HTMLElement | null): void {
   const wrapper = container?.querySelector<HTMLDivElement>('.cam-video-scale');
   if (!container || !wrapper) return;
   const scale = Math.min(1, container.clientWidth / 1024);
@@ -7,28 +7,27 @@ function scaleDallasCamElement(container: HTMLElement | null): void {
   container.style.height = `${576 * scale}px`;
 }
 
-function scaleAllDallasCams(): void {
-  scaleDallasCamElement(document.getElementById('dallasRoadCamContainer'));
-  const modal = document.getElementById('dallasCamModal');
-  if (modal && modal.classList.contains('show')) {
-    scaleDallasCamElement(document.getElementById('dallasCamModalBody'));
-  }
+function scaleAll(): void {
+  document.querySelectorAll<HTMLElement>('[data-cam-index]').forEach(scaleContainer);
+  document.querySelectorAll<HTMLElement>('.modal-overlay.show [data-cam-modal-body]').forEach(scaleContainer);
 }
 
-window.addEventListener('resize', scaleAllDallasCams);
-window.addEventListener('load', scaleAllDallasCams);
-scaleAllDallasCams();
+window.addEventListener('resize', scaleAll);
+window.addEventListener('load', scaleAll);
+scaleAll();
 
-const openDallasCam = document.getElementById('openDallasCam');
-const closeDallasCam = document.getElementById('closeDallasCam');
-const dallasCamModal = document.getElementById('dallasCamModal');
-if (openDallasCam && closeDallasCam && dallasCamModal) {
-  openDallasCam.addEventListener('click', () => {
-    dallasCamModal.classList.add('show');
-    requestAnimationFrame(scaleAllDallasCams);
+document.querySelectorAll<HTMLButtonElement>('[data-cam-open]').forEach(btn => {
+  const idx = btn.getAttribute('data-cam-open');
+  const modal = document.querySelector<HTMLElement>(`[data-cam-modal="${idx}"]`);
+  const closeBtn = document.querySelector<HTMLButtonElement>(`[data-cam-close="${idx}"]`);
+  if (!modal || !closeBtn) return;
+
+  btn.addEventListener('click', () => {
+    modal.classList.add('show');
+    requestAnimationFrame(scaleAll);
   });
-  closeDallasCam.addEventListener('click', () => dallasCamModal.classList.remove('show'));
-  dallasCamModal.addEventListener('click', e => {
-    if (e.target === dallasCamModal) dallasCamModal.classList.remove('show');
+  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.classList.remove('show');
   });
-}
+});

@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Warnbar from '../../components/Warnbar.astro';
+import Glance from '../../components/Glance.astro';
+import WindByLocation from '../../components/WindByLocation.astro';
+import TideAndLight from '../../components/TideAndLight.astro';
+import HourlyStrip from '../../components/HourlyStrip.astro';
+import SevenDayOutlook from '../../components/SevenDayOutlook.astro';
+import EcccLinks from '../../components/EcccLinks.astro';
+import WindyEmbed from '../../components/WindyEmbed.astro';
+import Webcams from '../../components/Webcams.astro';
+import DeepDiveLinks from '../../components/DeepDiveLinks.astro';
+import Foot from '../../components/Foot.astro';
+import { STATIONS, getStation } from '../../lib/stations';
+
+export const getStaticPaths = () =>
+  Object.keys(STATIONS).map(slug => ({ params: { station: slug } }));
+
+const station = getStation(Astro.params.station!);
+---
+<Base station={station}>
+  <Header station={station} />
+  <div class="wrap">
+    <Warnbar />
+    <Glance station={station} />
+    <WindByLocation />
+    <TideAndLight station={station} />
+    <HourlyStrip />
+    <SevenDayOutlook station={station} />
+    {station.eccc.length > 0 && <EcccLinks station={station} />}
+    <WindyEmbed station={station} />
+    {station.webcams.length > 0 && <Webcams station={station} />}
+    {station.deepDive.length > 0 && <DeepDiveLinks station={station} />}
+    <Foot station={station} />
+  </div>
+</Base>
+
+<script>
+  import '../../scripts/refresh';
+  import '../../scripts/webcams';
+</script>
