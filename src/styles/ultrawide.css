@@ -10,6 +10,12 @@ body.ultrawide {
   overflow: hidden;
 }
 
+body.ultrawide .top .wrap {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 6px 16px;
+}
+
 body.ultrawide > .wrap {
   flex: 1;
   max-width: none;
