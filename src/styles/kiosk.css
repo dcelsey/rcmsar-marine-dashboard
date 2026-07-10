@@ -11,14 +11,30 @@ body.ultrawide .warnbar { font-size: 18px; }
 body.ultrawide .card { font-size: 18px; }
 body.ultrawide .card h3 { font-size: 18px; }
 body.ultrawide .card table { font-size: 17px; }
-body.ultrawide th, body.ultrawide td { font-size: 17px; padding: 3px 4px; }
+body.ultrawide th, body.ultrawide td { font-size: 17px; padding: 6px 5px; }
 body.ultrawide th { font-size: 14px; }
 
-body.ultrawide .hcol { flex: 0 0 105px; padding: 6px 3px; font-size: 17px; }
-body.ultrawide .hcol .t { font-size: 15px; }
-body.ultrawide .hcol .em { font-size: 27px; }
-body.ultrawide .hcol .v { font-size: 19px; }
-body.ultrawide .hcol .w { font-size: 15px; }
+/* Give the Location column of the wind table most of the width so
+   names like "Willows Beach" and "Victoria Hbr" don't wrap. */
+body.ultrawide #wind-table th:first-child,
+body.ultrawide #wind-table td:first-child { width: 45%; }
+
+/* Compact the time column in Sun & twilight so labels like
+   "Civil dawn (first light)" fit on one line. */
+body.ultrawide #sun-table td:last-child { width: 88px; white-space: nowrap; }
+
+body.ultrawide .hcol {
+  flex: 0 0 105px;
+  padding: 6px 3px;
+  font-size: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+body.ultrawide .hcol .t { font-size: 15px; line-height: 1.1; }
+body.ultrawide .hcol .em { font-size: 27px; line-height: 1; }
+body.ultrawide .hcol .v { font-size: 19px; line-height: 1.1; }
+body.ultrawide .hcol .w { font-size: 15px; line-height: 1.15; }
 
 body.ultrawide .daily .d { padding: 3px 0; gap: 4px; }
 body.ultrawide .daily .dow { width: 46px; font-size: 15px; }
