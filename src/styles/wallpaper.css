@@ -1,0 +1,5 @@
+/* Layered on top of ultrawide.css for the /ultrawide (Lively wallpaper)
+   route: inset the dashboard so desktop icons on the left and taskbar
+   on the bottom stay visible. */
+
+body.ultrawide { padding: 5vh 12.5vw; }
