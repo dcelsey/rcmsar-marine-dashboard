@@ -396,13 +396,16 @@
    Ultra-wide mode detection
    ============================================================ */
 const params = new URLSearchParams(window.location.search);
-if (params.has('debug')) {
+const hash = window.location.hash.slice(1);
+const flag = name => params.has(name) || hash.split(/[&,]/).includes(name);
+const isLively = 'livelyPropertyListener' in window || 'livelyAudioListener' in window || 'livelyCurrentTrack' in window;
+if (flag('debug') || isLively) {
   const d = document.createElement('div');
   d.style.cssText = 'position:fixed;top:0;left:0;z-index:9999;background:#000;color:#0f0;font:14px monospace;padding:8px;border:1px solid #0f0';
-  const update = () => { d.textContent = `innerWidth=${innerWidth} innerHeight=${innerHeight} dpr=${devicePixelRatio} screen=${screen.width}x${screen.height}`; };
+  const update = () => { d.textContent = `innerWidth=${innerWidth} innerHeight=${innerHeight} dpr=${devicePixelRatio} screen=${screen.width}x${screen.height} lively=${isLively}`; };
   update(); addEventListener('resize', update); document.body.appendChild(d);
 }
-if (params.has('ultrawide')) {
+if (flag('ultrawide') || isLively) {
   document.documentElement.setAttribute('data-ultrawide', 'true');
   document.body.classList.add('ultrawide');
   // Hide sections that don't fit: ECCC, Wind map, Webcams, Deep-dive links
