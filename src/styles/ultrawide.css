@@ -8,8 +8,8 @@ body.ultrawide {
   flex-direction: column;
   overflow: hidden;
 }
-body.ultrawide > .wrap { flex: 1; overflow: hidden; }
-body.ultrawide .wrap {
+body.ultrawide > .wrap {
+  flex: 1;
   max-width: none;
   padding: 6px 9px;
   display: grid;
