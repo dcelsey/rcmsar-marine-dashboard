@@ -1,4 +1,5 @@
 body.ultrawide * { margin: 0; padding: 0; }
+
 body.ultrawide {
   width: 100vw;
   height: 100vh;
@@ -8,42 +9,59 @@ body.ultrawide {
   flex-direction: column;
   overflow: hidden;
 }
+
 body.ultrawide > .wrap {
   flex: 1;
   max-width: none;
   padding: 6px 9px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "warnbar warnbar warnbar warnbar"
+    "glance  glance  glance  glance"
+    "wind    tide    tide    sun"
+    "wind    daily   daily   marine"
+    "hourly  hourly  hourly  hourly";
   gap: 8px;
-  grid-auto-rows: auto;
-  align-content: start;
   height: 100%;
   overflow: hidden;
 }
+
 body.ultrawide h2.section { display: none !important; }
-body.ultrawide .warnbar { grid-column: 1 / -1; margin: 0; padding: 9px 14px; font-size: 15px; height: auto; }
+body.ultrawide .grid { display: contents; }
+
+body.ultrawide .warnbar {
+  grid-area: warnbar;
+  margin: 0;
+  padding: 9px 14px;
+  font-size: 15px;
+  height: auto;
+}
+
 body.ultrawide .glance {
-  grid-column: 1 / -1;
+  grid-area: glance;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 5px;
   margin: 0;
-  margin-top: 3px;
   height: auto;
 }
+
+body.ultrawide .card.wind-loc   { grid-area: wind; }
+body.ultrawide .card.tide-card  { grid-area: tide; }
+body.ultrawide .card.sun-card   { grid-area: sun; }
+body.ultrawide .card.hourly-card { grid-area: hourly; }
+body.ultrawide .card.daily      { grid-area: daily; }
+body.ultrawide .card.marine-card { grid-area: marine; }
+
+/* Tile density */
 body.ultrawide .tile { min-height: auto; padding: 9px 11px; height: auto; }
 body.ultrawide .tile .big { font-size: 33px; margin: 1px 0 0; line-height: 1; }
 body.ultrawide .tile .lbl { font-size: 12px; margin-bottom: 0.5px; }
 body.ultrawide .tile .sub { font-size: 13px; margin-top: 0.5px; line-height: 1; }
-body.ultrawide .grid { display: contents; }
-body.ultrawide .grid.tide-sun,
-body.ultrawide .grid.daily-marine {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 8px;
-  grid-auto-rows: 1fr;
-}
+
+/* Card shell */
 body.ultrawide .card {
   padding: 11px;
   font-size: 15px;
@@ -53,42 +71,64 @@ body.ultrawide .card {
   line-height: 1.05;
   min-height: 0;
 }
-body.ultrawide .card h3 { font-size: 15px; margin: 0 0 7px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+body.ultrawide .card h3 {
+  font-size: 15px;
+  margin: 0 0 7px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 body.ultrawide .card table { font-size: 14px; }
 body.ultrawide th, body.ultrawide td { padding: 2px 3px; font-size: 14px; }
 body.ultrawide th { font-size: 12px; padding-top: 0; padding-bottom: 0.5px; }
 body.ultrawide tr:last-child td { border-bottom: none; }
 
-body.ultrawide #wind-table tbody {
-  display: block;
-  overflow-y: visible;
-  border-top: 1px solid rgba(37, 65, 95, .3);
+/* Wind by location — scrollable table filling card */
+body.ultrawide #wind-table {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
-body.ultrawide #wind-table thead { display: table; width: 100%; table-layout: fixed; flex-shrink: 0; }
+body.ultrawide #wind-table thead { flex-shrink: 0; display: table; width: 100%; table-layout: fixed; }
+body.ultrawide #wind-table tbody { flex: 1; overflow-y: auto; display: block; }
+body.ultrawide #wind-table tbody tr { display: table; width: 100%; table-layout: fixed; }
+body.ultrawide .card.wind-loc > p { display: none; }
 
-body.ultrawide .hstrip { gap: 1px; padding-bottom: 0.5px; overflow-x: auto; flex: 1; overflow-y: visible; min-height: 0; }
+/* Hourly strip */
+body.ultrawide .hstrip {
+  gap: 2px;
+  padding-bottom: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 0;
+}
 body.ultrawide .hcol { flex: 0 0 76px; padding: 4px 2px; font-size: 12px; text-align: center; }
 body.ultrawide .hcol .t { font-size: 10.5px; }
 body.ultrawide .hcol .em { font-size: 19px; margin: 0; line-height: 1; }
 body.ultrawide .hcol .v { font-size: 13px; font-weight: 600; line-height: 1; }
 body.ultrawide .hcol .w { font-size: 11px; line-height: 0.9; }
 
-body.ultrawide .daily { font-size: 14px; overflow-y: visible; flex: 1; min-height: 0; }
+/* Daily list */
+body.ultrawide #daily { overflow-y: auto; flex: 1; min-height: 0; }
 body.ultrawide .daily .d { padding: 2px 0; gap: 3px; border-bottom: 1px solid rgba(37, 65, 95, .3); }
 body.ultrawide .daily .dow { width: 38px; font-size: 13px; flex-shrink: 0; font-weight: 600; white-space: nowrap; }
 body.ultrawide .daily .em { font-size: 19px; width: 21px; flex-shrink: 0; }
 body.ultrawide .daily .rng { font-size: 13px; white-space: nowrap; }
 body.ultrawide .daily .wind { font-size: 12px; min-width: 105px; flex-shrink: 0; white-space: nowrap; }
 
-body.ultrawide .foot { margin: 3px 0 0; font-size: 12px; grid-column: 1 / -1; line-height: 1.1; }
-body.ultrawide .foot div { margin: 0; }
-body.ultrawide .linkrow { gap: 1px; max-height: 28px; overflow: hidden; }
-body.ultrawide .linkrow a { padding: 3px 7px; font-size: 12px; }
+/* Tide */
+body.ultrawide #tide-chart { margin-bottom: 3px; flex-shrink: 0; }
+body.ultrawide #tide-table { margin-top: 0; overflow-y: auto; flex: 1; min-height: 0; display: block; }
+body.ultrawide #tide-table thead,
+body.ultrawide #tide-table tbody { display: block; }
+body.ultrawide #tide-table tr { display: table; width: 100%; table-layout: fixed; }
+
+/* Marine table */
+body.ultrawide #marine-table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+body.ultrawide #marine-table ~ p { display: none; }
+
+/* Utility overrides */
 body.ultrawide .tiny { font-size: 12px; }
 body.ultrawide .muted { font-size: 13px; }
 body.ultrawide button.refresh { padding: 4px 11px; font-size: 13px; height: auto; }
-body.ultrawide #tide-chart { margin-bottom: 3px; flex-shrink: 0; }
-body.ultrawide #tide-table { margin-top: 0; overflow-y: visible; flex: 1; min-height: 0; }
-body.ultrawide #marine-table { width: 100%; table-layout: fixed; border-collapse: collapse; }
-body.ultrawide #marine-table ~ p { font-size: 11px; margin: 3px 0 0; }
