@@ -113,12 +113,13 @@ body.ultrawide .hstrip {
   overflow-x: auto;
   overflow-y: hidden;
   min-height: 0;
+  justify-content: center;
 }
-body.ultrawide .hcol { flex: 0 0 76px; padding: 4px 2px; font-size: 12px; text-align: center; }
-body.ultrawide .hcol .t { font-size: 10.5px; }
-body.ultrawide .hcol .em { font-size: 19px; margin: 0; line-height: 1; }
-body.ultrawide .hcol .v { font-size: 13px; font-weight: 600; line-height: 1; }
-body.ultrawide .hcol .w { font-size: 11px; line-height: 0.9; }
+body.ultrawide .hcol { flex: 0 0 91px; padding: 5px 3px; font-size: 14px; text-align: center; }
+body.ultrawide .hcol .t { font-size: 13px; }
+body.ultrawide .hcol .em { font-size: 23px; margin: 0; line-height: 1; }
+body.ultrawide .hcol .v { font-size: 16px; font-weight: 600; line-height: 1; }
+body.ultrawide .hcol .w { font-size: 13px; line-height: 0.95; }
 
 /* Daily list */
 body.ultrawide #daily { overflow-y: auto; flex: 1; min-height: 0; }
