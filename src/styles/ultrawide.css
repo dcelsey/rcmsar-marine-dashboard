@@ -120,7 +120,6 @@ body.ultrawide #wind-table {
 body.ultrawide #wind-table thead { flex-shrink: 0; display: table; width: 100%; table-layout: fixed; }
 body.ultrawide #wind-table tbody { flex: 1; overflow-y: auto; display: block; }
 body.ultrawide #wind-table tbody tr { display: table; width: 100%; table-layout: fixed; }
-body.ultrawide .card.wind-loc > p { display: none; }
 
 /* Hourly strip */
 body.ultrawide .hstrip {
