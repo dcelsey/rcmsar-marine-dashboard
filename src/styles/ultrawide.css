@@ -29,13 +29,13 @@ body.ultrawide > .wrap {
   max-width: none;
   padding: 6px 9px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.5fr;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr;
   grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr) auto;
   grid-template-areas:
     "warnbar warnbar warnbar warnbar"
     "glance  glance  glance  glance"
-    "wind    tide    sun     windy"
-    "wind    daily   marine  windy"
+    "wind    windy   tide    sun"
+    "wind    windy   daily   marine"
     "hourly  hourly  hourly  hourly";
   gap: 8px;
   height: 100%;
