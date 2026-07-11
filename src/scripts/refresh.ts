@@ -159,10 +159,10 @@ function renderTide(tides: TideBundle): void {
       </svg>
       <div class="tide-tooltip" style="position:absolute;top:-30px;left:0;transform:translateX(-50%);background:rgba(0,0,0,.82);color:var(--ink);padding:3px 8px;border-radius:6px;font-size:12px;font-variant-numeric:tabular-nums;pointer-events:none;white-space:nowrap;display:none;border:1px solid var(--line)"></div>
      </div>
-     <div class="tiny muted" style="display:flex;justify-content:space-between">
-       <span>${fmtTime(pts[0]!.t, tz)}</span>
-       <span style="color:var(--warn)">now</span>
-       <span>${fmtTime(pts[pts.length - 1]!.t, tz)}</span>
+     <div class="tiny muted" style="position:relative;height:1.4em">
+       <span style="position:absolute;left:0">${fmtTime(pts[0]!.t, tz)}</span>
+       <span style="position:absolute;left:${nowX.toFixed(2)}%;transform:translateX(-50%);color:var(--warn)">now</span>
+       <span style="position:absolute;right:0">${fmtTime(pts[pts.length - 1]!.t, tz)}</span>
      </div>`;
 
   const wrap = chart.querySelector<HTMLDivElement>('.tide-chart-wrap');
