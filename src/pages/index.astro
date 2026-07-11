@@ -10,10 +10,19 @@ const stations = stationList();
       <img class="landing-logo" src="/logo-rcmsar.png" alt="Royal Canadian Marine Search and Rescue" />
       <h1>Marine Conditions</h1>
       <p class="muted">Local marine conditions dashboards for RCMSAR units. Pick a station.</p>
+      <input
+        id="station-search"
+        class="station-search"
+        type="search"
+        placeholder="Search stations…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search stations"
+      />
     </header>
-    <div class="station-grid">
+    <div class="station-grid" id="station-grid">
       {stations.map(s => (
-        <div class="card station-card">
+        <div class="card station-card" data-search={`${s.brand.short} ${s.brand.tagline} ${s.slug}`.toLowerCase()}>
           <a href={`/${s.slug}/`} class="station-primary">
             <img class="station-logo" src={s.brand.logoSrc ?? '/logo-rcmsar.png'}
                  alt={s.brand.logoAlt ?? 'Royal Canadian Marine Search and Rescue'} />
@@ -29,7 +38,33 @@ const stations = stationList();
         </div>
       ))}
     </div>
+    <p id="station-empty" class="muted station-empty" hidden>No stations match that search.</p>
   </div>
+
+  <script is:inline>
+    (() => {
+      const input = document.getElementById('station-search');
+      const cards = Array.from(document.querySelectorAll('#station-grid .station-card'));
+      const empty = document.getElementById('station-empty');
+      if (!input || !cards.length) return;
+      let timer;
+      const apply = () => {
+        const q = input.value.trim().toLowerCase();
+        let shown = 0;
+        for (const card of cards) {
+          const hay = card.dataset.search || '';
+          const match = !q || hay.includes(q);
+          card.hidden = !match;
+          if (match) shown++;
+        }
+        if (empty) empty.hidden = shown !== 0;
+      };
+      input.addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(apply, 150);
+      });
+    })();
+  </script>
 </Base>
 
 <style>
@@ -58,6 +93,32 @@ const stations = stationList();
   .landing-hero p {
     margin: 0;
     font-size: 15px;
+  }
+  .station-search {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    margin: 22px auto 0;
+    padding: 11px 14px;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    box-shadow: var(--shadow);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .station-search::placeholder { color: var(--muted); }
+  .station-search:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(55, 182, 255, .18);
+  }
+  .station-empty {
+    text-align: center;
+    margin: 20px 0 0;
+    font-size: 14px;
   }
 
   .station-grid {
