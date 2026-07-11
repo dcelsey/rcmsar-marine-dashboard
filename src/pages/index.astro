@@ -5,16 +5,18 @@ import { stationList } from '../lib/stations';
 const stations = stationList();
 ---
 <Base title="RCMSAR Marine Conditions">
-  <div class="wrap" style="padding-top:60px;padding-bottom:60px">
-    <h1 style="font-size:28px;margin:0 0 8px;letter-spacing:.2px">RCMSAR Marine Conditions</h1>
-    <p class="muted" style="margin:0 0 30px;font-size:15px">
-      Local marine conditions dashboards for RCMSAR units. Pick a station.
-    </p>
+  <div class="wrap landing-wrap">
+    <header class="landing-hero">
+      <img class="landing-logo" src="/logo-rcmsar.png" alt="Royal Canadian Marine Search and Rescue" />
+      <h1>Marine Conditions</h1>
+      <p class="muted">Local marine conditions dashboards for RCMSAR units. Pick a station.</p>
+    </header>
     <div class="station-grid">
       {stations.map(s => (
         <div class="card station-card">
           <a href={`/${s.slug}/`} class="station-primary">
-            <img class="station-logo" src={s.brand.logoSrc} alt={s.brand.logoAlt} />
+            <img class="station-logo" src={s.brand.logoSrc ?? '/logo-rcmsar.png'}
+                 alt={s.brand.logoAlt ?? 'Royal Canadian Marine Search and Rescue'} />
             <div>
               <b>{s.brand.short}</b>
               <span class="muted tiny">{s.brand.tagline}</span>
@@ -31,6 +33,33 @@ const stations = stationList();
 </Base>
 
 <style>
+  .landing-wrap { padding-top: 40px; padding-bottom: 60px; }
+  .landing-hero {
+    text-align: center;
+    margin: 0 auto 40px;
+    max-width: 640px;
+  }
+  .landing-logo {
+    height: 90px;
+    width: auto;
+    max-width: 320px;
+    object-fit: contain;
+    background: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 22px;
+  }
+  .landing-hero h1 {
+    font-size: 30px;
+    margin: 0 0 8px;
+    letter-spacing: .2px;
+  }
+  .landing-hero p {
+    margin: 0;
+    font-size: 15px;
+  }
+
   .station-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

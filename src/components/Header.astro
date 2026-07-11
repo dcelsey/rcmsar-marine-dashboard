@@ -4,6 +4,8 @@ export type Variant = 'standard' | 'kiosk' | 'widescreen';
 interface Props { station: StationConfig; variant: Variant }
 const { station, variant } = Astro.props;
 const { brand } = station;
+const logoSrc = brand.logoSrc ?? '/logo-rcmsar.png';
+const logoAlt = brand.logoAlt ?? 'Royal Canadian Marine Search and Rescue';
 const views: { key: Variant; label: string; href: string }[] = [
   { key: 'standard',   label: 'Standard',   href: `/${station.slug}/` },
   { key: 'kiosk',      label: 'Kiosk',      href: `/${station.slug}/kiosk` },
@@ -12,7 +14,7 @@ const views: { key: Variant; label: string; href: string }[] = [
 ---
 <header class="top">
   <div class="wrap">
-    <img class="brand-logo" src={brand.logoSrc} alt={brand.logoAlt} />
+    <img class="brand-logo" src={logoSrc} alt={logoAlt} />
     <div class="brand"><b>{brand.short}</b><span>{brand.tagline}</span></div>
     <div class="spacer"></div>
     <nav class="view-switch" aria-label="View">

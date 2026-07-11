@@ -27,10 +27,10 @@ export type StationConfig = {
   brand: {
     short: string;
     tagline: string;
-    logoSrc: string;
-    logoAlt: string;
-    faviconSrc: string;
-    appleTouchIconSrc: string;
+    logoSrc?: string;              // falls back to /logo-rcmsar.png
+    logoAlt?: string;              // falls back to "Royal Canadian Marine Search and Rescue"
+    faviconSrc?: string;           // falls back to /favicon.png
+    appleTouchIconSrc?: string;    // falls back to /apple-touch-icon.png
     accent: string;
     themeColor: string;
   };
