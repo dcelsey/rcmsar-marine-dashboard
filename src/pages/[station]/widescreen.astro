@@ -7,6 +7,7 @@ import WindByLocation from '../../components/WindByLocation.astro';
 import TideAndLight from '../../components/TideAndLight.astro';
 import HourlyStrip from '../../components/HourlyStrip.astro';
 import SevenDayOutlook from '../../components/SevenDayOutlook.astro';
+import WindyEmbed from '../../components/WindyEmbed.astro';
 import { STATIONS, getStation } from '../../lib/stations';
 import '../../styles/ultrawide.css';
 import '../../styles/wallpaper.css';
@@ -25,6 +26,7 @@ const station = getStation(Astro.params.station!);
     <TideAndLight station={station} />
     <HourlyStrip />
     <SevenDayOutlook station={station} />
+    <WindyEmbed station={station} />
   </div>
 </Base>
 

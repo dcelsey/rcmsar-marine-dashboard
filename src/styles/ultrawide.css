@@ -29,13 +29,13 @@ body.ultrawide > .wrap {
   max-width: none;
   padding: 6px 9px;
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1.5fr;
   grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr) auto;
   grid-template-areas:
     "warnbar warnbar warnbar warnbar"
     "glance  glance  glance  glance"
-    "wind    tide    tide    sun"
-    "wind    daily   daily   marine"
+    "wind    tide    sun     windy"
+    "wind    daily   marine  windy"
     "hourly  hourly  hourly  hourly";
   gap: 8px;
   height: 100%;
@@ -68,6 +68,19 @@ body.ultrawide .card.sun-card   { grid-area: sun; }
 body.ultrawide .card.hourly-card { grid-area: hourly; }
 body.ultrawide .card.daily      { grid-area: daily; }
 body.ultrawide .card.marine-card { grid-area: marine; }
+body.ultrawide .card.windy-card {
+  grid-area: windy;
+  padding: 0;
+  overflow: hidden;
+}
+body.ultrawide .card.windy-card h3 { display: none; }
+body.ultrawide .card.windy-card iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  display: block;
+}
 
 /* Tile density */
 body.ultrawide .tile { min-height: auto; padding: 9px 11px; height: auto; }

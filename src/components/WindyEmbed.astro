@@ -6,7 +6,7 @@ const { lat, lon, zoom } = station.windy;
 const src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&zoom=${zoom}&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1`;
 ---
 <h2 class="section">Wind map</h2>
-<div class="card">
+<div class="card windy-card">
   <h3>Windy — live <span class="r">tap map for full controls</span></h3>
   <iframe class="embed" id="windy" height="440" src={src}></iframe>
 </div>
