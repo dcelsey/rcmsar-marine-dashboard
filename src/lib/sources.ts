@@ -96,6 +96,7 @@ export function loadMarine(station: StationConfig): Promise<MarineResponse> {
 }
 
 export async function loadTides(station: StationConfig): Promise<TideBundle> {
+  if (!station.tideStationId) return { hilo: [], curve: [] };
   const now = new Date();
   const from = new Date(now.getTime() - 6 * 3600e3).toISOString();
   const to   = new Date(now.getTime() + 42 * 3600e3).toISOString();
