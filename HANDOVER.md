@@ -42,7 +42,11 @@ Drop replacements at `public/stations/sarNN/{logo,favicon}.<ext>` and set `logoS
 
 I left `eccc: []` for stations where I wasn't sure of the site ID (sar38 Ucluelet, sar39 Port Alberni, sar45 Masset, sar63 Kitimat, sar64 Prince Rupert, sar65 Lax Kw'alaams, sar70 Hartley Bay). Their deep-dive links point at the ECCC regional map page instead. If the crews want the marine bulletins on-page, look up correct `siteId`/`mapId` and fill in.
 
-### 4. Cross-check a few tide station picks
+### 4. sar33 webcam still-image capture (parked)
+
+Approved implementation plan lives at `C:\Users\DuncanElsey\.claude\plans\for-33-for-the-calm-cray.md` (Claude Code plans dir on Duncan's machine). Approach: GitHub Actions cron every 15 min → Playwright headless capture of Willows Beach + Ross Bay pages → Cloudflare R2 (public read) → dashboard renders via a new `kind: 'image'` webcam variant. Prereqs (Cloudflare R2 bucket + 5 GH Actions secrets) documented in the plan. **Work on a branch** when resuming — Playwright/AWS SDK deps are heavy and the Ross Bay YouTube capture may prove infeasible.
+
+### 5. Cross-check a few tide station picks
 
 Confirmed all 30 tide station UUIDs return `wlp` + `wlp-hilo`, but the *nearest* station isn't always the *most useful* — a few worth a look from crews who know the water:
 
