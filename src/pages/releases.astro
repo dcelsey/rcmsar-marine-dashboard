@@ -9,6 +9,15 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: 'v1.2.0',
+    date: '2026-07-13',
+    notes: [
+      'Wind-by-location card now offers a List / Map view toggle. The map view (Leaflet + CartoDB Positron tiles) renders proper meteorological wind barbs (half=5 kt / full=10 kt / pennant=50 kt) tinted green / yellow / red by speed, with a closed dot for a live SWOB or NDBC observation and an open dot for the Open-Meteo forecast fallback.',
+      'Mouseover on a barb reveals station name, speed / gust, direction (compass and degrees), and either the observation time or "forecast"; click pins the same content as a popup.',
+      'View choice persists in a 1-year wind-view cookie.',
+    ],
+  },
+  {
     version: 'v1.1.1',
     date: '2026-07-13',
     notes: [

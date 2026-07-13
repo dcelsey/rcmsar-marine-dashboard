@@ -1,5 +1,11 @@
 # Release notes
 
+## v1.2.0 — 2026-07-13
+
+- Wind-by-location card now offers a List / Map view toggle. The map view (Leaflet + CartoDB Positron tiles) renders proper meteorological wind barbs (half=5 kt / full=10 kt / pennant=50 kt) tinted green / yellow / red by speed, with a closed dot for a live SWOB or NDBC observation and an open dot for the Open-Meteo forecast fallback.
+- Mouseover on a barb reveals station name, speed / gust, direction (compass and degrees), and either the observation time or "forecast"; click pins the same content as a popup.
+- View choice persists in a 1-year `wind-view` cookie.
+
 ## v1.1.1 — 2026-07-13
 
 - Fix kiosk-view grid gap. Kiosk doesn't render the Windy embed, so the shared 4-column grid left an empty column; the freed space now goes to the wind card, which had grown taller with live rows.
