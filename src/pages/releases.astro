@@ -9,6 +9,13 @@ interface Release {
 
 const releases: Release[] = [
   {
+    version: 'v1.1.1',
+    date: '2026-07-13',
+    notes: [
+      "Fix kiosk-view grid gap. Kiosk doesn't render the Windy embed, so the shared 4-column grid left an empty column; the freed space now goes to the wind card.",
+    ],
+  },
+  {
     version: 'v1.1.0',
     date: '2026-07-13',
     notes: [

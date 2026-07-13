@@ -1,6 +1,18 @@
 /* Layered on top of ultrawide.css for the /kiosk route.
    Bumps typography ~20% for readability on 10-15" panels. */
 
+/* Kiosk omits the Windy embed — reclaim its column for the wind table,
+   which now carries live + forecast rows and needs the width. */
+body.ultrawide > .wrap {
+  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-areas:
+    "warnbar warnbar warnbar"
+    "glance  glance  glance"
+    "wind    tide    sun"
+    "wind    daily   marine"
+    "hourly  hourly  hourly";
+}
+
 body.ultrawide .tile .big { font-size: 40px; }
 body.ultrawide .tile .lbl { font-size: 14px; }
 body.ultrawide .tile .sub { font-size: 15px; }

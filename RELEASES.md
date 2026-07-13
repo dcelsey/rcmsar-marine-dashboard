@@ -1,5 +1,9 @@
 # Release notes
 
+## v1.1.1 — 2026-07-13
+
+- Fix kiosk-view grid gap. Kiosk doesn't render the Windy embed, so the shared 4-column grid left an empty column; the freed space now goes to the wind card, which had grown taller with live rows.
+
 ## v1.1.0 — 2026-07-13
 
 - Live wind observations merged into the wind-by-location card. Fetch pipeline pulls ECCC SWOB and NOAA NDBC every 15 min. All live stations within 25 km of station centre are shown; configured forecast points within 2 km of a live station are suppressed.
