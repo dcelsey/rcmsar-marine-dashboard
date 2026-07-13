@@ -1,10 +1,69 @@
 ---
+import 'leaflet/dist/leaflet.css';
 ---
 <h2 class="section">Wind by location · 10 nm</h2>
-<div class="card wind-loc">
-  <h3>Wind across the operating area <span class="r" id="wind-loc-r"></span></h3>
-  <table id="wind-table">
-    <thead><tr><th>Location</th><th class="num">Wind</th><th class="num">Gust</th><th>Dir</th><th>Reported</th></tr></thead>
-    <tbody><tr><td colspan="5" class="skel">Loading…</td></tr></tbody>
-  </table>
+<div class="card wind-loc" id="wind-card">
+  <div class="wind-view-bar">
+    <div class="view-switch" role="tablist" aria-label="Wind view">
+      <button type="button" class="view-tab active" data-wind-view="list" role="tab" aria-selected="true">List</button>
+      <button type="button" class="view-tab" data-wind-view="map" role="tab" aria-selected="false">Map</button>
+    </div>
+    <span class="wind-meta" id="wind-loc-r"></span>
+  </div>
+
+  <div class="wind-view wind-view-active" data-view="list">
+    <table id="wind-table">
+      <thead><tr><th>Location</th><th class="num">Wind</th><th class="num">Gust</th><th>Dir</th><th>Reported</th></tr></thead>
+      <tbody><tr><td colspan="5" class="skel">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="wind-view" data-view="map">
+    <div id="wind-map" class="wind-map">
+      <div class="wind-map-skel skel">Loading map…</div>
+    </div>
+    <div class="wind-map-legend tiny muted">
+      <span class="wm-leg-item">
+        <span class="wm-leg-barb wb wb-g">
+          <svg viewBox="-16 -34 32 40" width="26" height="32" aria-hidden="true">
+            <circle cx="0" cy="0" r="3.5" fill="currentColor" stroke="currentColor" stroke-width="2"/>
+            <line x1="0" y1="-3.5" x2="0" y2="-26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="0" y1="-26" x2="10" y2="-32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="0" y1="-21" x2="5" y2="-24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        measured
+      </span>
+      <span class="wm-leg-item">
+        <span class="wm-leg-barb wb wb-g">
+          <svg viewBox="-16 -34 32 40" width="26" height="32" aria-hidden="true">
+            <circle cx="0" cy="0" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <line x1="0" y1="-3.5" x2="0" y2="-26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="0" y1="-26" x2="10" y2="-32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="0" y1="-21" x2="5" y2="-24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        forecast
+      </span>
+      <span class="wm-leg-sep">·</span>
+      <span class="wm-leg-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
+    </div>
+  </div>
 </div>
+
+<script is:inline>
+  (function () {
+    var m = document.cookie.match(/(?:^|; )wind-view=(list|map)/);
+    if (!m || m[1] !== 'map') return;
+    var card = document.getElementById('wind-card');
+    if (!card) return;
+    card.querySelectorAll('.view-tab').forEach(function (b) {
+      var active = b.getAttribute('data-wind-view') === 'map';
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    card.querySelectorAll('.wind-view').forEach(function (v) {
+      v.classList.toggle('wind-view-active', v.getAttribute('data-view') === 'map');
+    });
+  })();
+</script>

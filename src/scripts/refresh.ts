@@ -1,4 +1,5 @@
 import SunCalc from 'suncalc';
+import type * as LeafletNS from 'leaflet';
 import type { StationConfig } from '../lib/stations';
 import { fmtTime, fmtDay, fmtNow, compass, wmo } from '../lib/format';
 import {
@@ -6,6 +7,7 @@ import {
   getNearbyLiveStations, pointHasNearbyLive,
   type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle, type LiveWindPayload,
 } from '../lib/sources';
+import { windBarbSvg, speedTint } from '../lib/windBarb';
 
 const station: StationConfig = JSON.parse(
   document.getElementById('station-config')!.textContent!,
@@ -133,6 +135,189 @@ function renderWindTable(rows: WindPointResponse[], live: LiveWindPayload | null
   if (tbody) tbody.innerHTML = [...liveRows, ...forecastRows].join('') || `<tr><td colspan="5" class="muted">No wind data available.</td></tr>`;
   const r = $('#wind-loc-r');
   if (r) r.textContent = 'knots @10m';
+}
+
+type WindMapState = {
+  L: typeof LeafletNS;
+  map: LeafletNS.Map;
+  markers: Map<string, LeafletNS.Marker>;
+  fitted: boolean;
+};
+
+let windMapState: WindMapState | null = null;
+let windMapInitInFlight: Promise<WindMapState | null> | null = null;
+let lastWindRows: WindPointResponse[] | null = null;
+let lastLiveWind: LiveWindPayload | null = null;
+
+type WindView = 'list' | 'map';
+const WIND_VIEW_COOKIE = 'wind-view';
+
+function writeWindViewCookie(v: WindView): void {
+  const oneYear = 365 * 24 * 3600;
+  document.cookie = `${WIND_VIEW_COOKIE}=${v}; max-age=${oneYear}; path=/; SameSite=Lax`;
+}
+function currentWindView(): WindView {
+  const card = document.getElementById('wind-card');
+  const active = card?.querySelector<HTMLElement>('.wind-view-active[data-view]');
+  return (active?.dataset.view as WindView | undefined) ?? 'list';
+}
+function setWindView(v: WindView): void {
+  const card = document.getElementById('wind-card');
+  if (!card) return;
+  card.querySelectorAll<HTMLButtonElement>('.view-tab[data-wind-view]').forEach(b => {
+    const active = b.dataset.windView === v;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  card.querySelectorAll<HTMLElement>('.wind-view[data-view]').forEach(el => {
+    el.classList.toggle('wind-view-active', el.dataset.view === v);
+  });
+  writeWindViewCookie(v);
+  if (v === 'map') {
+    if (windMapState) {
+      windMapState.map.invalidateSize();
+      windMapState.fitted = false;
+    }
+    if (lastWindRows) void renderWindMap(lastWindRows, lastLiveWind);
+  }
+}
+
+type BarbEntry = {
+  key: string;
+  lat: number;
+  lon: number;
+  dirDeg: number;
+  speedKn: number;
+  measured: boolean;
+  popupHtml: string;
+};
+
+function buildBarbEntries(rows: WindPointResponse[], live: LiveWindPayload | null): BarbEntry[] {
+  const nearbyLive = getNearbyLiveStations(live, station.center, { maxKm: 25, limit: 12 });
+  const out: BarbEntry[] = [];
+
+  for (const { station: s } of nearbyLive) {
+    if (s.wind_dir_deg === null || s.wind_speed_kn === null) continue;
+    const timeStr = fmtTime(s.obs_time, tz);
+    const gust = s.wind_gust_kn === null ? '—' : String(Math.round(s.wind_gust_kn));
+    out.push({
+      key: `live:${s.id}`,
+      lat: s.lat,
+      lon: s.lon,
+      dirDeg: s.wind_dir_deg,
+      speedKn: s.wind_speed_kn,
+      measured: true,
+      popupHtml:
+        `<div class="wm-popup"><b>${s.name}</b>`
+        + `<div>${Math.round(s.wind_speed_kn)} kn · gust ${gust} kn</div>`
+        + `<div>${compass(s.wind_dir_deg)} · ${Math.round(s.wind_dir_deg)}°</div>`
+        + `<div class="tiny muted">${s.source.toUpperCase()} · ${timeStr}</div></div>`,
+    });
+  }
+
+  station.points.forEach((p, i) => {
+    if (pointHasNearbyLive(p, nearbyLive, 2)) return;
+    const c = rows[i]?.current;
+    if (!c) return;
+    out.push({
+      key: `fcst:${p.name}`,
+      lat: p.lat,
+      lon: p.lon,
+      dirDeg: c.wind_direction_10m,
+      speedKn: c.wind_speed_10m,
+      measured: false,
+      popupHtml:
+        `<div class="wm-popup"><b>${p.name}</b>`
+        + `<div>${Math.round(c.wind_speed_10m)} kn · gust ${Math.round(c.wind_gusts_10m)} kn</div>`
+        + `<div>${compass(c.wind_direction_10m)} · ${Math.round(c.wind_direction_10m)}°</div>`
+        + `<div class="tiny muted">forecast · Open-Meteo</div></div>`,
+    });
+  });
+
+  return out;
+}
+
+async function ensureWindMap(container: HTMLElement): Promise<WindMapState | null> {
+  if (windMapState) return windMapState;
+  if (windMapInitInFlight) return windMapInitInFlight;
+  windMapInitInFlight = (async () => {
+    const L = (await import('leaflet')) as unknown as typeof LeafletNS;
+    container.querySelector('.wind-map-skel')?.remove();
+    const map = L.map(container, { zoomControl: true, attributionControl: true, scrollWheelZoom: false });
+    map.setView([station.center.lat, station.center.lon], 11);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> · © <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(map);
+    windMapState = { L, map, markers: new Map(), fitted: false };
+    return windMapState;
+  })();
+  const s = await windMapInitInFlight;
+  windMapInitInFlight = null;
+  return s;
+}
+
+async function renderWindMap(rows: WindPointResponse[], live: LiveWindPayload | null): Promise<void> {
+  const container = $<HTMLDivElement>('#wind-map');
+  if (!container) return;
+  if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
+
+  const entries = buildBarbEntries(rows, live);
+  const state = await ensureWindMap(container);
+  if (!state) return;
+  const { L, map, markers } = state;
+
+  const seen = new Set<string>();
+  for (const e of entries) {
+    seen.add(e.key);
+    const tint = speedTint(e.speedKn);
+    const html = windBarbSvg({ speedKn: e.speedKn, dirDeg: e.dirDeg, measured: e.measured, tint });
+    const icon = L.divIcon({
+      html,
+      className: `wind-barb-icon ${e.measured ? 'wb-live' : 'wb-fcst'} wb-${tint}`,
+      iconSize: [44, 56],
+      iconAnchor: [22, 46],
+    });
+    const existing = markers.get(e.key);
+    if (existing) {
+      existing.setIcon(icon);
+      existing.setPopupContent(e.popupHtml);
+      const tt = existing.getTooltip();
+      if (tt) tt.setContent(e.popupHtml);
+    } else {
+      const m = L.marker([e.lat, e.lon], { icon, riseOnHover: true });
+      m.bindPopup(e.popupHtml, { className: 'wm-popup-wrap', closeButton: true });
+      m.bindTooltip(e.popupHtml, {
+        direction: 'top',
+        offset: [0, -30],
+        className: 'wm-hover',
+        opacity: 1,
+      });
+      m.addTo(map);
+      markers.set(e.key, m);
+    }
+  }
+  for (const [key, m] of markers) {
+    if (!seen.has(key)) {
+      m.remove();
+      markers.delete(key);
+    }
+  }
+
+  if (!state.fitted && entries.length > 0) {
+    const bounds = L.latLngBounds(entries.map(e => [e.lat, e.lon] as [number, number]));
+    map.fitBounds(bounds.pad(0.08), { animate: false });
+    state.fitted = true;
+  }
+
+  const r = $('#wind-map-r');
+  if (r) {
+    const liveCount = entries.filter(e => e.measured).length;
+    r.textContent = entries.length === 0
+      ? 'no data'
+      : `${liveCount} live · ${entries.length - liveCount} forecast`;
+  }
 }
 
 function renderTide(tides: TideBundle): void {
@@ -341,7 +526,12 @@ async function refresh(): Promise<void> {
 
   try {
     if (wx && tides) renderGlance(wx, marine, tides);
-    if (windR!.status === 'fulfilled') renderWindTable(windR!.value as WindPointResponse[], live);
+    if (windR!.status === 'fulfilled') {
+      lastWindRows = windR!.value as WindPointResponse[];
+      lastLiveWind = live;
+      renderWindTable(lastWindRows, live);
+      void renderWindMap(lastWindRows, live);
+    }
     if (tides) renderTide(tides);
     renderSun();
     if (wx) renderHourly(wx);
@@ -373,6 +563,14 @@ async function refresh(): Promise<void> {
 }
 
 $<HTMLButtonElement>('#refreshBtn')?.addEventListener('click', () => { void refresh(); });
+
+document.getElementById('wind-card')?.addEventListener('click', ev => {
+  const btn = (ev.target as HTMLElement | null)?.closest<HTMLButtonElement>('.view-tab[data-wind-view]');
+  if (!btn) return;
+  const v = btn.dataset.windView as WindView | undefined;
+  if (v && v !== currentWindView()) setWindView(v);
+});
+
 void refresh();
 setInterval(() => { void refresh(); }, station.refreshMs);
 document.addEventListener('visibilitychange', () => {

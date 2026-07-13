@@ -261,3 +261,103 @@ button.refresh.spin svg { animation: spin 1s linear infinite; }
 @media (max-width: 380px) {
   .view-switch { display: none; }
 }
+
+/* ── Wind card: list/map view toggle ──────────────────────────────── */
+.wind-view-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.wind-view-bar .view-switch { padding: 2px; }
+.wind-view-bar .view-tab { padding: 4px 12px; font-size: 12px; cursor: pointer; background: transparent; border: none; }
+.wind-meta { margin-left: auto; color: var(--muted); font-size: 12px; font-weight: 400; }
+.wind-view { display: none; }
+.wind-view.wind-view-active { display: block; }
+
+/* ── Wind map + barbs ─────────────────────────────────────────────── */
+.wind-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 340px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0a1420;
+}
+.wind-map-skel {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.wind-map-legend {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 10px 14px; margin-top: 10px;
+  padding: 6px 2px;
+}
+.wm-leg-item { display: inline-flex; align-items: center; gap: 6px; }
+.wm-leg-barb { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 32px; }
+.wm-leg-sep { color: var(--muted2); }
+
+/* Barb SVG — every barb gets a speed tint via currentColor */
+.wb { color: var(--accent); }
+.wb-g { color: var(--good); }
+.wb-w { color: var(--warn); }
+.wb-a { color: var(--alert); }
+
+/* Leaflet divIcon — no default backdrop */
+.wind-barb-icon {
+  background: transparent !important;
+  border: none !important;
+}
+.wind-barb-icon svg { display: block; overflow: visible; }
+
+/* Hover tooltip (mouseover) — same content as click popup, lighter chrome */
+.leaflet-tooltip.wm-hover {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+}
+.leaflet-tooltip.wm-hover::before { border-top-color: var(--line); }
+.leaflet-tooltip.wm-hover b { font-size: 13px; }
+.leaflet-tooltip.wm-hover .tiny.muted { display: block; margin-top: 2px; }
+
+/* Popup styling on measured/forecast clicks */
+.leaflet-popup.wm-popup-wrap .leaflet-popup-content-wrapper {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+.leaflet-popup.wm-popup-wrap .leaflet-popup-tip {
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.leaflet-popup.wm-popup-wrap .leaflet-popup-content {
+  margin: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.leaflet-popup.wm-popup-wrap a.leaflet-popup-close-button { color: var(--muted); }
+.wm-popup b { font-size: 13px; }
+
+/* Leaflet base + attribution + controls on dark theme */
+.leaflet-container { background: #0a1420; font-family: inherit; }
+.leaflet-control-attribution {
+  background: rgba(11, 22, 34, .78) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a { color: var(--accent) !important; }
+.leaflet-bar a, .leaflet-bar a:hover {
+  background: var(--card2);
+  color: var(--ink);
+  border-color: var(--line);
+}
