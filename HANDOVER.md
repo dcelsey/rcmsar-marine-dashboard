@@ -2,10 +2,14 @@
 
 ## Where things stand
 
-- **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — pushed. Latest commit at handover: `281f320`.
+- **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — pushed. Current shipped version **v1.1.0** (2026-07-13). Merge commit `34ed271`.
 - **Stations wired**: all 31 units (hq + sar01, 02, 04, 05, 08, 10, 12, 14, 20, 25, 27, 29, 31, 33, 34, 35, 36, 37, 38, 39, 45, 59, 60, 61, 63, 64, 65, 70, 103, 106). 94 routes total.
+- **Live wind (v1.1.0)**: ECCC SWOB + NOAA NDBC observations render in the wind-by-location card alongside forecast points. Include radius 25 km / suppression radius 2 km — tuned in [src/scripts/refresh.ts](src/scripts/refresh.ts) `renderWindTable`. Fetch pipeline `scripts/fetch-wind.mjs` writes `public/data/wind.json`.
+- **Cron**: `.github/workflows/fetch-wind.yml` runs every 15 min (Node 22, checkout/setup-node v5) and pushes `chore(wind): refresh live observations [skip ci]` commits by `wind-bot` when the JSON changes.
+- **Release notes**: `RELEASES.md` + `/releases` page, linked from landing page footer and station footers. Bump both files when shipping.
+- **Enhancements log**: `ENHANCEMENTS.md` tracks ideas for exploration; current entry is "Current data — live vs forecast investigation".
 - **Widescreen layout**: 4-col grid — Wind | Windy (embed) | Tide+Sun / Forecast+Marine | Hourly footer.
-- **Vercel**: not yet connected to the new repo. Vercel dashboard → import `dcelsey/rcmsar-marine-dashboard`. Astro auto-detects, no config needed.
+- **Vercel**: not yet connected to the new repo. Vercel dashboard → import `dcelsey/rcmsar-marine-dashboard`. Astro auto-detects, no config needed. Note: 15-min bot commits will trigger redeploys unless `[skip vercel]` is added to the workflow's commit message (currently only `[skip ci]`).
 - **Old repo** (`OBSR Conditions Dashboard` / `rcmsar33-oak-bay-conditions.vercel.app`) still deployed on `main` and is what Lively currently points at. Leave running until the new deploy is verified for sar33; then update the Lively URL.
 
 ## Architecture
