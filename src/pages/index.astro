@@ -43,6 +43,7 @@ const stations = stationList().slice().sort((a, b) => stationNumber(a.slug) - st
       ))}
     </div>
     <p id="station-empty" class="muted station-empty" hidden>No stations match that search.</p>
+    <p class="muted landing-releases"><a href="/releases">Release notes</a></p>
   </div>
 
   <script is:inline>
@@ -123,6 +124,11 @@ const stations = stationList().slice().sort((a, b) => stationNumber(a.slug) - st
     text-align: center;
     margin: 20px 0 0;
     font-size: 14px;
+  }
+  .landing-releases {
+    text-align: center;
+    margin: 40px 0 0;
+    font-size: 12px;
   }
 
   .station-grid {

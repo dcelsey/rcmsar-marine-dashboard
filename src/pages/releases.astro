@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+
+interface Release {
+  version: string;
+  date: string;
+  notes: string[];
+}
+
+const releases: Release[] = [
+  {
+    version: 'v1.0.0',
+    date: '2026-07-13',
+    notes: [
+      'Relabel wind-by-location card as "Forecast wind across the operating area" and drop "— live" from the Windy map card.',
+      'Add enhancements log tracking ideas to be explored.',
+      'Publish release notes at /releases.',
+    ],
+  },
+  {
+    version: 'v0.3.0',
+    date: '2026-07-12',
+    notes: [
+      'Fix off-by-one day labels in the 7-day and marine daily tables (cross-timezone rollover).',
+      'Switch Open-Meteo requests to unix timestamps so hourly labels stay correct across timezones.',
+    ],
+  },
+  {
+    version: 'v0.2.0',
+    date: '2026-07-11',
+    notes: [
+      'Add Windy embed to the widescreen layout in a dedicated column.',
+      'Polish landing page and tide chart.',
+      'Drop redundant "Knots at 10 m" caption from the wind card.',
+      'Drop hardcoded Oak Bay point list from the WindByLocation footnote.',
+    ],
+  },
+  {
+    version: 'v0.1.0',
+    date: '2026-07-10',
+    notes: [
+      'Initial release. Multi-station Astro dashboard with wind, tide, hourly, 7-day, and ECCC links per station.',
+      'Standard, widescreen, and kiosk views per station.',
+      'Landing page with live search across all 32 RCMSAR stations + RCMSAR HQ Pedder Bay.',
+      'Data sources wired: Open-Meteo, DFO IWLS, SunCalc, Environment Canada, Windy.',
+    ],
+  },
+];
+---
+<Base title="Release notes · RCMSAR Marine Conditions">
+  <div class="wrap releases-wrap">
+    <header class="releases-hero">
+      <h1>Release notes</h1>
+      <p class="muted"><a href="/">← Back to stations</a></p>
+    </header>
+    {releases.map(r => (
+      <section class="card release">
+        <h2>{r.version} <span class="muted release-date">{r.date}</span></h2>
+        <ul>
+          {r.notes.map(n => <li>{n}</li>)}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .releases-wrap { padding-top: 40px; padding-bottom: 60px; max-width: 760px; }
+  .releases-hero { margin: 0 0 24px; }
+  .releases-hero h1 { margin: 0 0 6px; font-size: 26px; }
+  .releases-hero p { margin: 0; font-size: 14px; }
+  .release { padding: 18px 22px; margin-bottom: 14px; }
+  .release h2 { margin: 0 0 10px; font-size: 17px; letter-spacing: .2px; }
+  .release .release-date { font-size: 13px; font-weight: 400; margin-left: 6px; }
+  .release ul { margin: 0; padding-left: 20px; }
+  .release li { margin: 4px 0; font-size: 14px; line-height: 1.5; }
+</style>
