@@ -1,0 +1,12 @@
+name = "fetch-wind-trigger"
+main = "src/worker.js"
+compatibility_date = "2026-01-01"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[vars]
+GH_OWNER = "dcelsey"
+GH_REPO = "rcmsar-marine-dashboard"
+GH_WORKFLOW = "fetch-wind.yml"
+GH_REF = "main"
