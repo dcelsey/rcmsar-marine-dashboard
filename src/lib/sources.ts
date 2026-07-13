@@ -12,7 +12,7 @@ export type WeatherResponse = {
     pressure_msl: number;
   };
   hourly: {
-    time: string[];
+    time: number[];  // unix ms, normalized in loader
     temperature_2m: number[];
     weather_code: number[];
     wind_speed_10m: number[];
@@ -22,7 +22,7 @@ export type WeatherResponse = {
     precipitation_probability: (number | null)[];
   };
   daily: {
-    time: string[];
+    time: number[];  // unix ms
     weather_code: number[];
     temperature_2m_max: number[];
     temperature_2m_min: number[];
@@ -30,8 +30,8 @@ export type WeatherResponse = {
     wind_gusts_10m_max: number[];
     wind_direction_10m_dominant: number[];
     precipitation_probability_max: (number | null)[];
-    sunrise: string[];
-    sunset: string[];
+    sunrise: number[];  // unix ms
+    sunset: number[];   // unix ms
   };
 };
 
@@ -52,7 +52,7 @@ export type MarineResponse = {
     wind_wave_height: number | null;
   };
   daily?: {
-    time: string[];
+    time: number[];  // unix ms, normalized in loader
     wave_height_max: (number | null)[];
     wave_direction_dominant?: (number | null)[];
     wave_period_max?: (number | null)[];
@@ -68,14 +68,19 @@ async function getJSON<T>(url: string): Promise<T> {
   return r.json() as Promise<T>;
 }
 
-export function loadWeather(station: StationConfig): Promise<WeatherResponse> {
+export async function loadWeather(station: StationConfig): Promise<WeatherResponse> {
   const c = station.center;
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}`
     + `&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl`
     + `&hourly=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,visibility,precipitation_probability`
     + `&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,precipitation_probability_max,sunrise,sunset`
-    + `&wind_speed_unit=kn&timezone=${encodeURIComponent(station.tz)}&forecast_days=7`;
-  return getJSON<WeatherResponse>(url);
+    + `&wind_speed_unit=kn&timezone=${encodeURIComponent(station.tz)}&forecast_days=7&timeformat=unixtime`;
+  const data = await getJSON<WeatherResponse>(url);
+  data.hourly.time = data.hourly.time.map(t => t * 1000);
+  data.daily.time = data.daily.time.map(t => t * 1000);
+  data.daily.sunrise = data.daily.sunrise.map(t => t * 1000);
+  data.daily.sunset = data.daily.sunset.map(t => t * 1000);
+  return data;
 }
 
 export async function loadWindByLocation(station: StationConfig): Promise<WindPointResponse[]> {
@@ -87,12 +92,14 @@ export async function loadWindByLocation(station: StationConfig): Promise<WindPo
   return Array.isArray(data) ? data : [data];
 }
 
-export function loadMarine(station: StationConfig): Promise<MarineResponse> {
+export async function loadMarine(station: StationConfig): Promise<MarineResponse> {
   const m = station.marinePoint;
   const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${m.lat}&longitude=${m.lon}`
     + `&current=wave_height,wave_direction,wave_period,swell_wave_height,wind_wave_height`
-    + `&daily=wave_height_max,wave_direction_dominant,wave_period_max&timezone=${encodeURIComponent(station.tz)}&forecast_days=7`;
-  return getJSON<MarineResponse>(url);
+    + `&daily=wave_height_max,wave_direction_dominant,wave_period_max&timezone=${encodeURIComponent(station.tz)}&forecast_days=7&timeformat=unixtime`;
+  const data = await getJSON<MarineResponse>(url);
+  if (data.daily) data.daily.time = data.daily.time.map(t => t * 1000);
+  return data;
 }
 
 export async function loadTides(station: StationConfig): Promise<TideBundle> {
