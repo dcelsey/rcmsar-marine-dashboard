@@ -39,9 +39,40 @@ export const VOL5_SECONDARIES = [
   { id: 'tzoonie-narrows',    name: 'Tzoonie Narrows',         lat: 49.717, lon: -123.767, referenceCode: 'Sechelt Rapids',              floodDir:  50, tf:  10, mf:  10, te:  10, me:  10, floodPct: 20, ebbPct: 20 },
 ];
 
-// Stub — fill from CHS Vol. 6 Table 4 (Discovery Passage + WCVI) in a follow-up.
+// CHS Vol. 6 (2026/01) Table 4 — Discovery Passage + WCVI.
+// Skipped rows: Baronet Passage (no max rate published);
+// Alert Bay + Pulteney Point (turn times ref Seymour Narrows, max times ref
+// Johnstone Strait-Central via footnote (a) — needs dual-ref schema);
+// Nahwitti Bar, Stuart Narrows, Nitinat Bar, Hayden Passage (tide-based
+// derivation from HW/LW at Alert Bay/Tofino — needs tide series, not
+// wcp1-events); Dent Rapids (already an IWLS reference station).
 /** @type {SecondaryCorrection[]} */
-export const VOL6_SECONDARIES = [];
+export const VOL6_SECONDARIES = [
+  // Reference: Seymour Narrows — Table 4 lists only turn times (max = turn).
+  { id: 'okisollo-upper-rapids', name: 'Okisollo Channel (Upper Rapids)', lat: 50.300, lon: -125.233, referenceCode: 'Seymour Narrows', floodDir: 140, tf:  -55, mf:  -55, te:  -55, me:  -55, floodPct: null, ebbPct: null, absoluteFloodKn: 11.0, absoluteEbbKn: 11.0 },
+  { id: 'greene-point-rapids',   name: 'Greene Point Rapids',            lat: 50.450, lon: -125.517, referenceCode: 'Seymour Narrows', floodDir: 130, tf:  -85, mf:  -85, te:  -95, me:  -95, floodPct: null, ebbPct: null, absoluteFloodKn:  7.0, absoluteEbbKn:  7.0 },
+  { id: 'blind-channel-vol6',    name: 'Blind Channel',                   lat: 50.417, lon: -125.500, referenceCode: 'Seymour Narrows', floodDir: 355, tf:  -20, mf:  -20, te:  -60, me:  -60, floodPct: null, ebbPct: null, absoluteFloodKn:  5.0, absoluteEbbKn:  5.0 },
+  { id: 'whirlpool-rapids',      name: 'Whirlpool Rapids',                lat: 50.467, lon: -125.767, referenceCode: 'Seymour Narrows', floodDir: 135, tf: -110, mf: -110, te: -100, me: -100, floodPct: null, ebbPct: null, absoluteFloodKn:  7.0, absoluteEbbKn:  7.0 },
+  { id: 'chatham-channel',       name: 'Chatham Channel',                 lat: 50.583, lon: -126.233, referenceCode: 'Seymour Narrows', floodDir:  90, tf:  -85, mf:  -85, te:  -45, me:  -45, floodPct: null, ebbPct: null, absoluteFloodKn:  5.0, absoluteEbbKn:  5.0 },
+
+  // Reference: Gillard Passage
+  { id: 'yuculta-rapids',        name: 'Yuculta Rapids',                  lat: 50.383, lon: -125.150, referenceCode: 'Gillard Passage', floodDir: 180, tf:  25, mf:  25, te:   5, me:   5, floodPct: null, ebbPct: null, absoluteFloodKn: 10.0, absoluteEbbKn:  8.0 },
+
+  // Reference: Johnstone Strait - Central (4 time diffs)
+  { id: 'bear-point',            name: 'Bear Point',                      lat: 50.367, lon: -125.650, referenceCode: 'Johnstone Strait - Central', floodDir:  90, tf:  -35, mf:  30, te:   95, me:   20, floodPct: 275, ebbPct: 165 },
+  { id: 'camp-point',            name: 'Camp Point',                      lat: 50.383, lon: -125.833, referenceCode: 'Johnstone Strait - Central', floodDir: 110, tf:  -20, mf:  30, te:  125, me:   20, floodPct: null, ebbPct: null, absoluteFloodKn: 6.0, absoluteEbbKn: 6.0 },
+  { id: 'current-passage',       name: 'Current Passage',                 lat: 50.417, lon: -125.900, referenceCode: 'Johnstone Strait - Central', floodDir:  65, tf:  -20, mf:  30, te:   50, me:   20, floodPct: null, ebbPct: null, absoluteFloodKn: 5.0, absoluteEbbKn: 5.0 },
+  { id: 'sunderland-channel',    name: 'Sunderland Channel',              lat: 50.450, lon: -125.967, referenceCode: 'Johnstone Strait - Central', floodDir:  90, tf: -100, mf: -70, te: -100, me: -100, floodPct: 55, ebbPct: 50 },
+  { id: 'forward-bay',           name: 'Forward Bay',                     lat: 50.500, lon: -126.433, referenceCode: 'Johnstone Strait - Central', floodDir:  90, tf:  -10, mf: -10, te:    0, me:  -10, floodPct: 70, ebbPct: 95 },
+  { id: 'masterman-islands',     name: 'Masterman Islands',               lat: 50.767, lon: -127.367, referenceCode: 'Johnstone Strait - Central', floodDir: 135, tf: -225, mf: -115, te:   0, me: -115, floodPct: null, ebbPct: null, absoluteFloodKn: 1.0, absoluteEbbKn: 1.0 },
+  { id: 'browning-islands',      name: 'Browning Islands',                lat: 50.850, lon: -127.333, referenceCode: 'Johnstone Strait - Central', floodDir: 115, tf: -145, mf: -110, te: -65, me: -115, floodPct: null, ebbPct: null, absoluteFloodKn: 1.0, absoluteEbbKn: 1.5 },
+
+  // Reference: Nakwakto Rapids
+  { id: 'nenahlmai-lagoon',      name: 'Nenahlmai Lagoon Entrance',       lat: 51.000, lon: -127.250, referenceCode: 'Nakwakto Rapids', floodDir: 120, tf: 285, mf: 225, te: 135, me: 160, floodPct: 55, ebbPct: 60 },
+  { id: 'eclipse-narrows',       name: 'Eclipse Narrows',                 lat: 51.067, lon: -126.767, referenceCode: 'Nakwakto Rapids', floodDir: 100, tf:  25, mf:   0, te:  30, me:   0, floodPct: 40, ebbPct: 30 },
+  { id: 'schooner-channel',      name: 'Schooner Channel',                lat: 51.067, lon: -127.517, referenceCode: 'Nakwakto Rapids', floodDir:   5, tf: -10, mf: -10, te: -10, me: -10, floodPct: 40, ebbPct: 40 },
+  { id: 'slingsby-outer-narrows',name: 'Slingsby Channel (Outer Narrows)',lat: 51.083, lon: -127.633, referenceCode: 'Nakwakto Rapids', floodDir:  80, tf: -10, mf: -10, te: -10, me: -10, floodPct: 50, ebbPct: 60 },
+];
 
 // Shift + scale each reference event into the secondary's timeline.
 // The Haro Strait conditional adjusts turn-to-ebb by an extra 70 min when
