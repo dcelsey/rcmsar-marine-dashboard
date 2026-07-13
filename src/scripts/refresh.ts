@@ -267,6 +267,7 @@ async function renderWindMap(rows: WindPointResponse[], live: LiveWindPayload | 
   const state = await ensureWindMap(container);
   if (!state) return;
   const { L, map, markers } = state;
+  const canHover = window.matchMedia('(hover: hover)').matches;
 
   const seen = new Set<string>();
   for (const e of entries) {
@@ -288,12 +289,14 @@ async function renderWindMap(rows: WindPointResponse[], live: LiveWindPayload | 
     } else {
       const m = L.marker([e.lat, e.lon], { icon, riseOnHover: true });
       m.bindPopup(e.popupHtml, { className: 'wm-popup-wrap', closeButton: true });
-      m.bindTooltip(e.popupHtml, {
-        direction: 'top',
-        offset: [0, -30],
-        className: 'wm-hover',
-        opacity: 1,
-      });
+      if (canHover) {
+        m.bindTooltip(e.popupHtml, {
+          direction: 'top',
+          offset: [0, -30],
+          className: 'wm-hover',
+          opacity: 1,
+        });
+      }
       m.addTo(map);
       markers.set(e.key, m);
     }
