@@ -1,10 +1,22 @@
 ---
 import 'leaflet/dist/leaflet.css';
 ---
-<h2 class="section">Marine currents</h2>
+<h2 class="section">Marine Conditions Overview</h2>
 <div class="card currents-card" id="currents-card">
   <div class="currents-bar">
+    <div class="currents-layer-toggles" role="group" aria-label="Map layers">
+      <button type="button" class="layer-toggle" data-layer="currents" aria-pressed="true">Currents</button>
+      <button type="button" class="layer-toggle" data-layer="tides" aria-pressed="true">Tides</button>
+      <button type="button" class="layer-toggle" data-layer="wind" aria-pressed="true">Wind</button>
+    </div>
     <span class="currents-meta" id="currents-r"></span>
+  </div>
+
+  <div class="currents-slider" id="currents-slider">
+    <button type="button" class="currents-now-btn" id="currents-now-btn">Now</button>
+    <input type="range" id="currents-slider-input" min="0" max="86400" step="900" value="0"
+           aria-label="Look ahead offset from now (hours)">
+    <span class="currents-slider-t tiny" id="currents-slider-t">now</span>
   </div>
 
   <div id="currents-map" class="currents-map">
@@ -12,14 +24,36 @@ import 'leaflet/dist/leaflet.css';
   </div>
 
   <div class="currents-legend tiny muted">
-    <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.5</span>
-    <span class="cl-item"><span class="cl-swatch ca-green"></span>0.5–1.5</span>
-    <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
-    <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
-    <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
-    <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
-    <span class="cl-sep">·</span>
-    <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+    <div class="cl-group" data-legend-layer="currents">
+      <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.5</span>
+      <span class="cl-item"><span class="cl-swatch ca-green"></span>0.5–1.5</span>
+      <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
+      <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
+      <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
+      <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
+      <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+    </div>
+    <div class="cl-group" data-legend-layer="tides">
+      <span class="cl-sep">|</span>
+      <span class="cl-item"><span class="cl-swatch cl-tide-rising"></span> tide rising</span>
+      <span class="cl-item"><span class="cl-swatch cl-tide-falling"></span> tide falling</span>
+    </div>
+    <div class="cl-group" data-legend-layer="wind">
+      <span class="cl-sep">|</span>
+      <span class="cl-item">
+        <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
+          <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        live wind
+      </span>
+      <span class="cl-item">
+        <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
+          <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        forecast wind
+      </span>
+      <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
+    </div>
   </div>
 
   <div class="currents-foot tiny muted" id="currents-foot">
@@ -31,11 +65,68 @@ import 'leaflet/dist/leaflet.css';
   .currents-bar {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    gap: 12px;
     margin-bottom: 12px;
-    min-height: 20px;
+    min-height: 24px;
+    flex-wrap: wrap;
   }
-  .currents-meta { color: var(--muted); font-size: 12px; }
+  .currents-meta { color: var(--muted); font-size: 12px; margin-left: auto; }
+
+  .currents-layer-toggles { display: inline-flex; gap: 10px; }
+  .layer-toggle {
+    background: var(--card2);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .layer-toggle[aria-pressed="true"] {
+    background: var(--accent);
+    color: #001a2b;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Layer visibility — driven by classes on the card, set from the cookie in
+     an inline pre-paint script and toggled from the buttons. Same classes gate
+     both the map markers and the corresponding legend group. */
+  .currents-card.no-currents :global(.current-arrow-icon),
+  .currents-card.no-tides    :global(.tide-marker-icon),
+  .currents-card.no-wind     :global(.wind-barb-icon) { display: none !important; }
+  .currents-card.no-currents [data-legend-layer="currents"],
+  .currents-card.no-tides    [data-legend-layer="tides"],
+  .currents-card.no-wind     [data-legend-layer="wind"] { display: none !important; }
+
+  .currents-slider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--card2);
+  }
+  .currents-slider input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .currents-now-btn {
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .currents-slider-t {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 8ch;
+    text-align: right;
+  }
+  .currents-slider-t.away { color: var(--warn); }
 
   .currents-map {
     position: relative;
@@ -54,10 +145,26 @@ import 'leaflet/dist/leaflet.css';
 
   .currents-legend {
     display: flex; align-items: center; flex-wrap: wrap;
-    gap: 6px 12px; margin-top: 10px; padding: 6px 2px;
+    gap: 6px 8px; margin-top: 10px; padding: 6px 2px;
+  }
+  .cl-group {
+    display: inline-flex; align-items: center; flex-wrap: wrap;
+    gap: 6px 12px;
   }
   .cl-item { display: inline-flex; align-items: center; gap: 5px; }
-  .cl-sep { color: var(--muted2); }
+  .cl-sep {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0 4px 0 -2px;
+    opacity: .55;
+  }
+
+  @media (max-width: 640px) {
+    .currents-legend { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .cl-group { display: flex; width: 100%; }
+    .cl-group .cl-sep { display: none; }
+  }
   .cl-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
   .cl-glyph { font-size: 13px; line-height: 1; }
   .cl-ref { color: var(--good); }
@@ -75,7 +182,8 @@ import 'leaflet/dist/leaflet.css';
   :global(.ca-redorange) { color: #ff5b3c; }
   :global(.ca-red) { color: #e53935; }
 
-  :global(.current-arrow-icon) {
+  :global(.current-arrow-icon),
+  :global(.tide-marker-icon) {
     background: transparent !important;
     border: none !important;
   }
@@ -86,4 +194,53 @@ import 'leaflet/dist/leaflet.css';
     transform-origin: 30px 60px;
     transition: transform 120ms ease-out;
   }
+  :global(.tide-marker-icon svg) {
+    display: block;
+    overflow: visible;
+    transform: scale(calc(var(--arrow-scale, 1) * 0.75));
+    transform-origin: 11px 52px;
+    transition: transform 120ms ease-out;
+  }
+
+  /* Suppress hover tooltips whenever a popup is open on the map — otherwise
+     mousemove re-shows the tooltip and both cards float at once. */
+  :global(.leaflet-container:has(.leaflet-popup) .leaflet-tooltip) {
+    display: none !important;
+  }
+
+
+  .cl-tide-rising { color: #2a7bd8; }
+  .cl-tide-falling { color: #d84a4a; }
+  .cl-barb-glyph { color: var(--good); vertical-align: middle; }
 </style>
+
+<script is:inline>
+  (function () {
+    var LAYERS = ['currents', 'tides', 'wind'];
+    var m = document.cookie.match(/(?:^|; )map-layers=([^;]*)/);
+    var enabled = m ? decodeURIComponent(m[1]).split(',').filter(Boolean) : LAYERS.slice();
+    var card = document.getElementById('currents-card');
+    if (card) {
+      LAYERS.forEach(function (l) {
+        card.classList.toggle('no-' + l, enabled.indexOf(l) === -1);
+      });
+    }
+    document.querySelectorAll('.layer-toggle').forEach(function (btn) {
+      var l = btn.getAttribute('data-layer');
+      var on = enabled.indexOf(l) !== -1;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    card?.addEventListener('click', function (ev) {
+      var btn = ev.target.closest('.layer-toggle');
+      if (!btn) return;
+      var l = btn.getAttribute('data-layer');
+      var idx = enabled.indexOf(l);
+      if (idx === -1) enabled.push(l);
+      else enabled.splice(idx, 1);
+      btn.setAttribute('aria-pressed', idx === -1 ? 'true' : 'false');
+      card.classList.toggle('no-' + l, idx !== -1);
+      document.cookie = 'map-layers=' + encodeURIComponent(enabled.join(','))
+        + '; max-age=' + (365 * 24 * 3600) + '; path=/; SameSite=Lax';
+    });
+  })();
+</script>

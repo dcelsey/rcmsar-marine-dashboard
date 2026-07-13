@@ -97,6 +97,21 @@ export type CurrentsPayload = {
   secondary_stations: SecondaryCurrentStation[];
 };
 
+export type TideMapEvent = { t: number; value: number };
+export type TideMapStation = {
+  id: string;
+  code: string;
+  name: string;
+  lat: number;
+  lon: number;
+  events: TideMapEvent[];
+};
+export type TideMapPayload = {
+  generated_at: string;
+  window: { from: string; to: string };
+  stations: TideMapStation[];
+};
+
 export type LiveWindStation = {
   id: string;
   source: 'swob' | 'ndbc';
@@ -200,6 +215,16 @@ export async function loadCurrents(): Promise<CurrentsPayload | null> {
     const res = await fetch(`/data/currents.json?t=${Date.now()}`);
     if (!res.ok) return null;
     return await res.json() as CurrentsPayload;
+  } catch {
+    return null;
+  }
+}
+
+export async function loadTidesMap(): Promise<TideMapPayload | null> {
+  try {
+    const res = await fetch(`/data/tides-map.json?t=${Date.now()}`);
+    if (!res.ok) return null;
+    return await res.json() as TideMapPayload;
   } catch {
     return null;
   }

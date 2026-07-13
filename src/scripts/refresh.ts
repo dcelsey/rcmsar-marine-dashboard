@@ -3,13 +3,14 @@ import type * as LeafletNS from 'leaflet';
 import type { StationConfig } from '../lib/stations';
 import { fmtTime, fmtDay, fmtNow, compass, wmo } from '../lib/format';
 import {
-  loadWeather, loadWindByLocation, loadMarine, loadTides, loadLiveWind, loadCurrents,
+  loadWeather, loadWindByLocation, loadMarine, loadTides, loadLiveWind, loadCurrents, loadTidesMap,
   getNearbyLiveStations, pointHasNearbyLive,
   type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle, type LiveWindPayload,
-  type CurrentsPayload, type ReferenceCurrentStation, type SecondaryCurrentStation,
+  type CurrentsPayload, type ReferenceCurrentStation, type SecondaryCurrentStation, type TideMapPayload,
 } from '../lib/sources';
 import { windBarbSvg, speedTint } from '../lib/windBarb';
 import { currentArrowSvg, currentTint, interpolateCurrentAt, nextExtremum } from '../lib/currentArrow';
+import { tideStateAt, tideMarkerSvg } from '../lib/tideMarker';
 
 const station: StationConfig = JSON.parse(
   document.getElementById('station-config')!.textContent!,
@@ -21,19 +22,44 @@ const $ = <T extends Element = HTMLElement>(sel: string) =>
 
 let lastGood: string | null = null;
 
-function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides: TideBundle | null): void {
+function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides: TideBundle | null, live: LiveWindPayload | null): void {
   const cur = wx.current;
 
+  // Prefer the nearest live obs within 10 km of the station center; otherwise
+  // fall back to Open-Meteo's forecast for the center point.
+  const nearby = getNearbyLiveStations(live, station.center, { maxKm: 10, limit: 1 });
+  const liveNear = nearby[0]?.station ?? null;
+
   const gWind = $('#g-wind');
-  if (gWind) {
-    gWind.innerHTML = `${Math.round(cur.wind_speed_10m)}<small> kn</small>`;
-    gWind.classList.remove('skel');
-  }
   const gWindSub = $('#g-wind-sub');
-  if (gWindSub) {
-    gWindSub.innerHTML =
-      `<span class="arrow" style="transform:rotate(${cur.wind_direction_10m + 90}deg)">→</span>`
-      + ` from <b>${compass(cur.wind_direction_10m)}</b> · gust <b>${Math.round(cur.wind_gusts_10m)}</b>`;
+  const gWindSrc = $('#g-wind-src');
+  if (liveNear && liveNear.wind_speed_kn !== null && liveNear.wind_dir_deg !== null) {
+    if (gWind) {
+      gWind.innerHTML = `${Math.round(liveNear.wind_speed_kn)}<small> kn</small>`;
+      gWind.classList.remove('skel');
+    }
+    if (gWindSub) {
+      const gust = liveNear.wind_gust_kn === null ? '—' : String(Math.round(liveNear.wind_gust_kn));
+      gWindSub.innerHTML =
+        `<span class="arrow" style="transform:rotate(${liveNear.wind_dir_deg + 90}deg)">→</span>`
+        + ` from <b>${compass(liveNear.wind_dir_deg)}</b> · gust <b>${gust}</b>`;
+    }
+    if (gWindSrc) {
+      gWindSrc.innerHTML = `${liveNear.source.toUpperCase()} · ${liveNear.name} · ${fmtTime(liveNear.obs_time, tz)}`;
+    }
+  } else {
+    if (gWind) {
+      gWind.innerHTML = `${Math.round(cur.wind_speed_10m)}<small> kn</small>`;
+      gWind.classList.remove('skel');
+    }
+    if (gWindSub) {
+      gWindSub.innerHTML =
+        `<span class="arrow" style="transform:rotate(${cur.wind_direction_10m + 90}deg)">→</span>`
+        + ` from <b>${compass(cur.wind_direction_10m)}</b> · gust <b>${Math.round(cur.wind_gusts_10m)}</b>`;
+    }
+    if (gWindSrc) {
+      gWindSrc.innerHTML = 'forecast · Open-Meteo';
+    }
   }
 
   const wh = marine?.current?.wave_height;
@@ -68,14 +94,27 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
   const gTide = $('#g-tide');
   const gTideSub = $('#g-tide-sub');
   if (gTide && tides) {
-    const now = new Date();
-    const next = tides.hilo.find(t => new Date(t.eventDate) > now);
+    const nowMs = Date.now();
+    const next = tides.hilo.find(t => new Date(t.eventDate).getTime() > nowMs);
+    // Current level from the wlp curve — pick the sample closest to now; fall
+    // back to the next hi/lo if the curve isn't available.
+    let currentM: number | null = null;
+    if (tides.curve && tides.curve.length > 0) {
+      let best = tides.curve[0]!;
+      let bestDist = Math.abs(new Date(best.eventDate).getTime() - nowMs);
+      for (const c of tides.curve) {
+        const d = Math.abs(new Date(c.eventDate).getTime() - nowMs);
+        if (d < bestDist) { bestDist = d; best = c; }
+      }
+      currentM = best.value;
+    }
     if (next) {
-      const prev = [...tides.hilo].reverse().find(t => new Date(t.eventDate) <= now);
+      const prev = [...tides.hilo].reverse().find(t => new Date(t.eventDate).getTime() <= nowMs);
       const rising = prev ? next.value > prev.value : null;
       const arrow = rising === null ? '' : rising ? '▲' : '▼';
       const verb = rising === null ? '' : rising ? 'rising to' : 'falling to';
-      gTide.innerHTML = `${arrow} ${next.value.toFixed(1)}<small> m</small>`;
+      const shownM = currentM !== null ? currentM : next.value;
+      gTide.innerHTML = `${arrow} ${shownM.toFixed(1)}<small> m</small>`;
       if (gTideSub) {
         gTideSub.innerHTML = `${verb} <b>${next.value.toFixed(2)} m</b> at <b>${fmtTime(next.eventDate, tz)}</b>`;
       }
@@ -139,15 +178,6 @@ function renderWindTable(rows: WindPointResponse[], live: LiveWindPayload | null
   if (r) r.textContent = 'knots @10m';
 }
 
-type WindMapState = {
-  L: typeof LeafletNS;
-  map: LeafletNS.Map;
-  markers: Map<string, LeafletNS.Marker>;
-  fitted: boolean;
-};
-
-let windMapState: WindMapState | null = null;
-let windMapInitInFlight: Promise<WindMapState | null> | null = null;
 let lastWindRows: WindPointResponse[] | null = null;
 let lastLiveWind: LiveWindPayload | null = null;
 
@@ -155,43 +185,15 @@ type CurrentsMapState = {
   L: typeof LeafletNS;
   map: LeafletNS.Map;
   markers: Map<string, LeafletNS.Marker>;
+  tideMarkers: Map<string, LeafletNS.Marker>;
+  windMarkers: Map<string, LeafletNS.Marker>;
   fitted: boolean;
 };
 let currentsMapState: CurrentsMapState | null = null;
 let currentsMapInitInFlight: Promise<CurrentsMapState | null> | null = null;
-
-type WindView = 'list' | 'map';
-const WIND_VIEW_COOKIE = 'wind-view';
-
-function writeWindViewCookie(v: WindView): void {
-  const oneYear = 365 * 24 * 3600;
-  document.cookie = `${WIND_VIEW_COOKIE}=${v}; max-age=${oneYear}; path=/; SameSite=Lax`;
-}
-function currentWindView(): WindView {
-  const card = document.getElementById('wind-card');
-  const active = card?.querySelector<HTMLElement>('.wind-view-active[data-view]');
-  return (active?.dataset.view as WindView | undefined) ?? 'list';
-}
-function setWindView(v: WindView): void {
-  const card = document.getElementById('wind-card');
-  if (!card) return;
-  card.querySelectorAll<HTMLButtonElement>('.view-tab[data-wind-view]').forEach(b => {
-    const active = b.dataset.windView === v;
-    b.classList.toggle('active', active);
-    b.setAttribute('aria-selected', active ? 'true' : 'false');
-  });
-  card.querySelectorAll<HTMLElement>('.wind-view[data-view]').forEach(el => {
-    el.classList.toggle('wind-view-active', el.dataset.view === v);
-  });
-  writeWindViewCookie(v);
-  if (v === 'map') {
-    if (windMapState) {
-      windMapState.map.invalidateSize();
-      windMapState.fitted = false;
-    }
-    if (lastWindRows) void renderWindMap(lastWindRows, lastLiveWind);
-  }
-}
+let lastCurrents: CurrentsPayload | null = null;
+let lastTidesMap: TideMapPayload | null = null;
+let currentsOffsetSec = 0;  // 0 = now; positive = forward look-ahead
 
 type BarbEntry = {
   key: string;
@@ -248,92 +250,6 @@ function buildBarbEntries(rows: WindPointResponse[], live: LiveWindPayload | nul
   return out;
 }
 
-async function ensureWindMap(container: HTMLElement): Promise<WindMapState | null> {
-  if (windMapState) return windMapState;
-  if (windMapInitInFlight) return windMapInitInFlight;
-  windMapInitInFlight = (async () => {
-    const L = (await import('leaflet')) as unknown as typeof LeafletNS;
-    container.querySelector('.wind-map-skel')?.remove();
-    const map = L.map(container, { zoomControl: true, attributionControl: true, scrollWheelZoom: false });
-    map.setView([station.center.lat, station.center.lon], 11);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> · © <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19,
-    }).addTo(map);
-    windMapState = { L, map, markers: new Map(), fitted: false };
-    return windMapState;
-  })();
-  const s = await windMapInitInFlight;
-  windMapInitInFlight = null;
-  return s;
-}
-
-async function renderWindMap(rows: WindPointResponse[], live: LiveWindPayload | null): Promise<void> {
-  const container = $<HTMLDivElement>('#wind-map');
-  if (!container) return;
-  if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
-
-  const entries = buildBarbEntries(rows, live);
-  const state = await ensureWindMap(container);
-  if (!state) return;
-  const { L, map, markers } = state;
-  const canHover = window.matchMedia('(hover: hover)').matches;
-
-  const seen = new Set<string>();
-  for (const e of entries) {
-    seen.add(e.key);
-    const tint = speedTint(e.speedKn);
-    const html = windBarbSvg({ speedKn: e.speedKn, dirDeg: e.dirDeg, measured: e.measured, tint });
-    const icon = L.divIcon({
-      html,
-      className: `wind-barb-icon ${e.measured ? 'wb-live' : 'wb-fcst'} wb-${tint}`,
-      iconSize: [44, 56],
-      iconAnchor: [22, 46],
-    });
-    const existing = markers.get(e.key);
-    if (existing) {
-      existing.setIcon(icon);
-      existing.setPopupContent(e.popupHtml);
-      const tt = existing.getTooltip();
-      if (tt) tt.setContent(e.popupHtml);
-    } else {
-      const m = L.marker([e.lat, e.lon], { icon, riseOnHover: true });
-      m.bindPopup(e.popupHtml, { className: 'wm-popup-wrap', closeButton: true });
-      if (canHover) {
-        m.bindTooltip(e.popupHtml, {
-          direction: 'top',
-          offset: [0, -30],
-          className: 'wm-hover',
-          opacity: 1,
-        });
-      }
-      m.addTo(map);
-      markers.set(e.key, m);
-    }
-  }
-  for (const [key, m] of markers) {
-    if (!seen.has(key)) {
-      m.remove();
-      markers.delete(key);
-    }
-  }
-
-  if (!state.fitted && entries.length > 0) {
-    const bounds = L.latLngBounds(entries.map(e => [e.lat, e.lon] as [number, number]));
-    map.fitBounds(bounds.pad(0.08), { animate: false });
-    state.fitted = true;
-  }
-
-  const r = $('#wind-map-r');
-  if (r) {
-    const liveCount = entries.filter(e => e.measured).length;
-    r.textContent = entries.length === 0
-      ? 'no data'
-      : `${liveCount} live · ${entries.length - liveCount} forecast`;
-  }
-}
-
 function applyArrowScale(container: HTMLElement, map: LeafletNS.Map, baseZoom: number): void {
   const z = map.getZoom();
   const scale = Math.min(1.3, Math.max(0.35, Math.pow(2, (z - baseZoom) * 0.5)));
@@ -357,7 +273,12 @@ async function ensureCurrentsMap(container: HTMLElement): Promise<CurrentsMapSta
     }).addTo(map);
     applyArrowScale(container, map, zoom);
     map.on('zoomend', () => applyArrowScale(container, map, zoom));
-    currentsMapState = { L, map, markers: new Map(), fitted: false };
+    // When a popup opens on a marker, close its hover tooltip so both don't show at once.
+    map.on('popupopen', (e: LeafletNS.PopupEvent) => {
+      const layer = (e.popup as unknown as { _source?: LeafletNS.Marker })._source;
+      layer?.closeTooltip?.();
+    });
+    currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), fitted: false };
     return currentsMapState;
   })();
   const s = await currentsMapInitInFlight;
@@ -426,13 +347,23 @@ function buildCurrentsEntries(payload: CurrentsPayload, nowMs: number): Currents
   return out;
 }
 
+function fmtOffset(sec: number): string {
+  if (sec === 0) return 'now';
+  const abs = Math.abs(sec);
+  const h = Math.floor(abs / 3600);
+  const m = Math.round((abs - h * 3600) / 60);
+  const sign = sec > 0 ? '+' : '−';
+  return h > 0 ? `${sign}${h}h ${m.toString().padStart(2, '0')}m` : `${sign}${m}m`;
+}
+
 async function renderCurrents(payload: CurrentsPayload): Promise<void> {
   if (!station.currents?.show) return;
   const container = $<HTMLDivElement>('#currents-map');
   if (!container) return;
   if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
 
-  const entries = buildCurrentsEntries(payload, Date.now());
+  const targetMs = Date.now() + currentsOffsetSec * 1000;
+  const entries = buildCurrentsEntries(payload, targetMs);
   const state = await ensureCurrentsMap(container);
   if (!state) return;
   const { L, map, markers } = state;
@@ -480,12 +411,137 @@ async function renderCurrents(payload: CurrentsPayload): Promise<void> {
   if (r) {
     const refCount = payload.reference_stations.length;
     const secCount = payload.secondary_stations.length;
-    r.innerHTML = `${refCount} reference · ${secCount} derived · at <b>${fmtTime(Date.now(), tz)}</b>`;
+    const label = currentsOffsetSec === 0
+      ? `at <b>${fmtTime(targetMs, tz)}</b>`
+      : `at <b>${fmtTime(targetMs, tz)}</b> <span class="warn-text">(${fmtOffset(currentsOffsetSec)})</span>`;
+    r.innerHTML = `${refCount} reference · ${secCount} derived · ${label}`;
+  }
+  const sliderT = $('#currents-slider-t');
+  if (sliderT) {
+    sliderT.textContent = fmtOffset(currentsOffsetSec);
+    sliderT.classList.toggle('away', currentsOffsetSec !== 0);
   }
   const foot = $('#currents-foot');
   if (foot) {
     foot.innerHTML =
       `Predictions from CHS IWLS · ${payload.tables_edition} · ebb = flood + 180°`;
+  }
+}
+
+async function renderTidesMap(payload: TideMapPayload): Promise<void> {
+  if (!station.currents?.show) return;
+  const container = $<HTMLDivElement>('#currents-map');
+  if (!container) return;
+  if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
+
+  const state = await ensureCurrentsMap(container);
+  if (!state) return;
+  const { L, map, tideMarkers } = state;
+  const canHover = window.matchMedia('(hover: hover)').matches;
+  const targetMs = Date.now() + currentsOffsetSec * 1000;
+
+  const seen = new Set<string>();
+  for (const s of payload.stations) {
+    const t = tideStateAt(s.events, targetMs);
+    if (!t) continue;
+    const key = `tide:${s.id}`;
+    seen.add(key);
+    const html = tideMarkerSvg(t);
+    const dir = t.rising ? 'rising' : 'falling';
+    const nextLabel = t.next.value > t.prev.value ? 'high' : 'low';
+    const popupHtml =
+      `<div class="wm-popup"><b>${s.name}</b>`
+      + `<div><b>${t.levelM.toFixed(2)} m</b> · ${dir}</div>`
+      + `<div>next ${nextLabel}: <b>${t.next.value.toFixed(2)} m</b> at <b>${fmtTime(t.next.t, tz)}</b></div>`
+      + `<div class="tiny muted">tide station · CHS IWLS · ${s.code}</div>`
+      + `</div>`;
+    const icon = L.divIcon({
+      html,
+      className: `tide-marker-icon tm-${t.rising ? 'rising' : 'falling'}`,
+      iconSize: [22, 56],
+      iconAnchor: [11, 52],
+    });
+    const existing = tideMarkers.get(key);
+    if (existing) {
+      existing.setIcon(icon);
+      existing.setPopupContent(popupHtml);
+      const tt = existing.getTooltip();
+      if (tt) tt.setContent(popupHtml);
+    } else {
+      const m = L.marker([s.lat, s.lon], { icon, riseOnHover: true });
+      m.bindPopup(popupHtml, { className: 'wm-popup-wrap', closeButton: true });
+      if (canHover) {
+        m.bindTooltip(popupHtml, {
+          direction: 'top',
+          offset: [0, -50],
+          className: 'wm-hover',
+          opacity: 1,
+        });
+      }
+      m.addTo(map);
+      tideMarkers.set(key, m);
+    }
+  }
+  for (const [key, m] of tideMarkers) {
+    if (!seen.has(key)) {
+      m.remove();
+      tideMarkers.delete(key);
+    }
+  }
+}
+
+async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPayload | null): Promise<void> {
+  if (!station.currents?.show) return;
+  const container = $<HTMLDivElement>('#currents-map');
+  if (!container) return;
+  if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
+
+  const state = await ensureCurrentsMap(container);
+  if (!state) return;
+  const { L, map, windMarkers } = state;
+  const canHover = window.matchMedia('(hover: hover)').matches;
+
+  // Look-ahead suppresses live observations — they're always "now".
+  const suppressLive = currentsOffsetSec !== 0;
+  const entries = buildBarbEntries(rows, suppressLive ? null : live);
+
+  const seen = new Set<string>();
+  for (const e of entries) {
+    seen.add(e.key);
+    const tint = speedTint(e.speedKn);
+    const html = windBarbSvg({ speedKn: e.speedKn, dirDeg: e.dirDeg, measured: e.measured, tint });
+    const icon = L.divIcon({
+      html,
+      className: `wind-barb-icon ${e.measured ? 'wb-live' : 'wb-fcst'} wb-${tint}`,
+      iconSize: [44, 56],
+      iconAnchor: [22, 46],
+    });
+    const existing = windMarkers.get(e.key);
+    if (existing) {
+      existing.setIcon(icon);
+      existing.setPopupContent(e.popupHtml);
+      const tt = existing.getTooltip();
+      if (tt) tt.setContent(e.popupHtml);
+    } else {
+      const m = L.marker([e.lat, e.lon], { icon, riseOnHover: true });
+      m.bindPopup(e.popupHtml, { className: 'wm-popup-wrap', closeButton: true });
+      if (canHover) {
+        m.bindTooltip(e.popupHtml, {
+          direction: 'top',
+          offset: [0, -30],
+          className: 'wm-hover',
+          opacity: 1,
+        });
+      }
+      m.addTo(map);
+      windMarkers.set(e.key, m);
+    }
+  }
+  for (const [key, m] of windMarkers) {
+    if (!seen.has(key)) {
+      m.remove();
+      windMarkers.delete(key);
+    }
   }
 }
 
@@ -687,24 +743,33 @@ async function refresh(): Promise<void> {
     loadTides(station),
     loadLiveWind(),
     station.currents?.show ? loadCurrents() : Promise.resolve(null),
+    station.currents?.show ? loadTidesMap() : Promise.resolve(null),
   ]);
-  const [wxR, windR, marR, tideR, liveR, curR] = results;
+  const [wxR, windR, marR, tideR, liveR, curR, tmR] = results;
   const wx = wxR!.status === 'fulfilled' ? wxR!.value as WeatherResponse : null;
   const marine = marR!.status === 'fulfilled' ? marR!.value as MarineResponse : null;
   const tides = tideR!.status === 'fulfilled' ? tideR!.value as TideBundle : null;
   const live = liveR!.status === 'fulfilled' ? liveR!.value as LiveWindPayload | null : null;
   const currents = curR!.status === 'fulfilled' ? curR!.value as CurrentsPayload | null : null;
+  const tidesMap = tmR!.status === 'fulfilled' ? tmR!.value as TideMapPayload | null : null;
 
   try {
-    if (wx && tides) renderGlance(wx, marine, tides);
+    if (wx && tides) renderGlance(wx, marine, tides, live);
     if (windR!.status === 'fulfilled') {
       lastWindRows = windR!.value as WindPointResponse[];
       lastLiveWind = live;
       renderWindTable(lastWindRows, live);
-      void renderWindMap(lastWindRows, live);
+      void renderCombinedWind(lastWindRows, live);
     }
     if (tides) renderTide(tides);
-    if (currents) void renderCurrents(currents);
+    if (currents) {
+      lastCurrents = currents;
+      void renderCurrents(currents);
+    }
+    if (tidesMap) {
+      lastTidesMap = tidesMap;
+      void renderTidesMap(tidesMap);
+    }
     renderSun();
     if (wx) renderHourly(wx);
     if (wx) renderDaily(wx, marine);
@@ -736,12 +801,22 @@ async function refresh(): Promise<void> {
 
 $<HTMLButtonElement>('#refreshBtn')?.addEventListener('click', () => { void refresh(); });
 
-document.getElementById('wind-card')?.addEventListener('click', ev => {
-  const btn = (ev.target as HTMLElement | null)?.closest<HTMLButtonElement>('.view-tab[data-wind-view]');
-  if (!btn) return;
-  const v = btn.dataset.windView as WindView | undefined;
-  if (v && v !== currentWindView()) setWindView(v);
-});
+(function wireCurrentsControls(): void {
+  const input = document.getElementById('currents-slider-input') as HTMLInputElement | null;
+  const nowBtn = document.getElementById('currents-now-btn');
+  if (!input || !nowBtn) return;
+
+  const applyOffset = (sec: number): void => {
+    currentsOffsetSec = sec;
+    input.value = String(sec);
+    if (lastCurrents) void renderCurrents(lastCurrents);
+    if (lastTidesMap) void renderTidesMap(lastTidesMap);
+    if (lastWindRows) void renderCombinedWind(lastWindRows, lastLiveWind);
+  };
+
+  input.addEventListener('input', () => applyOffset(Number(input.value)));
+  nowBtn.addEventListener('click', () => applyOffset(0));
+})();
 
 void refresh();
 setInterval(() => { void refresh(); }, station.refreshMs);
