@@ -3,10 +3,14 @@ export const fmtTime = (iso: string | number | Date, tz: string): string =>
     timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false,
   });
 
-export const fmtDay = (iso: string | number | Date, tz: string): string =>
-  new Date(iso).toLocaleDateString('en-CA', {
+export const fmtDay = (iso: string | number | Date, tz: string): string => {
+  const d = typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso)
+    ? new Date(iso + 'T12:00:00Z')
+    : new Date(iso);
+  return d.toLocaleDateString('en-CA', {
     timeZone: tz, weekday: 'short',
   });
+};
 
 const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'] as const;
 export const compass = (deg: number): string => COMPASS[Math.round(((deg % 360) / 22.5)) % 16]!;
