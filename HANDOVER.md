@@ -2,8 +2,9 @@
 
 ## Where things stand
 
-- **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — pushed. Latest commit at handover: `ae85e85`.
+- **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — pushed. Latest commit at handover: `281f320`.
 - **Stations wired**: all 31 units (hq + sar01, 02, 04, 05, 08, 10, 12, 14, 20, 25, 27, 29, 31, 33, 34, 35, 36, 37, 38, 39, 45, 59, 60, 61, 63, 64, 65, 70, 103, 106). 94 routes total.
+- **Widescreen layout**: 4-col grid — Wind | Windy (embed) | Tide+Sun / Forecast+Marine | Hourly footer.
 - **Vercel**: not yet connected to the new repo. Vercel dashboard → import `dcelsey/rcmsar-marine-dashboard`. Astro auto-detects, no config needed.
 - **Old repo** (`OBSR Conditions Dashboard` / `rcmsar33-oak-bay-conditions.vercel.app`) still deployed on `main` and is what Lively currently points at. Leave running until the new deploy is verified for sar33; then update the Lively URL.
 
@@ -62,6 +63,7 @@ Confirmed all 30 tide station UUIDs return `wlp` + `wlp-hilo`, but the *nearest*
 ## Gotchas the next session should know
 
 - **DFO IWLS: not every station has `wlp`/`wlp-hilo`.** Currents-only stations (like 07745 Second Narrows, 07720 Lions Gate) return empty for water levels, which silently breaks the tide card AND the summary tiles (refresh.ts gates the glance on `wx && tides`). Before assigning a `tideStationId`, verify `timeSeries[].code` includes both `wlp` and `wlp-hilo` by hitting `/api/v1/stations/{uuid}`.
+- **Open-Meteo timestamp trap.** Default ISO shapes silently break parsing: `daily.time` is date-only ("2026-07-13") which `new Date()` reads as UTC midnight → previous calendar day in Vancouver; `hourly.time` is naïve local ISO ("2026-07-13T14:00") which parses as browser-local, wrong for out-of-tz viewers. Fix pattern already applied: URL includes `&timeformat=unixtime` and the loader multiplies by 1000 to give downstream code real UTC ms. Any new Open-Meteo endpoint must follow this pattern.
 - **Freshwater / inland units set `tideStationId: ''`** — `loadTides` in `src/lib/sources.ts` short-circuits to an empty bundle. Currently only sar106 Shuswap does this.
 - **Bash tool cwd does not persist** between calls in this env — every bash command that needs to run in the new repo must prefix with `cd "c:/Users/DuncanElsey/Documents/projects/rcmsar-marine-dashboard" &&`. Use absolute paths for file tools.
 - **Windows `/tmp` mismatch** — bash sees `/tmp` mapped to `%LOCALAPPDATA%\Temp`, but Node interprets `/tmp` literally as `C:\tmp` (doesn't exist). When chaining `curl → node`, resolve with `cygpath -w /tmp/foo` first. Python isn't installed on this box; use Node for scripting.
