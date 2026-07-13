@@ -146,7 +146,6 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',       href: 'https://www.theweathernetwork.com/en/city/ca/british-columbia/oak-bay/hourly' },
       { label: 'DFO tides — 07130 ↗',              href: 'https://www.tides.gc.ca/en/stations/07130' },
     ],
-    currents: { show: true },
   } satisfies StationConfig,
   sar25: {
     slug: 'sar25',
@@ -1658,6 +1657,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',        href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/sicamous' },
       { label: 'ECCC marine — Southern Interior ↗', href: 'https://weather.gc.ca/forecast/canada/index_e.html?id=BC' },
     ],
+    currents: { show: false }, // freshwater lake — no BC-coast currents or tide data applies
   } satisfies StationConfig,
 } as const;
 

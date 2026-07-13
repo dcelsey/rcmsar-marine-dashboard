@@ -357,7 +357,7 @@ function fmtOffset(sec: number): string {
 }
 
 async function renderCurrents(payload: CurrentsPayload): Promise<void> {
-  if (!station.currents?.show) return;
+  if (station.currents?.show === false) return;
   const container = $<HTMLDivElement>('#currents-map');
   if (!container) return;
   if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
@@ -429,7 +429,7 @@ async function renderCurrents(payload: CurrentsPayload): Promise<void> {
 }
 
 async function renderTidesMap(payload: TideMapPayload): Promise<void> {
-  if (!station.currents?.show) return;
+  if (station.currents?.show === false) return;
   const container = $<HTMLDivElement>('#currents-map');
   if (!container) return;
   if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
@@ -491,7 +491,7 @@ async function renderTidesMap(payload: TideMapPayload): Promise<void> {
 }
 
 async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPayload | null): Promise<void> {
-  if (!station.currents?.show) return;
+  if (station.currents?.show === false) return;
   const container = $<HTMLDivElement>('#currents-map');
   if (!container) return;
   if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
@@ -742,8 +742,8 @@ async function refresh(): Promise<void> {
     loadMarine(station),
     loadTides(station),
     loadLiveWind(),
-    station.currents?.show ? loadCurrents() : Promise.resolve(null),
-    station.currents?.show ? loadTidesMap() : Promise.resolve(null),
+    station.currents?.show === false ? Promise.resolve(null) : loadCurrents(),
+    station.currents?.show === false ? Promise.resolve(null) : loadTidesMap(),
   ]);
   const [wxR, windR, marR, tideR, liveR, curR, tmR] = results;
   const wx = wxR!.status === 'fulfilled' ? wxR!.value as WeatherResponse : null;

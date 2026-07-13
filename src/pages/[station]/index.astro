@@ -25,7 +25,7 @@ const station = getStation(Astro.params.station!);
   <div class="wrap">
     <Warnbar />
     <Glance station={station} />
-    {station.currents?.show && <MarineCurrents />}
+    {station.currents?.show !== false && <MarineCurrents />}
     <WindByLocation />
     <TideAndLight station={station} />
     <HourlyStrip />
