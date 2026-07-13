@@ -63,6 +63,40 @@ export type MarineResponse = {
 export type TideEvent = { eventDate: string; value: number };
 export type TideBundle = { hilo: TideEvent[]; curve: TideEvent[] };
 
+export type CurrentEventQualifier = 'SLACK' | 'EXTREMA_FLOOD' | 'EXTREMA_EBB';
+export type CurrentEvent = { t: number; value: number; qualifier: CurrentEventQualifier };
+
+export type ReferenceCurrentStation = {
+  id: string;
+  code: string;
+  name: string;
+  lat: number;
+  lon: number;
+  floodDirection: number | null;
+  ebbDirection: number | null;
+  events: CurrentEvent[];
+};
+
+export type SecondaryCurrentStation = {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  referenceCode: string;
+  floodDirection: number;
+  ebbDirection: number;
+  events: CurrentEvent[];
+  notes?: string;
+};
+
+export type CurrentsPayload = {
+  generated_at: string;
+  tables_edition: string;
+  window: { from: string; to: string };
+  reference_stations: ReferenceCurrentStation[];
+  secondary_stations: SecondaryCurrentStation[];
+};
+
 export type LiveWindStation = {
   id: string;
   source: 'swob' | 'ndbc';
@@ -159,6 +193,16 @@ export function pointHasNearbyLive(
   radiusKm = 5,
 ): boolean {
   return liveStations.some(l => haversineKm(point, l.station) <= radiusKm);
+}
+
+export async function loadCurrents(): Promise<CurrentsPayload | null> {
+  try {
+    const res = await fetch(`/data/currents.json?t=${Date.now()}`);
+    if (!res.ok) return null;
+    return await res.json() as CurrentsPayload;
+  } catch {
+    return null;
+  }
 }
 
 export async function loadTides(station: StationConfig): Promise<TideBundle> {

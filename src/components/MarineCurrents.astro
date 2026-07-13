@@ -1,0 +1,89 @@
+---
+import 'leaflet/dist/leaflet.css';
+---
+<h2 class="section">Marine currents</h2>
+<div class="card currents-card" id="currents-card">
+  <div class="currents-bar">
+    <span class="currents-meta" id="currents-r"></span>
+  </div>
+
+  <div id="currents-map" class="currents-map">
+    <div class="currents-map-skel skel">Loading currents…</div>
+  </div>
+
+  <div class="currents-legend tiny muted">
+    <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.5</span>
+    <span class="cl-item"><span class="cl-swatch ca-green"></span>0.5–1.5</span>
+    <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
+    <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
+    <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
+    <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
+    <span class="cl-sep">·</span>
+    <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+  </div>
+
+  <div class="currents-foot tiny muted" id="currents-foot">
+    Predictions from CHS IWLS. Ebb direction = flood + 180°.
+  </div>
+</div>
+
+<style>
+  .currents-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+    min-height: 20px;
+  }
+  .currents-meta { color: var(--muted); font-size: 12px; }
+
+  .currents-map {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 340px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #0a1420;
+  }
+  .currents-map-skel {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+
+  .currents-legend {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 6px 12px; margin-top: 10px; padding: 6px 2px;
+  }
+  .cl-item { display: inline-flex; align-items: center; gap: 5px; }
+  .cl-sep { color: var(--muted2); }
+  .cl-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
+  .cl-glyph { font-size: 13px; line-height: 1; }
+  .cl-ref { color: var(--good); }
+  .cl-sec { color: var(--good); opacity: .6; }
+  .cl-slack { color: var(--muted); }
+
+  .currents-foot { margin-top: 8px; }
+
+  /* Arrow SVG — every arrow gets its speed tint via currentColor */
+  :global(.ca) { color: var(--accent); }
+  :global(.ca-calm) { color: #7cb9e8; }
+  :global(.ca-green) { color: #4caf50; }
+  :global(.ca-yellow) { color: #ffcb47; }
+  :global(.ca-orange) { color: #ff9740; }
+  :global(.ca-redorange) { color: #ff5b3c; }
+  :global(.ca-red) { color: #e53935; }
+
+  :global(.current-arrow-icon) {
+    background: transparent !important;
+    border: none !important;
+  }
+  :global(.current-arrow-icon svg) {
+    display: block;
+    overflow: visible;
+    transform: scale(var(--arrow-scale, 1));
+    transform-origin: 30px 60px;
+    transition: transform 120ms ease-out;
+  }
+</style>

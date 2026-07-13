@@ -58,6 +58,11 @@ export type StationConfig = {
   windy: { lat: number; lon: number; zoom: number };
   webcams: Webcam[];
   deepDive: DeepDiveLink[];
+  currents?: {
+    show: boolean;
+    center?: Point;
+    zoom?: number;
+  };
 };
 
 export const STATIONS = {
@@ -141,6 +146,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',       href: 'https://www.theweathernetwork.com/en/city/ca/british-columbia/oak-bay/hourly' },
       { label: 'DFO tides — 07130 ↗',              href: 'https://www.tides.gc.ca/en/stations/07130' },
     ],
+    currents: { show: true },
   } satisfies StationConfig,
   sar25: {
     slug: 'sar25',
