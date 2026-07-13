@@ -70,7 +70,7 @@ async function getJSON<T>(url: string): Promise<T> {
 
 export function loadWeather(station: StationConfig): Promise<WeatherResponse> {
   const c = station.center;
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}`
+  const url = `https://api.open-meteo.com/v1/gem?latitude=${c.lat}&longitude=${c.lon}`
     + `&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl`
     + `&hourly=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,visibility,precipitation_probability`
     + `&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,precipitation_probability_max,sunrise,sunset`
@@ -81,7 +81,7 @@ export function loadWeather(station: StationConfig): Promise<WeatherResponse> {
 export async function loadWindByLocation(station: StationConfig): Promise<WindPointResponse[]> {
   const lats = station.points.map(p => p.lat).join(',');
   const lons = station.points.map(p => p.lon).join(',');
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}`
+  const url = `https://api.open-meteo.com/v1/gem?latitude=${lats}&longitude=${lons}`
     + `&current=wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=kn&timezone=${encodeURIComponent(station.tz)}`;
   const data = await getJSON<WindPointResponse | WindPointResponse[]>(url);
   return Array.isArray(data) ? data : [data];
