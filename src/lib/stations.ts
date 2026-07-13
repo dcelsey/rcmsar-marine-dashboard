@@ -58,6 +58,11 @@ export type StationConfig = {
   windy: { lat: number; lon: number; zoom: number };
   webcams: Webcam[];
   deepDive: DeepDiveLink[];
+  currents?: {
+    show: boolean;
+    center?: Point;
+    zoom?: number;
+  };
 };
 
 export const STATIONS = {
@@ -1652,6 +1657,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',        href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/sicamous' },
       { label: 'ECCC marine — Southern Interior ↗', href: 'https://weather.gc.ca/forecast/canada/index_e.html?id=BC' },
     ],
+    currents: { show: false }, // freshwater lake — no BC-coast currents or tide data applies
   } satisfies StationConfig,
 } as const;
 

@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Warnbar from '../../components/Warnbar.astro';
 import Glance from '../../components/Glance.astro';
 import WindByLocation from '../../components/WindByLocation.astro';
+import MarineCurrents from '../../components/MarineCurrents.astro';
 import TideAndLight from '../../components/TideAndLight.astro';
 import HourlyStrip from '../../components/HourlyStrip.astro';
 import SevenDayOutlook from '../../components/SevenDayOutlook.astro';
@@ -24,6 +25,7 @@ const station = getStation(Astro.params.station!);
   <div class="wrap">
     <Warnbar />
     <Glance station={station} />
+    {station.currents?.show !== false && <MarineCurrents />}
     <WindByLocation />
     <TideAndLight station={station} />
     <HourlyStrip />

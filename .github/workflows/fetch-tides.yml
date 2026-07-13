@@ -1,0 +1,37 @@
+name: fetch-tides
+on:
+  schedule:
+    - cron: '31 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: fetch-tides
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Fetch tide predictions
+        run: node scripts/fetch-tides.mjs
+
+      - name: Commit updated tides-map.json (if changed)
+        run: |
+          if [ -n "$(git status --porcelain public/data/tides-map.json)" ]; then
+            git config user.name  "wind-bot"
+            git config user.email "wind-bot@users.noreply.github.com"
+            git add public/data/tides-map.json
+            git commit -m "chore(tides): refresh predictions [skip ci]"
+            git push
+          else
+            echo "tides-map.json unchanged — nothing to commit."
+          fi

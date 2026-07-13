@@ -1,0 +1,4107 @@
+{
+  "generated_at": "2026-07-13T23:07:38.265Z",
+  "tables_edition": "CHS Vol. 5, 2026/01",
+  "window": {
+    "from": "2026-07-13T15:07:09Z",
+    "to": "2026-07-15T07:07:09Z"
+  },
+  "reference_stations": [
+    {
+      "id": "5cebf1e03d0f4a073c4bbeaa",
+      "code": "00620",
+      "name": "Big Bras D'Or",
+      "lat": 46.281566,
+      "lon": -60.424734,
+      "floodDirection": 216,
+      "ebbDirection": 55,
+      "events": [
+        {
+          "t": 1783964220000,
+          "value": 4.2,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783980360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783990560000,
+          "value": 2.7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784000460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784008920000,
+          "value": 2.3,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784018760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784030040000,
+          "value": 3.7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784041740000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784053980000,
+          "value": 4.4,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784069640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784079720000,
+          "value": 3,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784089980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784098200000,
+          "value": 2.5,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "5cebf1e43d0f4a073c4bc434",
+      "code": "07724",
+      "name": "Calamity Point",
+      "lat": 49.31257,
+      "lon": -123.127678,
+      "floodDirection": 130,
+      "ebbDirection": 305,
+      "events": [
+        {
+          "t": 1783969440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783984320000,
+          "value": 4.397,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783996440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784008200000,
+          "value": 0.949,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784014740000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784020800000,
+          "value": 0.976,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784028540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784044500000,
+          "value": 2.97,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784058900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784073900000,
+          "value": 4.603,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784085300000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784098020000,
+          "value": 1.139,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "5cebf1e43d0f4a073c4bc44d",
+      "code": "09341",
+      "name": "Porpoise Channel East",
+      "lat": 54.21515,
+      "lon": -130.28906,
+      "floodDirection": 40,
+      "ebbDirection": 201,
+      "events": [
+        {
+          "t": 1783957680000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783969440000,
+          "value": 1.573,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783978440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783988460000,
+          "value": 0.966,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783999020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784011200000,
+          "value": 1.514,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784019780000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784030760000,
+          "value": 1.536,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784047440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784058780000,
+          "value": 1.765,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784067600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784077800000,
+          "value": 1.11,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784088660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "5dd3064ee0fdc4b9b4be67d6",
+      "code": "01795",
+      "name": "Abegweit Passage",
+      "lat": 46.166667,
+      "lon": -63.733333,
+      "floodDirection": 130,
+      "ebbDirection": 310,
+      "events": [
+        {
+          "t": 1783955700000,
+          "value": 1.5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783967640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783978860000,
+          "value": 1.7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783989420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784000640000,
+          "value": 1.5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784012520000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784023560000,
+          "value": 1.8,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784034180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784045520000,
+          "value": 1.6,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784057280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784068260000,
+          "value": 1.8,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784078880000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784090340000,
+          "value": 1.6,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "5dd3064fe0fdc4b9b4be6978",
+      "code": "08059",
+      "name": "Gillard Passage               ",
+      "lat": 50.393333,
+      "lon": -125.156667,
+      "floodDirection": 95,
+      "ebbDirection": 275,
+      "events": [
+        {
+          "t": 1783962120000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974900000,
+          "value": 10.672,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783988340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998960000,
+          "value": 6.191,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784009580000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784019060000,
+          "value": 5.948,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784029080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784040360000,
+          "value": 7.762,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784064360000,
+          "value": 11.074,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784077440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784088300000,
+          "value": 6.751,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784098980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "5dd3064fe0fdc4b9b4be697e",
+      "code": "09045",
+      "name": "Hiekish Narrows               ",
+      "lat": 52.8705,
+      "lon": -128.490667,
+      "floodDirection": 325,
+      "ebbDirection": 145,
+      "events": [
+        {
+          "t": 1783964220000,
+          "value": 3.355,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783974540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783984320000,
+          "value": 2.657,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783996080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784007540000,
+          "value": 3.137,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784016900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784028780000,
+          "value": 4.226,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784042460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784053320000,
+          "value": 3.639,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784063700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784073660000,
+          "value": 2.889,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784085420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784096700000,
+          "value": 3.394,
+          "qualifier": "EXTREMA_FLOOD"
+        }
+      ]
+    },
+    {
+      "id": "5dd3064fe0fdc4b9b4be6b3f",
+      "code": "00013",
+      "name": "Grand Manan Channel",
+      "lat": 44.75,
+      "lon": -66.933333,
+      "floodDirection": 32,
+      "ebbDirection": 212,
+      "events": [
+        {
+          "t": 1783955400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783966020000,
+          "value": 2.2,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783976160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783987320000,
+          "value": 2.5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783998600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784010480000,
+          "value": 2.8,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784021460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784032800000,
+          "value": 2.9,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784044980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784055720000,
+          "value": 2.5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784065980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784076900000,
+          "value": 2.7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784088180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "5dd30650e0fdc4b9b4be6c2d",
+      "code": "07745",
+      "name": "Second Narrows",
+      "lat": 49.294667,
+      "lon": -123.0245,
+      "floodDirection": 90,
+      "ebbDirection": 270,
+      "events": [
+        {
+          "t": 1783960620000,
+          "value": 6.314,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783970940000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783984020000,
+          "value": 4.461,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783996140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784006160000,
+          "value": 2.095,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784014500000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784021160000,
+          "value": 1.921,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784030340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784047560000,
+          "value": 6.524,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784060340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784073420000,
+          "value": 4.753,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784084940000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784095560000,
+          "value": 2.539,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "5dd30650e0fdc4b9b4be6d24",
+      "code": "07721",
+      "name": "First Narrows        ",
+      "lat": 49.316002,
+      "lon": -123.140055,
+      "floodDirection": 135,
+      "ebbDirection": 315,
+      "events": [
+        {
+          "t": 1783956720000,
+          "value": 5.509,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783969980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783983000000,
+          "value": 5.447,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783998180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784006400000,
+          "value": 1.843,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784016180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784023680000,
+          "value": 1.215,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784030340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784046360000,
+          "value": 5.579,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784059320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784072280000,
+          "value": 5.678,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784086920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784095680000,
+          "value": 2.268,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "5dd30650e0fdc4b9b4be6dc4",
+      "code": "09348",
+      "name": "Fairview Terminal",
+      "lat": 54.290263,
+      "lon": -130.359937,
+      "floodDirection": 4,
+      "ebbDirection": 192,
+      "events": [
+        {
+          "t": 1783955280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783968240000,
+          "value": 1.831,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783978920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783988160000,
+          "value": 0.754,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783997340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784010900000,
+          "value": 1.38,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784019360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784031180000,
+          "value": 1.269,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784044320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784057220000,
+          "value": 2.01,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784067840000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784077200000,
+          "value": 0.865,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784086800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aeee1d84e5432cd3b6c500",
+      "code": "07100",
+      "name": "Juan de Fuca - East",
+      "lat": 48.231667,
+      "lon": -123.53,
+      "floodDirection": 90,
+      "ebbDirection": 270,
+      "events": [
+        {
+          "t": 1783969380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783981020000,
+          "value": 2.84,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783995420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784004480000,
+          "value": 1.287,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784021460000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784044920000,
+          "value": 3.546,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784058600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784070060000,
+          "value": 2.994,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784084160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784093100000,
+          "value": 1.444,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63aeee896a2b9417c034d337",
+      "code": "07090",
+      "name": "Race Passage",
+      "lat": 48.306667,
+      "lon": -123.536667,
+      "floodDirection": 50,
+      "ebbDirection": 230,
+      "events": [
+        {
+          "t": 1783964280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974540000,
+          "value": 5.231,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783988820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784002260000,
+          "value": 3.74,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784013720000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784017380000,
+          "value": 0.682,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784021160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038680000,
+          "value": 6.714,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784053440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784064600000,
+          "value": 5.375,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784077800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784091540000,
+          "value": 4.333,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63aef09f84e5432cd3b6c509",
+      "code": "07527",
+      "name": "Active Pass",
+      "lat": 48.860444,
+      "lon": -123.312759,
+      "floodDirection": 45,
+      "ebbDirection": 225,
+      "events": [
+        {
+          "t": 1783963140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783976160000,
+          "value": 6.16,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783989600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784000160000,
+          "value": 3.942,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784012700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784019840000,
+          "value": 1.588,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784026740000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784040900000,
+          "value": 5.295,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784052660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784065560000,
+          "value": 6.401,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784078760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784089500000,
+          "value": 4.358,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63aef0ed84e5432cd3b6c50b",
+      "code": "07438",
+      "name": "Porlier Pass",
+      "lat": 49.015,
+      "lon": -123.585,
+      "floodDirection": 30,
+      "ebbDirection": 210,
+      "events": [
+        {
+          "t": 1783961940000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974060000,
+          "value": 8.582,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783988220000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783999320000,
+          "value": 3.892,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784009640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784017380000,
+          "value": 3.845,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784026020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039100000,
+          "value": 6.586,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063460000,
+          "value": 8.769,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784077260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784088720000,
+          "value": 4.288,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784099100000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aef12e84e5432cd3b6db8d",
+      "code": "07545",
+      "name": "Gabriola Passage",
+      "lat": 49.129074,
+      "lon": -123.704297,
+      "floodDirection": 80,
+      "ebbDirection": 260,
+      "events": [
+        {
+          "t": 1783961760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973880000,
+          "value": 7.608,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998480000,
+          "value": 4.904,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784009040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784016120000,
+          "value": 3.623,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784025060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038680000,
+          "value": 7.286,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063280000,
+          "value": 7.762,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076300000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087820000,
+          "value": 5.26,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784098380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aef1866a2b9417c035030f",
+      "code": "07487",
+      "name": "Dodd Narrows",
+      "lat": 49.134351,
+      "lon": -123.817132,
+      "floodDirection": 355,
+      "ebbDirection": 155,
+      "events": [
+        {
+          "t": 1783960620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783972740000,
+          "value": 8.285,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783986120000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783997460000,
+          "value": 5.353,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784008260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784016540000,
+          "value": 4.14,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784025840000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038320000,
+          "value": 7.857,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784050260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784062260000,
+          "value": 8.413,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784075340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784086800000,
+          "value": 5.781,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784097720000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aef40a6a2b9417c0350313",
+      "code": "07845",
+      "name": "Sechelt Rapids",
+      "lat": 49.738333,
+      "lon": -123.898333,
+      "floodDirection": 135,
+      "ebbDirection": 315,
+      "events": [
+        {
+          "t": 1783963620000,
+          "value": 13.84,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783977780000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783990920000,
+          "value": 14.544,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784004900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784011320000,
+          "value": 4.002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784019060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784027100000,
+          "value": 6.343,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784033760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784053500000,
+          "value": 14.579,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784067060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784080020000,
+          "value": 15.22,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784093460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aefc7784e5432cd3b6eb1e",
+      "code": "08108",
+      "name": "Seymour Narrows",
+      "lat": 50.133333,
+      "lon": -125.35,
+      "floodDirection": 180,
+      "ebbDirection": 0,
+      "events": [
+        {
+          "t": 1783965120000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783977420000,
+          "value": 14.892,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783990620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784001600000,
+          "value": 11.469,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784013000000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784021760000,
+          "value": 7.114,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784031060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784043780000,
+          "value": 12.272,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784054460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784066640000,
+          "value": 15.288,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784079600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784090640000,
+          "value": 12.33,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63aefcb26a2b9417c035071e",
+      "code": "08052",
+      "name": "Hole in the Wall",
+      "lat": 50.300133,
+      "lon": -125.208333,
+      "floodDirection": 40,
+      "ebbDirection": 220,
+      "events": [
+        {
+          "t": 1783961940000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974000000,
+          "value": 10.306,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998720000,
+          "value": 6.726,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784010000000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018760000,
+          "value": 5.682,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784028780000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039820000,
+          "value": 7.81,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063400000,
+          "value": 10.613,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784088000000,
+          "value": 7.144,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784099220000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aefe506a2b9417c0350720",
+      "code": "07840",
+      "name": "Beazley Passage",
+      "lat": 50.226333,
+      "lon": -125.142,
+      "floodDirection": 120,
+      "ebbDirection": 300,
+      "events": [
+        {
+          "t": 1783961280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973820000,
+          "value": 10.038,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998480000,
+          "value": 6.862,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784009160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018400000,
+          "value": 5.579,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784028540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039580000,
+          "value": 7.486,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784050860000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063280000,
+          "value": 10.326,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076240000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087880000,
+          "value": 7.383,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784098440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aeff5884e5432cd3b71283",
+      "code": "08064",
+      "name": "Arran Rapids",
+      "lat": 50.42,
+      "lon": -125.14,
+      "floodDirection": 60,
+      "ebbDirection": 240,
+      "events": [
+        {
+          "t": 1783962000000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974300000,
+          "value": 11.949,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998600000,
+          "value": 8.592,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784009640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018460000,
+          "value": 7.097,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784028180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039760000,
+          "value": 10.386,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051580000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063760000,
+          "value": 12.25,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087940000,
+          "value": 9.28,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784098920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63aeffc384e5432cd3b71285",
+      "code": "08246",
+      "name": "Johnstone Strait - Central",
+      "lat": 50.471667,
+      "lon": -126.136667,
+      "floodDirection": 100,
+      "ebbDirection": 280,
+      "events": [
+        {
+          "t": 1783975980000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783996260000,
+          "value": 0.9,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784018100000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784041260000,
+          "value": 1.3,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784058660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063760000,
+          "value": 0.3,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784069400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784084700000,
+          "value": 1,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63af00086a2b9417c0353154",
+      "code": "08272",
+      "name": "Blackney passage",
+      "lat": 50.555,
+      "lon": -126.6842,
+      "floodDirection": 180,
+      "ebbDirection": 355,
+      "events": [
+        {
+          "t": 1783963980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783975260000,
+          "value": 4.218,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783988880000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784000880000,
+          "value": 2.049,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784013420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784020740000,
+          "value": 1.246,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784027040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784041680000,
+          "value": 2.809,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784053080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784064480000,
+          "value": 4.556,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784078100000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784089680000,
+          "value": 2.23,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63af005f6a2b9417c0353158",
+      "code": "08277",
+      "name": "Weynton Passage",
+      "lat": 50.603333,
+      "lon": -126.811667,
+      "floodDirection": 220,
+      "ebbDirection": 40,
+      "events": [
+        {
+          "t": 1783961160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973100000,
+          "value": 5.108,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987740000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783997640000,
+          "value": 3.375,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784008500000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784017860000,
+          "value": 2.029,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784025660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039760000,
+          "value": 5.797,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784050440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784062260000,
+          "value": 5.348,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784086560000,
+          "value": 3.835,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784097720000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63af009f84e5432cd3b71287",
+      "code": "08450",
+      "name": "Nakwakto Rapids",
+      "lat": 51.096667,
+      "lon": -127.503333,
+      "floodDirection": 355,
+      "ebbDirection": 175,
+      "events": [
+        {
+          "t": 1783963920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974420000,
+          "value": 8.147,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783984740000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783992960000,
+          "value": 6.549,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784002080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784013360000,
+          "value": 9.754,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039340000,
+          "value": 13.819,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784053080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063760000,
+          "value": 8.778,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784073900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784082480000,
+          "value": 7.357,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784092260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "63af00d66a2b9417c035315b",
+      "code": "08792",
+      "name": "Scott Channel",
+      "lat": 50.7955,
+      "lon": -128.520333,
+      "floodDirection": 20,
+      "ebbDirection": 200,
+      "events": [
+        {
+          "t": 1783960020000,
+          "value": 1.676,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783969440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783979700000,
+          "value": 2.15,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783992660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784002260000,
+          "value": 1.604,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784011080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784024280000,
+          "value": 3.392,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784040120000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784049000000,
+          "value": 1.975,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784058660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784068860000,
+          "value": 2.449,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784082240000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784091600000,
+          "value": 1.771,
+          "qualifier": "EXTREMA_FLOOD"
+        }
+      ]
+    },
+    {
+      "id": "63af011e84e5432cd3b71289",
+      "code": "08760",
+      "name": "Quatsino Narrows",
+      "lat": 50.555,
+      "lon": -127.555,
+      "floodDirection": 10,
+      "ebbDirection": 190,
+      "events": [
+        {
+          "t": 1783966320000,
+          "value": 6.994,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783977420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783986180000,
+          "value": 3.19,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783995900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784007000000,
+          "value": 5.165,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784017920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784031720000,
+          "value": 7.509,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784043900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784055780000,
+          "value": 7.826,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784066760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784076240000,
+          "value": 3.672,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784085840000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784096880000,
+          "value": 5.507,
+          "qualifier": "EXTREMA_FLOOD"
+        }
+      ]
+    },
+    {
+      "id": "63af06d56a2b9417c0353451",
+      "code": "08138",
+      "name": "Dent Rapids",
+      "lat": 50.41,
+      "lon": -125.211667,
+      "floodDirection": 140,
+      "ebbDirection": 340,
+      "events": [
+        {
+          "t": 1783962420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783972260000,
+          "value": 9.031,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784001180000,
+          "value": 6.434,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784010060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018100000,
+          "value": 5.452,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784029200000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038680000,
+          "value": 7.67,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051940000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784061480000,
+          "value": 9.313,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784077080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784091000000,
+          "value": 6.992,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "63af0f126a2b9417c03562a6",
+      "code": "09911",
+      "name": "Masset Channel",
+      "lat": 54.002862,
+      "lon": -132.154333,
+      "floodDirection": 154,
+      "ebbDirection": 338,
+      "events": [
+        {
+          "t": 1783968180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783980180000,
+          "value": 3.53,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783989660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783997340000,
+          "value": 3.12,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784008260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018340000,
+          "value": 4.768,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784030040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784040060000,
+          "value": 5.013,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784057280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784069700000,
+          "value": 3.754,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784078580000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784086140000,
+          "value": 3.479,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784097840000,
+          "value": 0,
+          "qualifier": "SLACK"
+        }
+      ]
+    },
+    {
+      "id": "64960066ebd87908f1fcb787",
+      "code": "07129",
+      "name": "Tillicum Bridge",
+      "lat": 48.446372,
+      "lon": -123.400167,
+      "floodDirection": 290,
+      "ebbDirection": 110,
+      "events": [
+        {
+          "t": 1783957140000,
+          "value": 9.121,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783973820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783983660000,
+          "value": 2.98,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784002200000,
+          "value": 1.075,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784011560000,
+          "value": 2.616,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784021520000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784046480000,
+          "value": 9.535,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784063040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784072520000,
+          "value": 3.091,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784091480000,
+          "value": 0.422,
+          "qualifier": "EXTREMA_FLOOD"
+        }
+      ]
+    }
+  ],
+  "secondary_stations": [
+    {
+      "id": "river-jordan",
+      "name": "River Jordan",
+      "lat": 48.317,
+      "lon": -124.083,
+      "referenceCode": "Juan de Fuca - East",
+      "floodDirection": 110,
+      "ebbDirection": 290,
+      "events": [
+        {
+          "t": 1783966380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783979220000,
+          "value": 1.9879999999999998,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783994520000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784002980000,
+          "value": 0.9008999999999999,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784020560000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784043420000,
+          "value": 2.4821999999999997,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784055600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784068260000,
+          "value": 2.0958,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784083260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784091600000,
+          "value": 1.0108,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "baynes-channel",
+      "name": "Baynes Channel",
+      "lat": 48.433,
+      "lon": -123.267,
+      "referenceCode": "Race Passage",
+      "floodDirection": 40,
+      "ebbDirection": 220,
+      "events": [
+        {
+          "t": 1783963380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973640000,
+          "value": 3.92325,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784001360000,
+          "value": 2.805,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784012820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784016480000,
+          "value": 0.5115000000000001,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784020260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784037780000,
+          "value": 5.035500000000001,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784052540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063700000,
+          "value": 4.03125,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784090640000,
+          "value": 3.24975,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "haro-strait-hamley",
+      "name": "Haro Strait (Hamley Pt.)",
+      "lat": 48.583,
+      "lon": -123.233,
+      "referenceCode": "Race Passage",
+      "floodDirection": 350,
+      "ebbDirection": 170,
+      "events": [
+        {
+          "t": 1783969380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783980240000,
+          "value": 2.35395,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783997820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784008260000,
+          "value": 1.683,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784018820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784023080000,
+          "value": 0.3069,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784034360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784044680000,
+          "value": 3.0213,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784058540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784070300000,
+          "value": 2.41875,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784086800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784097540000,
+          "value": 1.94985,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ],
+      "notes": "+70 min to turn-to-ebb if preceding flood at Race Passage < 2.0 kt"
+    },
+    {
+      "id": "sidney-channel",
+      "name": "Sidney Channel",
+      "lat": 48.617,
+      "lon": -123.333,
+      "referenceCode": "Race Passage",
+      "floodDirection": 330,
+      "ebbDirection": 150,
+      "events": [
+        {
+          "t": 1783967880000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783979940000,
+          "value": 1.8308499999999999,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783994220000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784004660000,
+          "value": 1.122,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784017320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784022780000,
+          "value": 0.2387,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784026560000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784041080000,
+          "value": 2.0142,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784057040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784070000000,
+          "value": 1.8812499999999999,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784083200000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784093940000,
+          "value": 1.2999,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "swanson-channel",
+      "name": "Swanson Channel",
+      "lat": 48.783,
+      "lon": -123.333,
+      "referenceCode": "Race Passage",
+      "floodDirection": 330,
+      "ebbDirection": 150,
+      "events": [
+        {
+          "t": 1783970280000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783979640000,
+          "value": 1.30775,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783993920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784007960000,
+          "value": 0.7480000000000001,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784019720000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784022480000,
+          "value": 0.1705,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784026260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784044380000,
+          "value": 1.3428000000000002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784059440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784069700000,
+          "value": 1.34375,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784082900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784097240000,
+          "value": 0.8666,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "boundary-passage",
+      "name": "Boundary Passage",
+      "lat": 48.75,
+      "lon": -123.083,
+      "referenceCode": "Race Passage",
+      "floodDirection": 70,
+      "ebbDirection": 250,
+      "events": [
+        {
+          "t": 1783967880000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783978740000,
+          "value": 2.6155,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783992420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784006460000,
+          "value": 1.4960000000000002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784017320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784021580000,
+          "value": 0.341,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784042880000,
+          "value": 2.6856000000000004,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784057040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784068800000,
+          "value": 2.6875,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784081400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784095740000,
+          "value": 1.7332,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "trincomali-channel",
+      "name": "Trincomali Channel",
+      "lat": 48.883,
+      "lon": -123.45,
+      "referenceCode": "Race Passage",
+      "floodDirection": 320,
+      "ebbDirection": 140,
+      "events": [
+        {
+          "t": 1783966380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783977540000,
+          "value": 0.78465,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783991820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784004960000,
+          "value": 0.561,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784015820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784020380000,
+          "value": 0.1023,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784041380000,
+          "value": 1.0071,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784055540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784067600000,
+          "value": 0.80625,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784080800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784094240000,
+          "value": 0.64995,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "georgeson-passage",
+      "name": "Georgeson Passage",
+      "lat": 48.833,
+      "lon": -123.233,
+      "referenceCode": "Active Pass",
+      "floodDirection": 315,
+      "ebbDirection": 135,
+      "events": [
+        {
+          "t": 1783962240000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973760000,
+          "value": 3.08,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783986900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998360000,
+          "value": 2.1681000000000004,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784011800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784017440000,
+          "value": 0.794,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039100000,
+          "value": 2.9122500000000002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063160000,
+          "value": 3.2005,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087700000,
+          "value": 2.3969,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "boat-passage",
+      "name": "Boat Passage",
+      "lat": 48.817,
+      "lon": -123.183,
+      "referenceCode": "Active Pass",
+      "floodDirection": 55,
+      "ebbDirection": 235,
+      "events": [
+        {
+          "t": 1783962240000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973760000,
+          "value": 6.16,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783986900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998360000,
+          "value": 3.942,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784011800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784017440000,
+          "value": 1.588,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039100000,
+          "value": 5.295,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063160000,
+          "value": 6.401,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087700000,
+          "value": 4.358,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "sansum-narrows",
+      "name": "Sansum Narrows",
+      "lat": 48.783,
+      "lon": -123.55,
+      "referenceCode": "Active Pass",
+      "floodDirection": 0,
+      "ebbDirection": 180,
+      "events": [
+        {
+          "t": 1783964640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783977660000,
+          "value": 3,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987500000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998060000,
+          "value": 3,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784014200000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784021340000,
+          "value": 3,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038800000,
+          "value": 3,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784054160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784067060000,
+          "value": 3,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087400000,
+          "value": 3,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "false-narrows",
+      "name": "False Narrows",
+      "lat": 49.133,
+      "lon": -123.783,
+      "referenceCode": "Dodd Narrows",
+      "floodDirection": 295,
+      "ebbDirection": 115,
+      "events": [
+        {
+          "t": 1783961220000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974240000,
+          "value": 4.1425,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998960000,
+          "value": 2.94415,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784008860000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018040000,
+          "value": 2.07,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784027340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039820000,
+          "value": 4.321350000000001,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784050860000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063760000,
+          "value": 4.2065,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076840000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784088300000,
+          "value": 3.17955,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "tzoonie-narrows",
+      "name": "Tzoonie Narrows",
+      "lat": 49.717,
+      "lon": -123.767,
+      "referenceCode": "Sechelt Rapids",
+      "floodDirection": 50,
+      "ebbDirection": 230,
+      "events": [
+        {
+          "t": 1783964220000,
+          "value": 2.7680000000000002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1783978380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783991520000,
+          "value": 2.9088000000000003,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784005500000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784011920000,
+          "value": 0.8004,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784019660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784027700000,
+          "value": 1.2686000000000002,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784034360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784054100000,
+          "value": 2.9158000000000004,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784067660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784080620000,
+          "value": 3.0440000000000005,
+          "qualifier": "EXTREMA_FLOOD"
+        }
+      ]
+    },
+    {
+      "id": "okisollo-upper-rapids",
+      "name": "Okisollo Channel (Upper Rapids)",
+      "lat": 50.3,
+      "lon": -125.233,
+      "referenceCode": "Seymour Narrows",
+      "floodDirection": 140,
+      "ebbDirection": 320,
+      "events": [
+        {
+          "t": 1783961820000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974120000,
+          "value": 11,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998300000,
+          "value": 11,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784009700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784018460000,
+          "value": 11,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784027760000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784040480000,
+          "value": 11,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784051160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063340000,
+          "value": 11,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076300000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087340000,
+          "value": 11,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "greene-point-rapids",
+      "name": "Greene Point Rapids",
+      "lat": 50.45,
+      "lon": -125.517,
+      "referenceCode": "Seymour Narrows",
+      "floodDirection": 130,
+      "ebbDirection": 310,
+      "events": [
+        {
+          "t": 1783960020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783972320000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783984920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783995900000,
+          "value": 7,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784007900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784016660000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784025360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038080000,
+          "value": 7,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784049360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784061540000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784073900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784084940000,
+          "value": 7,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "blind-channel-vol6",
+      "name": "Blind Channel",
+      "lat": 50.417,
+      "lon": -125.5,
+      "referenceCode": "Seymour Narrows",
+      "floodDirection": 355,
+      "ebbDirection": 175,
+      "events": [
+        {
+          "t": 1783963920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783976220000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998000000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784011800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784020560000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784027460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784040180000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784053260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784065440000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076000000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087040000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "whirlpool-rapids",
+      "name": "Whirlpool Rapids",
+      "lat": 50.467,
+      "lon": -125.767,
+      "referenceCode": "Seymour Narrows",
+      "floodDirection": 135,
+      "ebbDirection": 315,
+      "events": [
+        {
+          "t": 1783958520000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783970820000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783984620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783995600000,
+          "value": 7,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784006400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784015160000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784025060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784037780000,
+          "value": 7,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784047860000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784060040000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784073600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784084640000,
+          "value": 7,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "chatham-channel",
+      "name": "Chatham Channel",
+      "lat": 50.583,
+      "lon": -126.233,
+      "referenceCode": "Seymour Narrows",
+      "floodDirection": 90,
+      "ebbDirection": 270,
+      "events": [
+        {
+          "t": 1783960020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783972320000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783987920000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783998900000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784007900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784016660000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784028360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784041080000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784049360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784061540000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784087940000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "yuculta-rapids",
+      "name": "Yuculta Rapids",
+      "lat": 50.383,
+      "lon": -125.15,
+      "referenceCode": "Gillard Passage",
+      "floodDirection": 180,
+      "ebbDirection": 0,
+      "events": [
+        {
+          "t": 1783963620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783976400000,
+          "value": 10,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783988640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783999260000,
+          "value": 8,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784011080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784020560000,
+          "value": 10,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784029380000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784040660000,
+          "value": 8,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784053140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784065860000,
+          "value": 10,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784077740000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784088600000,
+          "value": 8,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "bear-point",
+      "name": "Bear Point",
+      "lat": 50.367,
+      "lon": -125.65,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 90,
+      "ebbDirection": 270,
+      "events": [
+        {
+          "t": 1783981680000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783997460000,
+          "value": 1.4849999999999999,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784023800000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784042460000,
+          "value": 2.145,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784056560000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784065560000,
+          "value": 0.825,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784075100000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784085900000,
+          "value": 1.65,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "camp-point",
+      "name": "Camp Point",
+      "lat": 50.383,
+      "lon": -125.833,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 110,
+      "ebbDirection": 290,
+      "events": [
+        {
+          "t": 1783983480000,
+          "value": 6,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783997460000,
+          "value": 6,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784025600000,
+          "value": 6,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784042460000,
+          "value": 6,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784057460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784065560000,
+          "value": 6,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784076900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784085900000,
+          "value": 6,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "current-passage",
+      "name": "Current Passage",
+      "lat": 50.417,
+      "lon": -125.9,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 65,
+      "ebbDirection": 245,
+      "events": [
+        {
+          "t": 1783978980000,
+          "value": 5,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783997460000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784021100000,
+          "value": 5,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784042460000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784057460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784065560000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784072400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784085900000,
+          "value": 5,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "sunderland-channel",
+      "name": "Sunderland Channel",
+      "lat": 50.45,
+      "lon": -125.967,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 90,
+      "ebbDirection": 270,
+      "events": [
+        {
+          "t": 1783969980000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783990260000,
+          "value": 0.45,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784012100000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784035260000,
+          "value": 0.65,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784052660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784059560000,
+          "value": 0.165,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784063400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784078700000,
+          "value": 0.5,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "forward-bay",
+      "name": "Forward Bay",
+      "lat": 50.5,
+      "lon": -126.433,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 90,
+      "ebbDirection": 270,
+      "events": [
+        {
+          "t": 1783975980000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783995660000,
+          "value": 0.855,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784018100000,
+          "value": 0,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784040660000,
+          "value": 1.2349999999999999,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784058060000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063160000,
+          "value": 0.21,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784069400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784084100000,
+          "value": 0.95,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "masterman-islands",
+      "name": "Masterman Islands",
+      "lat": 50.767,
+      "lon": -127.367,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 135,
+      "ebbDirection": 315,
+      "events": [
+        {
+          "t": 1783975980000,
+          "value": 1,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783989360000,
+          "value": 1,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784018100000,
+          "value": 1,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784034360000,
+          "value": 1,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784045160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784056860000,
+          "value": 1,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784069400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784077800000,
+          "value": 1,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "browning-islands",
+      "name": "Browning Islands",
+      "lat": 50.85,
+      "lon": -127.333,
+      "referenceCode": "Johnstone Strait - Central",
+      "floodDirection": 115,
+      "ebbDirection": 295,
+      "events": [
+        {
+          "t": 1783972080000,
+          "value": 1.5,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1783989360000,
+          "value": 1.5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784014200000,
+          "value": 1.5,
+          "qualifier": "WEAK_AND_VARIABLE"
+        },
+        {
+          "t": 1784034360000,
+          "value": 1.5,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784049960000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784057160000,
+          "value": 1,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784065500000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784077800000,
+          "value": 1.5,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "nenahlmai-lagoon",
+      "name": "Nenahlmai Lagoon Entrance",
+      "lat": 51,
+      "lon": -127.25,
+      "referenceCode": "Nakwakto Rapids",
+      "floodDirection": 120,
+      "ebbDirection": 300,
+      "events": [
+        {
+          "t": 1783981020000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783987920000,
+          "value": 4.48085,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783992840000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784002560000,
+          "value": 3.9294000000000002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784019180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784026860000,
+          "value": 5.3647,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784032800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784048940000,
+          "value": 8.2914,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784070180000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784077260000,
+          "value": 4.8279000000000005,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784082000000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784092080000,
+          "value": 4.4142,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "eclipse-narrows",
+      "name": "Eclipse Narrows",
+      "lat": 51.067,
+      "lon": -126.767,
+      "referenceCode": "Nakwakto Rapids",
+      "floodDirection": 100,
+      "ebbDirection": 280,
+      "events": [
+        {
+          "t": 1783965420000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783974420000,
+          "value": 3.2588000000000004,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783986540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783992960000,
+          "value": 1.9647000000000001,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784003580000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784013360000,
+          "value": 3.9016,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784026500000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784039340000,
+          "value": 4.1457,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784054580000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063760000,
+          "value": 3.5112000000000005,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784075700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784082480000,
+          "value": 2.2071,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "schooner-channel",
+      "name": "Schooner Channel",
+      "lat": 51.067,
+      "lon": -127.517,
+      "referenceCode": "Nakwakto Rapids",
+      "floodDirection": 5,
+      "ebbDirection": 185,
+      "events": [
+        {
+          "t": 1783963320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973820000,
+          "value": 3.2588000000000004,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783984140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783992360000,
+          "value": 2.6196,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784001480000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784012760000,
+          "value": 3.9016,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024100000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038740000,
+          "value": 5.5276000000000005,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784052480000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063160000,
+          "value": 3.5112000000000005,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784073300000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784081880000,
+          "value": 2.9428,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    },
+    {
+      "id": "slingsby-outer-narrows",
+      "name": "Slingsby Channel (Outer Narrows)",
+      "lat": 51.083,
+      "lon": -127.633,
+      "referenceCode": "Nakwakto Rapids",
+      "floodDirection": 80,
+      "ebbDirection": 260,
+      "events": [
+        {
+          "t": 1783963320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783973820000,
+          "value": 4.0735,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1783984140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1783992360000,
+          "value": 3.9294000000000002,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784001480000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784012760000,
+          "value": 4.877,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784024100000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784038740000,
+          "value": 8.2914,
+          "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1784052480000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784063160000,
+          "value": 4.389,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1784073300000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1784081880000,
+          "value": 4.4142,
+          "qualifier": "EXTREMA_EBB"
+        }
+      ]
+    }
+  ]
+}
