@@ -2,8 +2,9 @@ import SunCalc from 'suncalc';
 import type { StationConfig } from '../lib/stations';
 import { fmtTime, fmtDay, fmtNow, compass, wmo } from '../lib/format';
 import {
-  loadWeather, loadWindByLocation, loadMarine, loadTides,
-  type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle,
+  loadWeather, loadWindByLocation, loadMarine, loadTides, loadLiveWind,
+  getNearbyLiveStations, pointHasNearbyLive,
+  type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle, type LiveWindPayload,
 } from '../lib/sources';
 
 const station: StationConfig = JSON.parse(
@@ -94,22 +95,42 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
   }
 }
 
-function renderWindTable(rows: WindPointResponse[]): void {
+function renderWindTable(rows: WindPointResponse[], live: LiveWindPayload | null): void {
   const table = $<HTMLTableElement>('#wind-table');
   if (!table) return;
-  const body = station.points.map((p, i) => {
+  const nearbyLive = getNearbyLiveStations(live, station.center, { maxKm: 25, limit: 12 });
+
+  const liveRows = nearbyLive.map(({ station: s }) => {
+    const spd = s.wind_speed_kn === null ? null : Math.round(s.wind_speed_kn);
+    const g   = s.wind_gust_kn === null ? '—' : Math.round(s.wind_gust_kn);
+    const cls = spd === null ? 'g' : spd >= 22 ? 'a' : spd >= 15 ? 'w' : 'g';
+    const dirCell = s.wind_dir_deg === null ? '—' :
+      `<span class="arrow" style="transform:rotate(${s.wind_dir_deg + 90}deg)">→</span> ${compass(s.wind_dir_deg)}`;
+    return `<tr>`
+      + `<td>${s.name}</td>`
+      + `<td class="num"><span class="chip ${cls}">${spd ?? '—'}</span></td>`
+      + `<td class="num">${g}</td>`
+      + `<td>${dirCell}</td>`
+      + `<td class="tiny">${fmtTime(s.obs_time, tz)}</td>`
+      + `</tr>`;
+  });
+
+  const forecastRows = station.points.flatMap((p, i) => {
+    if (pointHasNearbyLive(p, nearbyLive, 2)) return [];
     const c = rows[i]?.current;
-    if (!c) return `<tr><td>${p.name}</td><td colspan="3" class="err">n/a</td></tr>`;
+    if (!c) return [`<tr><td>${p.name}</td><td colspan="3" class="err">n/a</td><td class="tiny muted">forecast</td></tr>`];
     const spd = Math.round(c.wind_speed_10m);
     const g = Math.round(c.wind_gusts_10m);
     const cls = spd >= 22 ? 'a' : spd >= 15 ? 'w' : 'g';
-    return `<tr><td>${p.name}</td>`
+    return [`<tr><td>${p.name}</td>`
       + `<td class="num"><span class="chip ${cls}">${spd}</span></td>`
       + `<td class="num">${g}</td>`
-      + `<td><span class="arrow" style="transform:rotate(${c.wind_direction_10m + 90}deg)">→</span> ${compass(c.wind_direction_10m)}</td></tr>`;
-  }).join('');
+      + `<td><span class="arrow" style="transform:rotate(${c.wind_direction_10m + 90}deg)">→</span> ${compass(c.wind_direction_10m)}</td>`
+      + `<td class="tiny muted">forecast</td></tr>`];
+  });
+
   const tbody = table.querySelector('tbody');
-  if (tbody) tbody.innerHTML = body;
+  if (tbody) tbody.innerHTML = [...liveRows, ...forecastRows].join('') || `<tr><td colspan="5" class="muted">No wind data available.</td></tr>`;
   const r = $('#wind-loc-r');
   if (r) r.textContent = 'knots @10m';
 }
@@ -310,15 +331,17 @@ async function refresh(): Promise<void> {
     loadWindByLocation(station),
     loadMarine(station),
     loadTides(station),
+    loadLiveWind(),
   ]);
-  const [wxR, windR, marR, tideR] = results;
+  const [wxR, windR, marR, tideR, liveR] = results;
   const wx = wxR!.status === 'fulfilled' ? wxR!.value as WeatherResponse : null;
   const marine = marR!.status === 'fulfilled' ? marR!.value as MarineResponse : null;
   const tides = tideR!.status === 'fulfilled' ? tideR!.value as TideBundle : null;
+  const live = liveR!.status === 'fulfilled' ? liveR!.value as LiveWindPayload | null : null;
 
   try {
     if (wx && tides) renderGlance(wx, marine, tides);
-    if (windR!.status === 'fulfilled') renderWindTable(windR!.value as WindPointResponse[]);
+    if (windR!.status === 'fulfilled') renderWindTable(windR!.value as WindPointResponse[], live);
     if (tides) renderTide(tides);
     renderSun();
     if (wx) renderHourly(wx);

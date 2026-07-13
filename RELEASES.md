@@ -1,5 +1,11 @@
 # Release notes
 
+## v1.1.0 — 2026-07-13
+
+- Live wind observations merged into the wind-by-location card. Fetch pipeline pulls ECCC SWOB and NOAA NDBC every 15 min. All live stations within 25 km of station centre are shown; configured forecast points within 2 km of a live station are suppressed.
+- New "Reported" column shows observation time (HH:MM) for live rows and "forecast" for forecast rows.
+- Footer attribution updated for MSC Open Government Licence SWOB and NOAA NDBC.
+
 ## v1.0.0 — 2026-07-13
 
 - Relabel wind-by-location card as "Forecast wind across the operating area" and drop "— live" from the Windy map card.

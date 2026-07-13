@@ -4,6 +4,6 @@ interface Props { station: StationConfig }
 const { station } = Astro.props;
 ---
 <div class="foot">
-  <div><b>{station.meta.footerCredit}</b> — static prototype. Data: Open-Meteo (weather &amp; waves), DFO IWLS (tides), SunCalc (sun), Environment Canada (marine forecast), Windy (map).</div>
+  <div><b>{station.meta.footerCredit}</b> — static prototype. Data: Open-Meteo (weather &amp; waves), DFO IWLS (tides), SunCalc (sun), Environment Canada (marine forecast &amp; SWOB observations, Open Government Licence), NOAA National Data Buoy Center (buoy observations), Windy (map).</div>
   <div class="tiny">Displays observed/forecast values only — no safety judgement is implied. Always confirm against the official ECCC marine forecast before tasking. Auto-refreshes every 10&nbsp;min. · <a href="/releases">Release notes</a></div>
 </div>

@@ -1,4 +1,5 @@
 import type { StationConfig } from './stations';
+import { haversineKm, type LatLon } from './distance';
 
 export type WeatherResponse = {
   current: {
@@ -62,6 +63,32 @@ export type MarineResponse = {
 export type TideEvent = { eventDate: string; value: number };
 export type TideBundle = { hilo: TideEvent[]; curve: TideEvent[] };
 
+export type LiveWindStation = {
+  id: string;
+  source: 'swob' | 'ndbc';
+  name: string;
+  lat: number;
+  lon: number;
+  elevation_m: number | null;
+  obs_time: string;
+  wind_dir_deg: number | null;
+  wind_speed_kmh: number | null;
+  wind_gust_kmh: number | null;
+  wind_speed_kn: number | null;
+  wind_gust_kn: number | null;
+  stale: boolean;
+  quality: 'ok' | 'suspect';
+};
+
+export type LiveWindPayload = {
+  generated_at: string;
+  sources: string[];
+  station_count: number;
+  stations: LiveWindStation[];
+};
+
+export type NearbyLiveStation = { station: LiveWindStation; distanceKm: number };
+
 async function getJSON<T>(url: string): Promise<T> {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`${url.split('?')[0]} → HTTP ${r.status}`);
@@ -100,6 +127,38 @@ export async function loadMarine(station: StationConfig): Promise<MarineResponse
   const data = await getJSON<MarineResponse>(url);
   if (data.daily) data.daily.time = data.daily.time.map(t => t * 1000);
   return data;
+}
+
+export async function loadLiveWind(): Promise<LiveWindPayload | null> {
+  try {
+    const res = await fetch(`/data/wind.json?t=${Date.now()}`);
+    if (!res.ok) return null;
+    return await res.json() as LiveWindPayload;
+  } catch {
+    return null;
+  }
+}
+
+export function getNearbyLiveStations(
+  payload: LiveWindPayload | null,
+  center: LatLon,
+  { maxKm = 25, limit = 12 }: { maxKm?: number; limit?: number } = {},
+): NearbyLiveStation[] {
+  if (!payload) return [];
+  return payload.stations
+    .filter(s => !s.stale && s.quality === 'ok' && s.wind_speed_kn !== null && s.wind_dir_deg !== null)
+    .map(s => ({ station: s, distanceKm: haversineKm(center, s) }))
+    .filter(e => e.distanceKm <= maxKm)
+    .sort((a, b) => a.distanceKm - b.distanceKm)
+    .slice(0, limit);
+}
+
+export function pointHasNearbyLive(
+  point: LatLon,
+  liveStations: NearbyLiveStation[],
+  radiusKm = 5,
+): boolean {
+  return liveStations.some(l => haversineKm(point, l.station) <= radiusKm);
 }
 
 export async function loadTides(station: StationConfig): Promise<TideBundle> {
