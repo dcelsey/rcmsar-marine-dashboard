@@ -2,7 +2,7 @@
 
 ## Where things stand
 
-- **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — local `main` is 2 commits ahead of `origin/main` after the v1.2.0 merge (see below); push when ready. Current shipped version **v1.2.0** (2026-07-13). Merge commit `524eb85`.
+- **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — pushed. Current shipped version **v1.2.0** (2026-07-13).
 - **Stations wired**: all 31 units (hq + sar01, 02, 04, 05, 08, 10, 12, 14, 20, 25, 27, 29, 31, 33, 34, 35, 36, 37, 38, 39, 45, 59, 60, 61, 63, 64, 65, 70, 103, 106). 94 routes total.
 - **Live wind (v1.1.0)**: ECCC SWOB + NOAA NDBC observations render in the wind-by-location card alongside forecast points. Include radius 25 km / suppression radius 2 km — tuned in [src/scripts/refresh.ts](src/scripts/refresh.ts) `renderWindTable`. Fetch pipeline `scripts/fetch-wind.mjs` writes `public/data/wind.json`.
 - **Wind map view (v1.2.0)**: same wind-by-location card now has a List / Map tab switcher. Map view renders proper meteorological wind barbs on a Leaflet + CartoDB Positron base, using the same 25 km / 2 km matching. Closed dot = live station, open dot = forecast; both are tinted by speed. Barb SVG in [src/lib/windBarb.ts](src/lib/windBarb.ts); map render + toggle wiring in [src/scripts/refresh.ts](src/scripts/refresh.ts) `renderWindMap` / `setWindView`. View choice persists in a 1-year `wind-view` cookie; inline `is:inline` script in [src/components/WindByLocation.astro](src/components/WindByLocation.astro) reads it before paint to avoid flash.
