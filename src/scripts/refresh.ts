@@ -22,7 +22,7 @@ const $ = <T extends Element = HTMLElement>(sel: string) =>
 
 let lastGood: string | null = null;
 
-function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides: TideBundle | null, live: LiveWindPayload | null): void {
+function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides: TideBundle | null, live: LiveWindPayload | null, tidesMap: TideMapPayload | null): void {
   const cur = wx.current;
 
   // Prefer the nearest live obs within 10 km of the station center; otherwise
@@ -58,7 +58,7 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
         + ` from <b>${compass(cur.wind_direction_10m)}</b> · gust <b>${Math.round(cur.wind_gusts_10m)}</b>`;
     }
     if (gWindSrc) {
-      gWindSrc.innerHTML = 'forecast · Open-Meteo';
+      gWindSrc.innerHTML = `Open-Meteo · ${station.labels.windSub}`;
     }
   }
 
@@ -78,6 +78,10 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
     } else {
       gSeaSub.innerHTML = 'see ECCC forecast';
     }
+  }
+  const gSeaSrc = $('#g-sea-src');
+  if (gSeaSrc) {
+    gSeaSrc.innerHTML = `Open-Meteo · ${station.labels.seaSub}`;
   }
 
   const [em, lab] = wmo(cur.weather_code);
@@ -120,6 +124,17 @@ function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides:
       }
     }
     gTide.classList.remove('skel');
+  }
+  const gTideSrc = $('#g-tide-src');
+  if (gTideSrc) {
+    const tideStation = tidesMap?.stations.find(s => s.id === station.tideStationId);
+    if (tideStation) {
+      gTideSrc.innerHTML = `IWLS · ${tideStation.name}`;
+    } else if (station.tideStationId) {
+      gTideSrc.innerHTML = 'IWLS';
+    } else {
+      gTideSrc.innerHTML = '&nbsp;';
+    }
   }
 
   const times = SunCalc.getTimes(new Date(), station.center.lat, station.center.lon);
@@ -754,7 +769,7 @@ async function refresh(): Promise<void> {
   const tidesMap = tmR!.status === 'fulfilled' ? tmR!.value as TideMapPayload | null : null;
 
   try {
-    if (wx && tides) renderGlance(wx, marine, tides, live);
+    if (wx && tides) renderGlance(wx, marine, tides, live, tidesMap);
     if (windR!.status === 'fulfilled') {
       lastWindRows = windR!.value as WindPointResponse[];
       lastLiveWind = live;
