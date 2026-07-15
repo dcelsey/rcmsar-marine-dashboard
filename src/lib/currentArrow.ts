@@ -3,7 +3,7 @@ import type { CurrentEvent } from './sources';
 export type CurrentTint = 'calm' | 'green' | 'yellow' | 'orange' | 'redorange' | 'red';
 
 export function currentTint(speedKn: number): CurrentTint {
-  if (speedKn < 0.5) return 'calm';
+  if (speedKn < 0.2) return 'calm';
   if (speedKn < 1.5) return 'green';
   if (speedKn < 2.5) return 'yellow';
   if (speedKn < 3.5) return 'orange';
@@ -71,19 +71,19 @@ export type CurrentArrowOpts = {
 };
 
 // Arrow points along the direction of flow (set). Length scales with speed
-// (clamped 20–52 px per spec §3). Slack (< 0.5 kt) renders as a hollow ring.
+// (clamped 10–52 px). Slack (< 0.2 kt) renders as a hollow ring.
 export function currentArrowSvg({ speedKn, dirDeg, tint, secondary }: CurrentArrowOpts): string {
   const tintCls = `ca-${tint}`;
   const kindCls = secondary ? 'ca-sec' : 'ca-ref';
   const open = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 -60 60 72" width="60" height="72" class="ca ${kindCls} ${tintCls}" aria-hidden="true">`;
   const close = `</svg>`;
 
-  if (speedKn < 0.5) {
+  if (speedKn < 0.2) {
     const ring = `<circle cx="0" cy="0" r="7" fill="currentColor" stroke="#000" stroke-width="1.2"/>`;
     return open + ring + close;
   }
 
-  const len = Math.min(52, Math.max(20, 20 + speedKn * 6));
+  const len = Math.min(52, Math.max(10, 10 + speedKn * 6));
   const headW = 8;
   const headH = 10;
   const shaftW = 5;

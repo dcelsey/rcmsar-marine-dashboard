@@ -330,7 +330,7 @@ function buildCurrentsEntries(payload: CurrentsPayload, nowMs: number): Currents
     const nxLine = nx
       ? `next max ${nx.phase}: <b>${nx.value.toFixed(1)} kn</b> at <b>${fmtTime(nx.t, tz)}</b>`
       : 'no upcoming extremum in window';
-    const currentLine = phase === 'slack' || speedKn < 0.5
+    const currentLine = phase === 'slack' || speedKn < 0.2
       ? `<div>slack</div>`
       : `<div><b>${speedKn.toFixed(1)} kn</b> · ${phase} · ${compass(dirDeg)} · ${Math.round(dirDeg)}°</div>`;
     const noteLine = (s as SecondaryCurrentStation).notes
