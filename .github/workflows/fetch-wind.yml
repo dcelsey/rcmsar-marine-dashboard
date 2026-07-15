@@ -26,12 +26,18 @@ jobs:
 
       - name: Commit updated wind.json (if changed)
         run: |
-          if [ -n "$(git status --porcelain public/data/wind.json)" ]; then
-            git config user.name  "wind-bot"
-            git config user.email "wind-bot@users.noreply.github.com"
-            git add public/data/wind.json
-            git commit -m "chore(wind): refresh live observations [skip ci]"
-            git push
-          else
+          if [ -z "$(git status --porcelain public/data/wind.json)" ]; then
             echo "wind.json unchanged — nothing to commit."
+            exit 0
           fi
+          git config user.name  "wind-bot"
+          git config user.email "wind-bot@users.noreply.github.com"
+          git add public/data/wind.json
+          git commit -m "chore(wind): refresh live observations [skip ci]"
+          for i in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            echo "Push rejected (attempt $i) — rebasing and retrying..."
+            git pull --rebase origin main
+          done
+          echo "Push failed after 5 attempts" >&2
+          exit 1
