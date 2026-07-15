@@ -17,7 +17,7 @@ import {
 const OUT = 'public/data/currents.json';
 const IWLS = 'https://api-iwls.dfo-mpo.gc.ca/api/v1';
 const FETCH_LOOKBEHIND_MS = 8  * 3600e3;   // per spec §6 — wider than displayed
-const FETCH_LOOKAHEAD_MS  = 32 * 3600e3;
+const FETCH_LOOKAHEAD_MS  = 72 * 3600e3;
 const RATE_DELAY_MS = 400;                  // stays inside 3 req/s comfortably
 const TIMEOUT_MS = 15_000;
 const RETRIES = 2;

@@ -1,7 +1,7 @@
 name: fetch-tides
 on:
   schedule:
-    - cron: '31 6 * * *'
+    - cron: '31 */6 * * *'
   workflow_dispatch:
 
 concurrency:
