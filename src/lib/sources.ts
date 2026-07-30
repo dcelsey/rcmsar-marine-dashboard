@@ -132,6 +132,8 @@ export type LiveWindStation = {
 export type LiveWindPayload = {
   generated_at: string;
   sources: string[];
+  /** True when a source failed and its stations were carried forward from the previous run. */
+  degraded?: boolean;
   station_count: number;
   stations: LiveWindStation[];
 };
