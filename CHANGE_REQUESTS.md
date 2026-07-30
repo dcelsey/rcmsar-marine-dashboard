@@ -23,7 +23,11 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
   All well under `limit=10000`. 120 min costs ~+12 MB and ~+0.6 s per run against a job that takes 12–45 s, so it is affordable — but ~25 MB every 15 min is ~2.4 GB/day off a public government API.
 - **Worth trying first:** the OGC `&properties=<csv>` parameter to return only the ~14 fields `fetch-wind.mjs` actually reads, which should cut the payload dramatically and make the wider window cheap. **This was never tested** — verify GeoMet supports it, and confirm `geometry.coordinates` and the `*-qa` fields still come back, since `pickWithQa` depends on the latter.
 
-## CR-003 — Vercel deploys only ride the wind-bot commits
+> **CR-003 is reserved** — "AIS layer follow-ups", currently living in the `feat/ais-layer`
+> stash (`stash@{0}`), not on `main`. It reappears when that work is unstashed. Numbering
+> here skips to CR-004 to avoid clobbering it.
+
+## CR-005 — Vercel deploys only ride the wind-bot commits
 
 - **Logged:** 2026-07-30
 - **Status:** open — needs Vercel dashboard access (can't be diagnosed from the repo)
