@@ -4,6 +4,34 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
+## CR-004 — Hourly marine stations blank out at the top of each hour
+
+- **Logged:** 2026-07-30
+- **Status:** open — **diagnosed, fix not applied**
+- **Problem:** Kelp Reefs, Discovery Island and Victoria Harbour disappear from the sar33 wind card for part of each hour. Reported live on 2026-07-30 after the CR-002 work.
+- **Cause:** CR-002 set `WINDOW_MIN = STALE_MIN` (60) in `scripts/fetch-wind.mjs`. That leaves zero slack for publication lag. These sites report hourly on the hour, and ECCC publishes the ob roughly 5–6 min later. A fetch running between :00 and :06 therefore sees the previous hour's ob as *just* outside the 60-min look-back (60.5 min old → excluded) while the current one isn't published yet → the station is absent entirely. Confirmed: the 20:00:27 run wrote `count=34` with all three absent; the 20:06:32 run wrote `count=78` with all three present and fresh.
+- **Why it's worse than it sounds:** whichever snapshot happens to deploy freezes for the full 15-min deploy cycle, so a blackout fetch can strand the dashboard without those stations for 15 minutes. This is still better than the pre-CR-002 behaviour (20-min window missed them ~75% of the time) but it is visibly broken.
+- **Fix direction:** decouple the fetch window from the staleness bound — the look-back should be *larger* than `STALE_MIN` so the newest available ob is always retrieved, and let the `stale` flag (computed from `obs_time`) decide what renders. A station whose newest ob is 70 min old is then fetched, marked stale, and filtered by the frontend, which is the honest result. Suggested `WINDOW_MIN = 120` (2× `STALE_MIN`).
+- **Measured cost of the wider window** (full BC bbox, 2026-07-30):
+
+  | window | features | stations | payload | fetch |
+  |---|---|---|---|---|
+  | 60 min | 1684 | 89 | 12.3 MB | 1.3 s |
+  | 120 min | 3407 | 98 | 24.9 MB | 1.9 s |
+  | 180 min | 5137 | 99 | 37.5 MB | 2.7 s |
+
+  All well under `limit=10000`. 120 min costs ~+12 MB and ~+0.6 s per run against a job that takes 12–45 s, so it is affordable — but ~25 MB every 15 min is ~2.4 GB/day off a public government API.
+- **Worth trying first:** the OGC `&properties=<csv>` parameter to return only the ~14 fields `fetch-wind.mjs` actually reads, which should cut the payload dramatically and make the wider window cheap. **This was never tested** — verify GeoMet supports it, and confirm `geometry.coordinates` and the `*-qa` fields still come back, since `pickWithQa` depends on the latter.
+
+## CR-003 — Vercel deploys only ride the wind-bot commits
+
+- **Logged:** 2026-07-30
+- **Status:** open — needs Vercel dashboard access (can't be diagnosed from the repo)
+- **Problem:** Plain code pushes to `main` do not trigger a Vercel deployment. Across the last 100+ deployments, **every single one** corresponds to a `chore(wind|currents|tides)` bot commit; zero correspond to a code commit. Code changes reach production only by riding the tree of the next bot commit that deploys. Duncan recalls code pushes triggering deploys previously, so something changed.
+- **Also established:** Vercel ignores **both** `[skip ci]` and `[skip vercel]` here — `dd76a98` carried `[skip ci] [skip vercel]` and deployed anyway. So commit-message tokens are **not** a usable lever for reducing deploy count. An attempt to use one was reverted.
+- **Why it matters:** the wind bot drives ~96 deploys/day against the Hobby tier's **100/day** cap (93–96/day observed all week). Nothing has broken yet, but headroom is thin, and the failure mode is silent — fresh data lands in the repo while the site serves a stale build.
+- **Fix direction:** the real fix is decoupling data delivery from the deploy bundle (serve `wind.json` from raw.githubusercontent, a Worker, or R2) so data freshness doesn't need a rebuild at all. A first attempt at the raw.githubusercontent half was reverted in `e0281fd` — not because it was wrong, but because it was unverified in-browser and pointless while the skip token doesn't work. Check the project's **Ignored Build Step / Git integration settings** first; that's the likely explanation for code pushes not deploying, and it changes which approach is right.
+
 ## CR-002 — Preserve wind stations missing from a pull
 
 - **Logged:** 2026-07-13
