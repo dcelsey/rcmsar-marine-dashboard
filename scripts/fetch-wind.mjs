@@ -5,8 +5,12 @@ import { dirname } from 'node:path';
 
 const OUT = 'public/data/wind.json';
 const BBOX = '-133.5,48.0,-122.0,55.0';   // BC coast
-const WINDOW_MIN = 20;                     // SWOB look-back window
 const STALE_MIN = 60;                      // per spec: SAR-critical
+// Match the look-back to STALE_MIN. Marine sites (KELP REEFS, DISCOVERY ISLAND,
+// Victoria Harbour) only report hourly, so a shorter window missed them on most
+// runs — Oak Bay fell back to forecast-only. Nothing inside this window is stale
+// by definition, and the per-station reduction below keeps only the newest ob.
+const WINDOW_MIN = STALE_MIN;              // SWOB look-back window
 const TIMEOUT_MS = 15_000;
 const RETRIES = 2;
 
@@ -35,7 +39,8 @@ async function fetchWithRetry(url, label) {
     } catch (e) {
       clearTimeout(timer);
       lastErr = e;
-      if (attempt < RETRIES) await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+      // Widen the backoff so a few-second upstream blip doesn't burn all attempts at once.
+      if (attempt < RETRIES) await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));
     }
   }
   throw new Error(`${label} — ${lastErr?.message ?? lastErr}`);
@@ -76,7 +81,7 @@ async function fetchSwob() {
     }
   }
 
-  return [...latest.values()].map(f => {
+  const swob = [...latest.values()].map(f => {
     const p = f.properties;
     const [lon, lat, elev] = f.geometry.coordinates;
     const spd  = pickWithQa(p, ['avg_wnd_spd_10m_pst10mts','avg_wnd_spd_10m_pst2mts','avg_wnd_spd_10m_pst1mt','avg_wnd_spd_10m_pst1hr']);
@@ -95,6 +100,30 @@ async function fetchSwob() {
       suspect: spd.suspect || dir.suspect || gust.suspect,
     });
   }).filter(s => s.wind_speed_kmh !== null || s.wind_dir_deg !== null);
+
+  return dedupeByPosition(swob);
+}
+
+// Several sites publish under two msc_ids at identical coordinates (an AUTO feed
+// and its staffed/AWOS partner — Victoria Harbour, Tofino, Nanaimo and friends).
+// Keyed by msc_id alone they both survive and stack two markers on the same pixel,
+// so collapse co-located records and keep the most complete one.
+function dedupeByPosition(stations) {
+  const better = (a, b) => {
+    const score = s => (s.wind_speed_kn !== null ? 4 : 0)
+                     + (s.wind_dir_deg !== null ? 2 : 0)
+                     + (s.wind_gust_kn !== null ? 1 : 0);
+    if (score(a) !== score(b)) return score(a) > score(b) ? a : b;
+    return new Date(a.obs_time) >= new Date(b.obs_time) ? a : b;
+  };
+
+  const byPos = new Map();
+  for (const s of stations) {
+    const key = `${s.lat.toFixed(3)},${s.lon.toFixed(3)}`;
+    const prev = byPos.get(key);
+    byPos.set(key, prev ? better(prev, s) : s);
+  }
+  return [...byPos.values()];
 }
 
 async function fetchNdbc() {
@@ -132,8 +161,10 @@ async function fetchNdbc() {
   return out;
 }
 
+const isStale = (obsTime) => (Date.now() - new Date(obsTime).getTime()) > STALE_MIN * 60_000;
+
 function normalize(s) {
-  const stale = (Date.now() - new Date(s.obs_time).getTime()) > STALE_MIN * 60_000;
+  const stale = isStale(s.obs_time);
   const kn  = s.kmh === null ? null : +(s.kmh * KMH_PER_KN).toFixed(1);
   const gkn = s.gust_kmh === null ? null : +(s.gust_kmh * KMH_PER_KN).toFixed(1);
   return {
@@ -159,17 +190,45 @@ async function readExisting() {
   catch { return null; }
 }
 
-const results = await Promise.allSettled([fetchSwob(), fetchNdbc()]);
-const swobStations = results[0].status === 'fulfilled' ? results[0].value : [];
-const ndbcStations = results[1].status === 'fulfilled' ? results[1].value : [];
-for (const r of results) {
-  if (r.status === 'rejected') console.warn('source failed:', r.reason?.message ?? r.reason);
-}
+const SOURCES = [
+  { key: 'swob', label: 'SWOB', fetch: fetchSwob },
+  { key: 'ndbc', label: 'NDBC', fetch: fetchNdbc },
+];
 
-const stations = [...swobStations, ...ndbcStations];
+const previous = await readExisting();
+const results = await Promise.allSettled(SOURCES.map(s => s.fetch()));
+
+const stations = [];
+const counts = {};
+let degraded = false;
+
+results.forEach((r, i) => {
+  const { key, label } = SOURCES[i];
+  if (r.status === 'fulfilled') {
+    stations.push(...r.value);
+    counts[key] = r.value.length;
+    return;
+  }
+
+  console.warn(`source failed: ${label} — ${r.reason?.message ?? r.reason}`);
+  degraded = true;
+
+  // A transient upstream blip must not blank this source for a whole refresh cycle.
+  // GeoMet drops out for a single run every so often; without this, every coastal
+  // SWOB station vanishes from the dashboard until the next successful fetch.
+  // Carry the last good observations forward, but only while they're still inside
+  // STALE_MIN — so a prolonged outage decays to nothing instead of freezing an
+  // ancient snapshot on screen.
+  const carried = (previous?.stations ?? [])
+    .filter(s => s.source === key && !isStale(s.obs_time))
+    .map(s => ({ ...s, stale: false }));
+  stations.push(...carried);
+  counts[key] = carried.length;
+  console.warn(`carried forward ${carried.length} ${label} station(s) from the previous run`);
+});
 
 // Preserve last good file rather than overwriting with an empty one.
-if (stations.length === 0 && await readExisting()) {
+if (stations.length === 0 && previous) {
   console.warn('No stations fetched; leaving previous wind.json intact.');
   process.exit(0);
 }
@@ -177,6 +236,7 @@ if (stations.length === 0 && await readExisting()) {
 const payload = {
   generated_at: new Date().toISOString(),
   sources: ['msc-geomet-swob-realtime', 'noaa-ndbc'],
+  degraded,
   station_count: stations.length,
   stations,
 };
@@ -184,4 +244,4 @@ const payload = {
 await mkdir(dirname(OUT), { recursive: true });
 await writeFile(`${OUT}.tmp`, JSON.stringify(payload, null, 2));
 await rename(`${OUT}.tmp`, OUT);   // atomic swap
-console.log(`Wrote ${stations.length} stations to ${OUT} (swob=${swobStations.length}, ndbc=${ndbcStations.length})`);
+console.log(`Wrote ${stations.length} stations to ${OUT} (swob=${counts.swob}, ndbc=${counts.ndbc})${degraded ? ' [degraded — a source failed]' : ''}`);

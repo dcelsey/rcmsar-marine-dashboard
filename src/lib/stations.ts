@@ -99,7 +99,7 @@ export const STATIONS = {
       { name: 'Willows Beach', lat: 48.4326, lon: -123.2958 },
       { name: 'Cattle Point',  lat: 48.4383, lon: -123.2920 },
       { name: 'Discovery Is.', lat: 48.4247, lon: -123.2261 },
-      { name: 'Kelp Reef',     lat: 48.4573, lon: -123.2385 },
+      { name: 'Kelp Reef',     lat: 48.5476, lon: -123.2369 },
       { name: 'Gonzales Pt',   lat: 48.4123, lon: -123.2905 },
       { name: 'Harling Pt',    lat: 48.4098, lon: -123.2947 },
       { name: 'Trial Is.',     lat: 48.3939, lon: -123.3053 },
