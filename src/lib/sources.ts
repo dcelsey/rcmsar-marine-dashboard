@@ -180,14 +180,28 @@ export async function loadMarine(station: StationConfig): Promise<MarineResponse
   return data;
 }
 
+// wind.json is rewritten every 15 min by a bot commit. Serving it from the deploy
+// bundle meant each of those commits had to trigger a full Vercel build just to move a
+// ~27 KB file — ~96 deploys/day against the Hobby tier's 100/day ceiling, which would
+// eventually stall deploys and leave the site serving stale data while the repo looked
+// fine. Those commits now carry [skip vercel]; the data is read straight from the repo
+// instead, so freshness no longer depends on a rebuild. raw.githubusercontent sends
+// `access-control-allow-origin: *` and caches 5 min — well inside the refresh cycle.
+const WIND_JSON_URL =
+  'https://raw.githubusercontent.com/dcelsey/rcmsar-marine-dashboard/main/public/data/wind.json';
+
 export async function loadLiveWind(): Promise<LiveWindPayload | null> {
-  try {
-    const res = await fetch(`/data/wind.json?t=${Date.now()}`);
-    if (!res.ok) return null;
-    return await res.json() as LiveWindPayload;
-  } catch {
-    return null;
+  // Fall back to the bundled copy if raw.githubusercontent is unreachable. That copy is
+  // whatever shipped with the last real deploy, so it may be old — but every consumer
+  // filters on `stale`, so worst case is a forecast-only card rather than wrong wind.
+  for (const url of [WIND_JSON_URL, `/data/wind.json?t=${Date.now()}`]) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      return await res.json() as LiveWindPayload;
+    } catch { /* try the next source */ }
   }
+  return null;
 }
 
 export function getNearbyLiveStations(

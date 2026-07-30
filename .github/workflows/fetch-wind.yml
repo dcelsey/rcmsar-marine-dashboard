@@ -33,7 +33,13 @@ jobs:
           git config user.name  "wind-bot"
           git config user.email "wind-bot@users.noreply.github.com"
           git add public/data/wind.json
-          git commit -m "chore(wind): refresh live observations [skip ci]"
+          # [skip vercel] keeps these 15-min data commits from each burning a deploy
+          # (~96/day vs the Hobby tier's 100/day cap). Safe only because the client now
+          # reads wind.json from raw.githubusercontent rather than the deploy bundle —
+          # see WIND_JSON_URL in src/lib/sources.ts. Don't add this to the currents or
+          # tides workflows: they run 6-hourly, and their deploys are what keep the
+          # built site current.
+          git commit -m "chore(wind): refresh live observations [skip ci] [skip vercel]"
           for i in 1 2 3 4 5; do
             if git push; then exit 0; fi
             echo "Push rejected (attempt $i) — rebasing and retrying..."
