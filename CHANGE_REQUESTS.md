@@ -9,17 +9,16 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 - **Logged:** 2026-07-31
 - **Status:** open — **blocking, and it has now actually fired**
 
-### 2026-07-31 18:47Z — the limit was hit, in production
+### 2026-07-31 18:47Z — the limit fired, briefly
 
-Vercel began refusing deployments with `Deployment rate limited — retry in 24 hours`. It refused the **production** deploy too, not just previews: the AIS merge `c91ea03` carries a `Vercel: failure` status and never shipped. Last good deploy was **18:46** (`865e6dd`).
+Pushing `feat/ais-layer` to try a branch preview, against a budget already ~96% committed to the wind bot, produced `Deployment rate limited — retry in 24 hours`. It cost one **production** deploy as well: the AIS merge `c91ea03` was refused and carries a `Vercel: failure` status.
 
-Consequences, which are the ones CR-005 predicted:
+**It recovered in about nine minutes, not 24 hours.** The next bot commit (`addd446`, 19:01:25Z) deployed normally and carried the AIS merge live with it. Two lessons, both of which cost time here:
 
-- The wind bot keeps committing fresh data every 15 min and **none of it reaches the site.** The deployed bundle's `wind.json` froze at 18:46, so those obs age out around 19:46–20:00 and Oak Bay falls back to forecast-only. Repo healthy, dashboard quietly stale, nothing alerts.
-- **Nothing can refresh the site until the limit clears.** Every mitigation — serving data from outside the bundle, cutting deploy frequency — has to *ship* to take effect, and shipping is what's blocked. Only waiting out the ~24 h or upgrading the plan bypasses it.
-- GitHub recorded only 75 deployments that day, but previews don't create deployment records, so Vercel's own count is higher than anything observable from the API. **Don't use the GitHub deployment count to judge remaining headroom.**
+- **The "retry in 24 hours" text overstates it.** Treat a rate-limit failure as one refused attempt, not an outage.
+- **A refused deploy is not a lost one.** Content ships with the next commit that gets through, so check whether the deployed SHA *contains* yours (`git merge-base --is-ancestor`) before concluding anything is stuck. I wrote a prominent "production is blocked, dashboard is frozen" warning into HANDOVER on the strength of one failure status and had to retract it ten minutes later — the failing status was real, the conclusion drawn from it was not.
 
-Trigger was a push of `feat/ais-layer` to try a branch preview, against a budget already ~96% committed to the wind bot. Whether that tipped it or the cap was reached anyway at that pace isn't determinable from outside.
+The underlying squeeze is still real: previews genuinely can't run, and a production deploy was collateral. Also worth knowing — GitHub recorded only 75 deployments that day, but previews create no deployment records, so Vercel's own count is higher than anything observable from the API. **Don't use the GitHub deployment count to judge remaining headroom.**
 
 ### Corrected fix direction
 

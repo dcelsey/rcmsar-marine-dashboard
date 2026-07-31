@@ -1,12 +1,12 @@
 # Handover — rcmsar-marine-dashboard
 
-> ## ⚠ Read this first (2026-07-31 18:47Z)
+> ## Deploy headroom is thin — read before pushing branches (2026-07-31)
 >
-> **Vercel is refusing all deployments** — `Deployment rate limited — retry in 24 hours`. Production too, not just previews. The AIS merge (`c91ea03`) is on `main` but **did not ship**; last good deploy was `865e6dd` at 18:46Z.
+> **Don't push a branch expecting a Vercel preview.** The wind bot spends ~96 of the Hobby tier's 100 deploys/day, so there is no room for previews. Attempting one on 2026-07-31 produced `Deployment rate limited — retry in 24 hours` and also cost one production deploy: the AIS merge `c91ea03` was refused outright.
 >
-> While this holds, the wind bot keeps committing fresh data that never reaches the site, so the live dashboard is serving a frozen `wind.json` and Oak Bay will read forecast-only. Nothing can refresh it until the limit clears (~2026-08-01 18:47Z) or the plan is upgraded — every fix has to ship, and shipping is what's blocked.
+> **It recovered on its own in ~9 minutes**, not 24 hours — the next bot commit (`addd446`, 19:01Z) deployed normally and carried the AIS merge live with it. So the message overstates the outage, and a refused deploy is *not* a lasting one: content ships with the next commit that gets through. Check whether the deployed SHA contains yours before concluding anything is stuck.
 >
-> **Before the limit clears, land CR-006** (move the 15-min data commits off `main`), so the first deploy after the reset carries the fix and the budget doesn't re-exhaust the next day. Full detail and the corrected approach are in CR-006.
+> The squeeze is real even though this instance was brief — see **CR-006**, which moves the 15-min data commits off `main` so deploys track code changes only, and makes branch previews possible for the first time.
 
 ## Where things stand
 
