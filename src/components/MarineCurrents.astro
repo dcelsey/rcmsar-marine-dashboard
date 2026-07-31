@@ -288,6 +288,21 @@ import 'leaflet/dist/leaflet.css';
     transition: transform 800ms linear;
   }
 
+  /* Hover targets follow the drawn glyph, not the icon box. Wind barbs need a 44x56 box
+     so a barb can point any direction, but the glyph only ever occupies a fraction of
+     it — leaving the whole box hoverable meant empty space opened a tooltip for a marker
+     that looked several pixels away, and overlapping boxes stole each other's hovers.
+     The box is inert; only the `mk-hit` shapes inside the SVG respond, and for wind the
+     shaft target sits inside the rotation so it tracks direction.
+
+     Both classes are needed on the left: Leaflet ships
+     `.leaflet-marker-icon.leaflet-interactive { pointer-events: auto }`, so a
+     single-class selector here loses on specificity and silently does nothing. */
+  :global(.leaflet-marker-icon.wind-barb-icon),
+  :global(.leaflet-marker-icon.tide-marker-icon) { pointer-events: none; }
+  :global(.wind-barb-icon .mk-hit),
+  :global(.tide-marker-icon .mk-hit) { pointer-events: all; cursor: pointer; }
+
   /* Position currency. A vessel we haven't heard from in a while must not look as
      authoritative as one reporting now — it may have moved miles since. Judged against
      each vessel's own reporting rate, so "quiet" means quiet *for that vessel*. */

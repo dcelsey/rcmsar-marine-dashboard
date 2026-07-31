@@ -61,8 +61,14 @@ export function tideMarkerSvg(state: TideState): string {
     ? `<polygon points="${-colW / 2 - 1},${hatY} ${colW / 2 + 1},${hatY} 0,${hatY - hatH}" fill="${colour}" stroke="#000" stroke-width="${stroke}" stroke-linejoin="round"/>`
     : `<polygon points="${-colW / 2 - 1},${hatY - hatH} ${colW / 2 + 1},${hatY - hatH} 0,${hatY}" fill="${colour}" stroke="#000" stroke-width="${stroke}" stroke-linejoin="round"/>`;
 
+  // Hover target hugs the column + hat rather than the icon box, so the dead space
+  // around the marker doesn't trigger a tooltip for it.
+  const hit = `<rect class="mk-hit" x="${-colW / 2 - 2}" y="${-totalH - 2}" width="${colW + 4}"`
+    + ` height="${totalH + 4}" fill="rgba(0,0,0,0)" stroke="rgba(0,0,0,0)"/>`;
+
   const viewBoxH = totalH + 4;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-colW / 2 - 2} ${-viewBoxH} ${colW + 4} ${viewBoxH + 2}" width="${colW + 4}" height="${viewBoxH + 2}" class="tm" aria-hidden="true">`
+    + hit
     + colOutline
     + colFill
     + hat

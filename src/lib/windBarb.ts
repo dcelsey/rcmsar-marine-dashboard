@@ -26,9 +26,15 @@ export function windBarbSvg({ speedKn, dirDeg, measured, tint }: WindBarbOpts): 
   const dotFill = measured ? 'currentColor' : 'none';
   const dot = `<circle cx="0" cy="0" r="${dotR}" fill="${dotFill}" stroke="currentColor" stroke-width="${stroke}"/>`;
 
+  // Invisible hover target, sized to the glyph rather than the icon box. The box has to
+  // be big enough for a barb pointing any direction, so most of it is empty — hovering
+  // that empty space used to open a tooltip for a marker several pixels away.
+  const hit = (body: string) => `<g class="mk-hit" fill="rgba(0,0,0,0)" stroke="rgba(0,0,0,0)">${body}</g>`;
+
   if (rounded < 3) {
     const calm = `<circle cx="0" cy="-13" r="6" fill="none" stroke="currentColor" stroke-width="${stroke}"/>`;
-    return open + dot + calm + close;
+    // Calm is just the dot plus a small ring — a single tight circle covers both.
+    return open + hit(`<circle cx="0" cy="-7" r="13"/>`) + dot + calm + close;
   }
 
   const shaftLen = 34;
@@ -72,5 +78,9 @@ export function windBarbSvg({ speedKn, dirDeg, measured, tint }: WindBarbOpts): 
     );
   }
 
-  return `${open}${dot}<g transform="rotate(${dirDeg})">${parts.join('')}</g>${close}`;
+  // Dot is always hoverable; the shaft target rides inside the rotation, so the hover
+  // area tracks wind direction instead of covering all four quadrants.
+  const shaftHit = hit(`<line x1="0" y1="6" x2="0" y2="${-shaftLen - 4}" stroke-width="17"/>`);
+  return `${open}${hit(`<circle cx="0" cy="0" r="10"/>`)}`
+    + `<g transform="rotate(${dirDeg})">${shaftHit}${parts.join('')}</g>${dot}${close}`;
 }

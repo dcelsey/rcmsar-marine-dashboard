@@ -510,9 +510,12 @@ async function renderTidesMap(payload: TideMapPayload): Promise<void> {
       const m = L.marker([s.lat, s.lon], { icon, riseOnHover: true });
       m.bindPopup(popupHtml, { className: 'wm-popup-wrap', closeButton: true });
       if (canHover) {
+        // Centred on the station position rather than above the icon box. The box is
+        // tall enough for the column plus its hat, so 'top' put the tooltip a long way
+        // from a marker that draws small.
         m.bindTooltip(popupHtml, {
-          direction: 'top',
-          offset: [0, -50],
+          direction: 'center',
+          offset: [0, 0],
           className: 'wm-hover',
           opacity: 1,
         });
@@ -565,9 +568,12 @@ async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPaylo
       const m = L.marker([e.lat, e.lon], { icon, riseOnHover: true });
       m.bindPopup(e.popupHtml, { className: 'wm-popup-wrap', closeButton: true });
       if (canHover) {
+        // Centred on the station dot. 'top' anchored the tooltip above the icon box,
+        // which is sized for a barb pointing any direction — so a southerly (barb drawn
+        // below the dot) or a calm marker left the tooltip stranded far from the glyph.
         m.bindTooltip(e.popupHtml, {
-          direction: 'top',
-          offset: [0, -30],
+          direction: 'center',
+          offset: [0, 0],
           className: 'wm-hover',
           opacity: 1,
         });
