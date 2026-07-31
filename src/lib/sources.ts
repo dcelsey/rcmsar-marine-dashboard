@@ -159,8 +159,19 @@ export type AisVessel = {
   cog: number | null;
   heading: number | null;
   navStatus: number | null;
+  /**
+   * When the AIS network last reported this vessel's position, in epoch ms.
+   *
+   * Sourced from the upstream's own `time_utc` where available, falling back to the
+   * proxy's receive time. Deliberately *not* refreshed by static (name/destination)
+   * messages, so it always reflects position age. Note this is "when something last
+   * heard the vessel", never "when the vessel was there" — AIS position reports carry
+   * only a second-of-minute field, so true transmission time is unrecoverable.
+   */
   lastMsgMs: number;
   lastStaticMs?: number;
+  /** Median gap between this vessel's own recent reports, in ms; null until measured. */
+  cadenceMs?: number | null;
 };
 
 export type AisStatus = 'connecting' | 'live' | 'reconnecting' | 'offline';

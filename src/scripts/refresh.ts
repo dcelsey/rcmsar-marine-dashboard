@@ -579,6 +579,26 @@ function fmtAge(ms: number): string {
   return `${h}h ${m - h * 60}m`;
 }
 
+/**
+ * How current a vessel's position is, judged against that vessel's own reporting rate.
+ *
+ * A flat age threshold can't work here: a ferry reporting every 10 s and a tug at anchor
+ * reporting every 3 min are both healthy, but 4 minutes of silence means very different
+ * things for each. Where the proxy has measured a cadence, judge against it — the same
+ * approach the wind stations use (CR-004). Fall back to fixed thresholds when it hasn't
+ * (too few samples yet, or an older proxy build that doesn't send one).
+ *
+ * This is deliberately conservative: AIS reception is patchy and a missed report is
+ * normal, so 'ageing' starts well past the expected interval rather than at it.
+ */
+function aisFreshness(ageMs: number, cadenceMs: number | null | undefined): 'fresh' | 'ageing' | 'overdue' {
+  const ageingAfter  = cadenceMs ? Math.max(45_000, cadenceMs * 1.5) : 5 * 60_000;
+  const overdueAfter = cadenceMs ? Math.max(120_000, cadenceMs * 3)  : 15 * 60_000;
+  if (ageMs >= overdueAfter) return 'overdue';
+  if (ageMs >= ageingAfter) return 'ageing';
+  return 'fresh';
+}
+
 const NAV_STATUS_TEXT: Record<number, string> = {
   0: 'under way (engine)', 1: 'at anchor', 2: 'not under command',
   3: 'restricted maneuverability', 4: 'constrained by draught', 5: 'moored',
@@ -614,9 +634,11 @@ async function renderAIS(): Promise<void> {
     const moving = (v.sog ?? 0) > 0.3;
     const headingDeg = v.heading ?? v.cog ?? null;
     const html = aisVesselSvg({ headingDeg, moving, category });
+    const ageMs = now - v.lastMsgMs;
+    const freshness = aisFreshness(ageMs, v.cadenceMs);
     const icon = L.divIcon({
       html,
-      className: `ais-vessel-icon av-${category}`,
+      className: `ais-vessel-icon av-${category} avf-${freshness}`,
       iconSize: [32, 32],
       iconAnchor: [16, 16],
     });
@@ -632,8 +654,15 @@ async function renderAIS(): Promise<void> {
       ? `<div>${NAV_STATUS_TEXT[v.navStatus]}</div>` : '';
     const safeDest = escapeHtml(v.destination);
     const destLine = safeDest ? `<div>→ ${safeDest}</div>` : '';
-    const metaLine = `<div class="tiny muted">${category} · MMSI ${safeMmsi} · ${fmtAge(now - v.lastMsgMs)} ago</div>`;
-    const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}</div>`;
+    // "last heard" rather than a bare age: this is when the AIS network last reported
+    // the vessel to us, which is the strongest claim the data supports.
+    const cadenceNote = v.cadenceMs ? ` · reports ~every ${fmtAge(v.cadenceMs)}` : '';
+    const overdueNote = freshness === 'overdue'
+      ? '<div class="ais-overdue-note">overdue — position may be well out of date</div>'
+      : '';
+    const metaLine = `<div class="tiny muted">${category} · MMSI ${safeMmsi}`
+      + ` · last heard ${fmtAge(ageMs)} ago${cadenceNote}</div>`;
+    const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}${overdueNote}</div>`;
 
     const existing = aisMarkers.get(key);
     if (existing) {

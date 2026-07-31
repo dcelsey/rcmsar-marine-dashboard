@@ -68,7 +68,9 @@ import 'leaflet/dist/leaflet.css';
       <span class="cl-item ais-status" id="ais-status" data-state="offline">
         <span class="ais-dot"></span><span class="ais-label">offline</span>
       </span>
-      <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · via aisstream.io</span>
+      <span class="cl-item"><span class="cl-swatch av-other avf-ageing"></span>quiet</span>
+      <span class="cl-item"><span class="cl-swatch av-other avf-overdue"></span>overdue</span>
+      <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · faded = not heard from recently, position may be out of date · times are when the AIS network last heard the vessel, not when it was there · via aisstream.io</span>
     </div>
   </div>
 
@@ -255,6 +257,21 @@ import 'leaflet/dist/leaflet.css';
   :global(.leaflet-marker-icon.ais-vessel-icon) {
     transition: transform 800ms linear;
   }
+
+  /* Position currency. A vessel we haven't heard from in a while must not look as
+     authoritative as one reporting now — it may have moved miles since. Judged against
+     each vessel's own reporting rate, so "quiet" means quiet *for that vessel*. */
+  :global(.ais-vessel-icon.avf-ageing)  { opacity: 0.55; }
+  :global(.ais-vessel-icon.avf-overdue) { opacity: 0.28; }
+  /* Legend swatches carry the same fade, or "quiet"/"overdue" would be unreadable. */
+  .cl-swatch.avf-ageing  { opacity: 0.55; }
+  .cl-swatch.avf-overdue { opacity: 0.28; }
+  .ais-overdue-note {
+    margin-top: 3px; font-size: 11px; font-weight: 600;
+    color: #c62828;
+  }
+  :global(.leaflet-tooltip) .ais-overdue-note,
+  :global(.leaflet-popup-content) .ais-overdue-note { color: #ef5350; }
 
   .ais-status { display: inline-flex; align-items: center; gap: 5px; }
   .ais-status .ais-dot {

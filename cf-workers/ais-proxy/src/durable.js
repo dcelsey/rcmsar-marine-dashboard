@@ -12,6 +12,33 @@
 const SUBSCRIBE_MSG_TYPES = ["PositionReport", "ShipStaticData"];
 const RECONNECT_MIN_MS = 1000;
 const RECONNECT_MAX_MS = 30_000;
+const CADENCE_SAMPLES = 8;          // rolling window of obs times per vessel
+const MAX_UPSTREAM_SKEW_MS = 60_000; // reject upstream stamps this far in the future
+const MAX_UPSTREAM_AGE_MS = 6 * 3_600_000; // ...or implausibly far in the past
+
+/**
+ * Parse aisstream's `MetaData.time_utc` into epoch ms.
+ *
+ * Format is Go's default: "2022-12-29 18:22:32.318353 +0000 UTC" — not ISO 8601, so
+ * Date.parse won't take it directly. aisstream documents the field but NOT its exact
+ * meaning; it appears to be when their receiver network ingested the message, which for
+ * direct VHF reception is effectively transmission time. Either reading beats our own
+ * receive time, which additionally includes upstream queueing plus our network hop.
+ *
+ * Never trust it blindly: a stamp in the future or absurdly stale would poison both the
+ * displayed age and the staleness sweep, so fall back to our own clock in those cases.
+ */
+export function parseUpstreamTime(raw, fallbackMs) {
+  if (typeof raw !== "string" || !raw) return fallbackMs;
+  // "2022-12-29 18:22:32.318353 +0000 UTC" -> "2022-12-29T18:22:32.318353+00:00"
+  const m = raw.match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2}(?:\.\d+)?)\s*([+-]\d{2}):?(\d{2})?/);
+  if (!m) return fallbackMs;
+  const ms = Date.parse(`${m[1]}T${m[2]}${m[3]}:${m[4] ?? "00"}`);
+  if (!Number.isFinite(ms)) return fallbackMs;
+  if (ms > fallbackMs + MAX_UPSTREAM_SKEW_MS) return fallbackMs;
+  if (ms < fallbackMs - MAX_UPSTREAM_AGE_MS) return fallbackMs;
+  return ms;
+}
 
 export class AisHub {
   constructor(state, env) {
@@ -29,6 +56,10 @@ export class AisHub {
     this.vessels = new Map();
     /** @type {Set<string>} */
     this.dirty = new Set();
+    /** Recent obs times per MMSI, for cadence inference. Kept off the vessel record so
+     *  it isn't serialised to every client on each broadcast.
+     *  @type {Map<string, number[]>} */
+    this.msgTimes = new Map();
     /** @type {Set<WebSocket>} */
     this.clients = new Set();
 
@@ -123,6 +154,7 @@ export class AisHub {
     for (const [mmsi, v] of this.vessels) {
       if (v.lastMsgMs < cutoff) {
         this.vessels.delete(mmsi);
+        this.msgTimes.delete(mmsi);   // don't leak cadence history for evicted vessels
         removed.push(mmsi);
       }
     }
@@ -261,6 +293,30 @@ export class AisHub {
     );
   }
 
+  /**
+   * Median gap, in ms, between a vessel's own recent messages.
+   *
+   * AIS reporting rate is defined by the standard but varies by vessel class and state
+   * (Class A: 2-10 s under way, ~3 min at anchor; Class B: 30 s-3 min), and we can't
+   * read it off the wire — so measure it. Downstream this turns "the position is 5 min
+   * old" into the question that actually matters: is this vessel reporting normally, or
+   * have we lost contact with it? Median, so one dropped report doesn't skew it.
+   */
+  observeCadence(mmsi, tMs) {
+    let times = this.msgTimes.get(mmsi);
+    if (!times) { times = []; this.msgTimes.set(mmsi, times); }
+    // Ignore duplicate/out-of-order stamps; they'd fabricate zero-length gaps.
+    if (times.length && tMs <= times[times.length - 1]) return null;
+    times.push(tMs);
+    if (times.length > CADENCE_SAMPLES) times.shift();
+    if (times.length < 3) return null;   // need a couple of gaps before trusting it
+    const gaps = [];
+    for (let i = 1; i < times.length; i++) gaps.push(times[i] - times[i - 1]);
+    gaps.sort((a, b) => a - b);
+    const mid = gaps.length >> 1;
+    return Math.round(gaps.length % 2 ? gaps[mid] : (gaps[mid - 1] + gaps[mid]) / 2);
+  }
+
   async handleUpstreamMessage(ev) {
     this.lastUpstreamMsMs = Date.now();
     this.msgCount = (this.msgCount || 0) + 1;
@@ -286,7 +342,12 @@ export class AisHub {
     const mmsi = String(meta.MMSI || "");
     if (!mmsi) return;
 
-    const now = Date.now();
+    const recvMs = Date.now();
+    // Prefer the upstream's own timestamp over our receive time. For a vessel heard
+    // directly over VHF this is stamped at reception, so it's as close to transmission
+    // time as AIS allows; at worst it equals our receive time. Either way it strips out
+    // any delay this proxy adds. Falls back to our clock when absent or implausible.
+    const now = parseUpstreamTime(meta.time_utc, recvMs);
     const existing = this.vessels.get(mmsi) || { mmsi };
 
     if (msg.MessageType === "PositionReport") {
@@ -306,6 +367,7 @@ export class AisHub {
         heading,
         navStatus: pr.NavigationalStatus ?? null,
         lastMsgMs: now,
+        cadenceMs: this.observeCadence(mmsi, now) ?? existing.cadenceMs ?? null,
       };
       this.vessels.set(mmsi, v);
       this.dirty.add(mmsi);
