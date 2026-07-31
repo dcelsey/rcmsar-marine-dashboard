@@ -337,9 +337,20 @@ button.refresh.spin svg { animation: spin 1s linear infinite; }
   border-radius: 10px;
   box-shadow: var(--shadow);
 }
+/* The tip is a 17px square rotated 45deg and clipped in half by its container, so only
+   two of its edges are ever visible. Bordering all four drew the hidden edges as stray
+   diagonals across the pointer, and Leaflet's own `box-shadow: 0 3px 14px rgba(0,0,0,.4)`
+   — never reset here — smeared a dark halo underneath. Together they read as a blob
+   hanging off the bottom of the card rather than a pointer.
+
+   After a 45deg rotation the two visible edges are the original right and bottom, so
+   bordering just those continues the card's outline cleanly into the point. */
 .leaflet-popup.wm-popup-wrap .leaflet-popup-tip {
   background: var(--card);
-  border: 1px solid var(--line);
+  border: none;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  box-shadow: none;
 }
 .leaflet-popup.wm-popup-wrap .leaflet-popup-content {
   margin: 10px 12px;

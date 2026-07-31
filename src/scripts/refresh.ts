@@ -469,6 +469,11 @@ async function renderCurrents(payload: CurrentsPayload): Promise<void> {
       className: `current-arrow-icon ${e.secondary ? 'ca-sec-icon' : 'ca-ref-icon'} ca-${e.tint}`,
       iconSize: [60, 72],
       iconAnchor: [30, 60],
+      // Lift the popup clear of the glyph. Without popupAnchor Leaflet defaults it to
+      // [0,0] on a divIcon, which puts the popup's tip exactly on the anchor point — and
+      // since these glyphs are drawn *above* their anchor, the popup then covers the very
+      // marker it describes. The hover tooltip has no such problem: it opens beside.
+      popupAnchor: [0, -60],
     });
     const existing = markers.get(e.key);
     if (existing) {
@@ -561,6 +566,7 @@ async function renderTidesMap(payload: TideMapPayload): Promise<void> {
       className: `tide-marker-icon tm-${t.rising ? 'rising' : 'falling'}`,
       iconSize: [22, 56],
       iconAnchor: [11, 52],
+      popupAnchor: [0, -52],
     });
     const existing = tideMarkers.get(key);
     if (existing) {
@@ -629,6 +635,7 @@ async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPaylo
       className: `wind-barb-icon ${e.measured ? 'wb-live' : 'wb-fcst'} wb-${tint}`,
       iconSize: [44, 56],
       iconAnchor: [22, 46],
+      popupAnchor: [0, -46],
     });
     const existing = windMarkers.get(e.key);
     if (existing) {
@@ -748,6 +755,8 @@ async function renderAIS(): Promise<void> {
       className: `ais-vessel-icon av-${category} avf-${freshness}`,
       iconSize: [32, 32],
       iconAnchor: [16, 16],
+      // Centred glyph, so half its height clears it.
+      popupAnchor: [0, -16],
     });
 
     // name/destination are free text broadcast by the vessel — escape before innerHTML.
