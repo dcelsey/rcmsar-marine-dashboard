@@ -4,10 +4,33 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
-## CR-006 — Serve `wind.json` from a Cloudflare Worker instead of the deploy bundle
+## CR-006 — Stop the 15-min data commits consuming the Vercel deploy budget
 
 - **Logged:** 2026-07-31
-- **Status:** open — agreed direction, not started
+- **Status:** open — **blocking, and it has now actually fired**
+
+### 2026-07-31 18:47Z — the limit was hit, in production
+
+Vercel began refusing deployments with `Deployment rate limited — retry in 24 hours`. It refused the **production** deploy too, not just previews: the AIS merge `c91ea03` carries a `Vercel: failure` status and never shipped. Last good deploy was **18:46** (`865e6dd`).
+
+Consequences, which are the ones CR-005 predicted:
+
+- The wind bot keeps committing fresh data every 15 min and **none of it reaches the site.** The deployed bundle's `wind.json` froze at 18:46, so those obs age out around 19:46–20:00 and Oak Bay falls back to forecast-only. Repo healthy, dashboard quietly stale, nothing alerts.
+- **Nothing can refresh the site until the limit clears.** Every mitigation — serving data from outside the bundle, cutting deploy frequency — has to *ship* to take effect, and shipping is what's blocked. Only waiting out the ~24 h or upgrading the plan bypasses it.
+- GitHub recorded only 75 deployments that day, but previews don't create deployment records, so Vercel's own count is higher than anything observable from the API. **Don't use the GitHub deployment count to judge remaining headroom.**
+
+Trigger was a push of `feat/ais-layer` to try a branch preview, against a budget already ~96% committed to the wind bot. Whether that tipped it or the cap was reached anyway at that pace isn't determinable from outside.
+
+### Corrected fix direction
+
+The earlier framing — "serve `wind.json` from a Worker" — was half right. **Deploys are triggered by the commits, not by where the file is read from**, so moving only the read path leaves ~96 deploys/day untouched. The fix has to stop data commits landing on `main` at all:
+
+1. **Data branch** (preferred, no new infrastructure): fetch workflows commit to a `data` branch; `vercel.json` sets `git.deploymentEnabled` false for it; the client reads `wind.json` from `raw.githubusercontent` at that branch. Deploys then track code changes only — a handful a week — and branch previews become possible for the first time.
+2. **R2 / KV**: workflows write there instead of the repo. No data commits anywhere, cleanest, but more moving parts and Cloudflare setup.
+
+Do this **before** the next reset, so the first deploy after the limit clears ships the fix along with everything queued behind it. Otherwise the budget re-exhausts the following day.
+
+- **Original entry (2026-07-31, before the limit fired):**
 - **Problem:** the client reads `/data/wind.json` out of the Vercel deploy bundle, so every 15-min bot commit must trigger a full rebuild just to move a ~26 KB file. That's **~96 deploys/day against the Hobby tier's 100/day cap** (93–96/day observed all week). Nothing has broken, but the headroom is a few deploys, and the failure mode is silent: fresh data lands in the repo while the site serves a stale build. Commit-message tokens are **not** a lever — Vercel here ignores both `[skip ci]` and `[skip vercel]` (CR-005).
 - **Direction:** serve `wind.json` from a Cloudflare Worker (or R2), so data freshness stops depending on a rebuild. Deploys would drop from ~96/day to a handful — only real code changes. This reuses infrastructure already in place and understood: `cf-workers/fetch-wind-trigger/` and `cf-workers/ais-proxy/`. Duncan's call, 2026-07-31, on realising the AIS layer already works this way and costs zero deploys.
 - **Why a Worker over raw.githubusercontent:** raw does work — it sends `access-control-allow-origin: *` and caches 5 min, comfortably inside the 15-min refresh — and it was tried in `7c265ce`, then reverted in `e0281fd`. It's the zero-infrastructure option and a reasonable fallback. A Worker is preferred because it gives control over cache headers, can serve currents/tides the same way, and keeps the data path on infrastructure we already operate rather than depending on GitHub's CDN behaviour for a SAR tool.

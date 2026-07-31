@@ -1,5 +1,13 @@
 # Handover — rcmsar-marine-dashboard
 
+> ## ⚠ Read this first (2026-07-31 18:47Z)
+>
+> **Vercel is refusing all deployments** — `Deployment rate limited — retry in 24 hours`. Production too, not just previews. The AIS merge (`c91ea03`) is on `main` but **did not ship**; last good deploy was `865e6dd` at 18:46Z.
+>
+> While this holds, the wind bot keeps committing fresh data that never reaches the site, so the live dashboard is serving a frozen `wind.json` and Oak Bay will read forecast-only. Nothing can refresh it until the limit clears (~2026-08-01 18:47Z) or the plan is upgraded — every fix has to ship, and shipping is what's blocked.
+>
+> **Before the limit clears, land CR-006** (move the 15-min data commits off `main`), so the first deploy after the reset carries the fix and the budget doesn't re-exhaust the next day. Full detail and the corrected approach are in CR-006.
+
 ## Where things stand
 
 - **Repo**: https://github.com/dcelsey/rcmsar-marine-dashboard — pushed. Current shipped version **v1.2.0** (2026-07-13).
