@@ -7,10 +7,13 @@ import {
   getNearbyLiveStations, pointHasNearbyLive,
   type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle, type LiveWindPayload,
   type CurrentsPayload, type ReferenceCurrentStation, type SecondaryCurrentStation, type TideMapPayload,
+  type AisVessel, type AisStatus,
 } from '../lib/sources';
 import { windBarbSvg, speedTint } from '../lib/windBarb';
 import { currentArrowSvg, currentTint, interpolateCurrentAt, nextExtremum } from '../lib/currentArrow';
 import { tideStateAt, tideMarkerSvg } from '../lib/tideMarker';
+import { aisVesselSvg, aisVesselCategory } from '../lib/aisVessel';
+import { subscribeAis, type AisSubscription } from '../lib/aisClient';
 
 const station: StationConfig = JSON.parse(
   document.getElementById('station-config')!.textContent!,
@@ -202,6 +205,7 @@ type CurrentsMapState = {
   markers: Map<string, LeafletNS.Marker>;
   tideMarkers: Map<string, LeafletNS.Marker>;
   windMarkers: Map<string, LeafletNS.Marker>;
+  aisMarkers: Map<string, LeafletNS.Marker>;
   fitted: boolean;
 };
 let currentsMapState: CurrentsMapState | null = null;
@@ -209,6 +213,12 @@ let currentsMapInitInFlight: Promise<CurrentsMapState | null> | null = null;
 let lastCurrents: CurrentsPayload | null = null;
 let lastTidesMap: TideMapPayload | null = null;
 let currentsOffsetSec = 0;  // 0 = now; positive = forward look-ahead
+
+// AIS subscription is push-based (WebSocket) — separate lifecycle from the
+// poll-based refresh() cycle. Populated by startAisIfConfigured().
+let aisSub: AisSubscription | null = null;
+const aisVessels: Map<string, AisVessel> = new Map();
+let aisRerenderTimer: number | null = null;
 
 type BarbEntry = {
   key: string;
@@ -293,7 +303,7 @@ async function ensureCurrentsMap(container: HTMLElement): Promise<CurrentsMapSta
       const layer = (e.popup as unknown as { _source?: LeafletNS.Marker })._source;
       layer?.closeTooltip?.();
     });
-    currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), fitted: false };
+    currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), aisMarkers: new Map(), fitted: false };
     return currentsMapState;
   })();
   const s = await currentsMapInitInFlight;
@@ -558,6 +568,132 @@ async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPaylo
       windMarkers.delete(key);
     }
   }
+}
+
+function fmtAge(ms: number): string {
+  const s = Math.max(0, Math.round(ms / 1000));
+  if (s < 60) return `${s}s`;
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return `${h}h ${m - h * 60}m`;
+}
+
+const NAV_STATUS_TEXT: Record<number, string> = {
+  0: 'under way (engine)', 1: 'at anchor', 2: 'not under command',
+  3: 'restricted maneuverability', 4: 'constrained by draught', 5: 'moored',
+  6: 'aground', 7: 'fishing', 8: 'under way (sailing)', 15: 'undefined',
+};
+
+function scheduleAisRerender(): void {
+  if (aisRerenderTimer !== null) return;
+  aisRerenderTimer = window.setTimeout(() => {
+    aisRerenderTimer = null;
+    void renderAIS();
+  }, 500);
+}
+
+async function renderAIS(): Promise<void> {
+  if (!station.ais?.show) return;
+  const container = $<HTMLDivElement>('#currents-map');
+  if (!container) return;
+  if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
+
+  const state = await ensureCurrentsMap(container);
+  if (!state) return;
+  const { L, map, aisMarkers } = state;
+  const canHover = window.matchMedia('(hover: hover)').matches;
+  const now = Date.now();
+
+  const seen = new Set<string>();
+  for (const v of aisVessels.values()) {
+    if (typeof v.lat !== 'number' || typeof v.lon !== 'number') continue;
+    const key = `ais:${v.mmsi}`;
+    seen.add(key);
+    const category = aisVesselCategory(v.type);
+    const moving = (v.sog ?? 0) > 0.3;
+    const headingDeg = v.heading ?? v.cog ?? null;
+    const html = aisVesselSvg({ headingDeg, moving, category });
+    const icon = L.divIcon({
+      html,
+      className: `ais-vessel-icon av-${category}`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    });
+
+    const nameLine = v.name ? `<b>${v.name}</b>` : `<b>MMSI ${v.mmsi}</b>`;
+    const speedLine = moving && v.sog !== null
+      ? `<div><b>${v.sog.toFixed(1)} kn</b> · ${v.cog !== null ? compass(v.cog) + ' · ' + Math.round(v.cog) + '°' : 'course —'}</div>`
+      : `<div>stopped / anchored</div>`;
+    const statusLine = v.navStatus !== null && NAV_STATUS_TEXT[v.navStatus]
+      ? `<div>${NAV_STATUS_TEXT[v.navStatus]}</div>` : '';
+    const destLine = v.destination ? `<div>→ ${v.destination}</div>` : '';
+    const metaLine = `<div class="tiny muted">${category} · MMSI ${v.mmsi} · ${fmtAge(now - v.lastMsgMs)} ago</div>`;
+    const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}</div>`;
+
+    const existing = aisMarkers.get(key);
+    if (existing) {
+      existing.setIcon(icon);
+      existing.setLatLng([v.lat, v.lon]);
+      existing.setPopupContent(popupHtml);
+      const tt = existing.getTooltip();
+      if (tt) tt.setContent(popupHtml);
+    } else {
+      const m = L.marker([v.lat, v.lon], { icon, riseOnHover: true });
+      m.bindPopup(popupHtml, { className: 'wm-popup-wrap', closeButton: true });
+      if (canHover) {
+        m.bindTooltip(popupHtml, {
+          direction: 'top',
+          offset: [0, -14],
+          className: 'wm-hover',
+          opacity: 1,
+        });
+      }
+      m.addTo(map);
+      aisMarkers.set(key, m);
+    }
+  }
+  for (const [key, m] of aisMarkers) {
+    if (!seen.has(key)) {
+      m.remove();
+      aisMarkers.delete(key);
+    }
+  }
+}
+
+function updateAisStatus(status: AisStatus): void {
+  const el = document.getElementById('ais-status');
+  if (!el) return;
+  el.setAttribute('data-state', status);
+  const label = el.querySelector('.ais-label');
+  if (label) label.textContent = status;
+}
+
+function startAisIfConfigured(): void {
+  if (aisSub) return;
+  if (!station.ais?.show || !station.ais.wsUrl) return;
+  if (station.ais.wsUrl.includes('<SUBDOMAIN>')) {
+    console.warn('AIS wsUrl still contains <SUBDOMAIN> placeholder; skipping subscribe');
+    return;
+  }
+  aisSub = subscribeAis({
+    url: station.ais.wsUrl,
+    onSnapshot: (vessels, upstream) => {
+      aisVessels.clear();
+      for (const v of vessels) aisVessels.set(v.mmsi, v);
+      updateAisStatus(upstream);
+      void renderAIS();
+    },
+    onUpdate: (vessels) => {
+      for (const v of vessels) aisVessels.set(v.mmsi, v);
+      scheduleAisRerender();
+    },
+    onRemove: (mmsis) => {
+      for (const mmsi of mmsis) aisVessels.delete(mmsi);
+      scheduleAisRerender();
+    },
+    onStatus: updateAisStatus,
+  });
 }
 
 function renderTide(tides: TideBundle): void {
@@ -837,4 +973,10 @@ void refresh();
 setInterval(() => { void refresh(); }, station.refreshMs);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) void refresh();
+});
+
+startAisIfConfigured();
+window.addEventListener('pagehide', () => {
+  aisSub?.close();
+  aisSub = null;
 });

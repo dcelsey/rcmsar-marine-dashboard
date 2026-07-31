@@ -8,6 +8,7 @@ import 'leaflet/dist/leaflet.css';
       <button type="button" class="layer-toggle" data-layer="currents" aria-pressed="true">Currents</button>
       <button type="button" class="layer-toggle" data-layer="tides" aria-pressed="true">Tides</button>
       <button type="button" class="layer-toggle" data-layer="wind" aria-pressed="true">Wind</button>
+      <button type="button" class="layer-toggle" data-layer="ais" aria-pressed="false">AIS</button>
     </div>
     <span class="currents-meta" id="currents-r"></span>
   </div>
@@ -54,6 +55,21 @@ import 'leaflet/dist/leaflet.css';
       </span>
       <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
     </div>
+    <div class="cl-group" data-legend-layer="ais">
+      <span class="cl-sep">|</span>
+      <span class="cl-item"><span class="cl-swatch av-passenger"></span>passenger</span>
+      <span class="cl-item"><span class="cl-swatch av-cargo"></span>cargo</span>
+      <span class="cl-item"><span class="cl-swatch av-tanker"></span>tanker</span>
+      <span class="cl-item"><span class="cl-swatch av-fishing"></span>fishing</span>
+      <span class="cl-item"><span class="cl-swatch av-tug"></span>tug</span>
+      <span class="cl-item"><span class="cl-swatch av-sar"></span>SAR</span>
+      <span class="cl-item"><span class="cl-swatch av-sailing"></span>sailing</span>
+      <span class="cl-item"><span class="cl-swatch av-other"></span>other</span>
+      <span class="cl-item ais-status" id="ais-status" data-state="offline">
+        <span class="ais-dot"></span><span class="ais-label">offline</span>
+      </span>
+      <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · via aisstream.io</span>
+    </div>
   </div>
 
   <div class="currents-foot tiny muted" id="currents-foot">
@@ -95,10 +111,12 @@ import 'leaflet/dist/leaflet.css';
      both the map markers and the corresponding legend group. */
   .currents-card.no-currents :global(.current-arrow-icon),
   .currents-card.no-tides    :global(.tide-marker-icon),
-  .currents-card.no-wind     :global(.wind-barb-icon) { display: none !important; }
+  .currents-card.no-wind     :global(.wind-barb-icon),
+  .currents-card.no-ais      :global(.ais-vessel-icon) { display: none !important; }
   .currents-card.no-currents [data-legend-layer="currents"],
   .currents-card.no-tides    [data-legend-layer="tides"],
-  .currents-card.no-wind     [data-legend-layer="wind"] { display: none !important; }
+  .currents-card.no-wind     [data-legend-layer="wind"],
+  .currents-card.no-ais      [data-legend-layer="ais"] { display: none !important; }
 
   .currents-slider {
     display: flex;
@@ -212,13 +230,57 @@ import 'leaflet/dist/leaflet.css';
   .cl-tide-rising { color: #2a7bd8; }
   .cl-tide-falling { color: #d84a4a; }
   .cl-barb-glyph { color: var(--good); vertical-align: middle; }
+
+  /* AIS vessel markers — colour via `av-<category>` class, matching the
+     `ca-<tint>` pattern used by currents. */
+  :global(.av-passenger) { color: #1976d2; }
+  :global(.av-cargo)     { color: #d4670a; }
+  :global(.av-tanker)    { color: #7a1fa2; }
+  :global(.av-fishing)   { color: #388e3c; }
+  :global(.av-tug)       { color: #f9a825; }
+  :global(.av-sar)       { color: #c62828; }
+  :global(.av-sailing)   { color: #00838f; }
+  :global(.av-other),
+  :global(.av-unknown)   { color: #616161; }
+
+  :global(.ais-vessel-icon) {
+    background: transparent !important;
+    border: none !important;
+  }
+  :global(.ais-vessel-icon svg) {
+    display: block;
+    overflow: visible;
+    transition: transform 800ms linear;
+  }
+  :global(.leaflet-marker-icon.ais-vessel-icon) {
+    transition: transform 800ms linear;
+  }
+
+  .ais-status { display: inline-flex; align-items: center; gap: 5px; }
+  .ais-status .ais-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #9e9e9e; display: inline-block;
+  }
+  .ais-status[data-state="live"] .ais-dot {
+    background: #388e3c;
+    animation: aisPulse 1.6s ease-in-out infinite;
+  }
+  .ais-status[data-state="reconnecting"] .ais-dot { background: #f9a825; }
+  .ais-status[data-state="offline"] .ais-dot { background: #9e9e9e; }
+  .ais-note { color: var(--muted); font-style: italic; }
+
+  @keyframes aisPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.4); }
+  }
 </style>
 
 <script is:inline>
   (function () {
-    var LAYERS = ['currents', 'tides', 'wind'];
+    var LAYERS = ['currents', 'tides', 'wind', 'ais'];
+    // AIS defaults OFF at first load — experimental; the other three default ON.
+    var DEFAULT_ON = ['currents', 'tides', 'wind'];
     var m = document.cookie.match(/(?:^|; )map-layers=([^;]*)/);
-    var enabled = m ? decodeURIComponent(m[1]).split(',').filter(Boolean) : LAYERS.slice();
+    var enabled = m ? decodeURIComponent(m[1]).split(',').filter(Boolean) : DEFAULT_ON.slice();
     var card = document.getElementById('currents-card');
     if (card) {
       LAYERS.forEach(function (l) {

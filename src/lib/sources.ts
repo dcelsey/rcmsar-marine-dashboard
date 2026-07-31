@@ -142,6 +142,35 @@ export type LiveWindPayload = {
 
 export type NearbyLiveStation = { station: LiveWindStation; distanceKm: number };
 
+// AIS vessel record as delivered by the ais-proxy Cloudflare Worker. `heading`
+// is null when AIS `TrueHeading == 511` (not available); consumers should fall
+// back to `cog`. `sog <= 0.3` kn is treated as effectively stopped for
+// rendering. Static and position data arrive separately upstream and are merged
+// by MMSI in the proxy.
+export type AisVessel = {
+  mmsi: string;
+  name: string | null;
+  type?: number | null;
+  callsign?: string | null;
+  destination?: string | null;
+  lat: number;
+  lon: number;
+  sog: number | null;
+  cog: number | null;
+  heading: number | null;
+  navStatus: number | null;
+  lastMsgMs: number;
+  lastStaticMs?: number;
+};
+
+export type AisStatus = 'connecting' | 'live' | 'reconnecting' | 'offline';
+
+export type AisSnapshotMessage = { type: 'snapshot'; upstream: AisStatus; vessels: AisVessel[] };
+export type AisUpdateMessage = { type: 'update'; vessels: AisVessel[] };
+export type AisRemoveMessage = { type: 'remove'; mmsis: string[] };
+export type AisStatusMessage = { type: 'status'; upstream: AisStatus };
+export type AisMessage = AisSnapshotMessage | AisUpdateMessage | AisRemoveMessage | AisStatusMessage;
+
 async function getJSON<T>(url: string): Promise<T> {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`${url.split('?')[0]} → HTTP ${r.status}`);

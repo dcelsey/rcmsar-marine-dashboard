@@ -65,9 +65,20 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 
 **Known limit:** sites reporting less often than ~90 min still infer `cadence_min: null` and fall back to the `STALE_MIN` floor. None are currently in use near any station; revisit if one is ever added.
 
-> **CR-003 is reserved** — "AIS layer follow-ups", currently living in the `feat/ais-layer`
-> stash (`stash@{0}`), not on `main`. It reappears when that work is unstashed. Numbering
-> here skips to CR-004 to avoid clobbering it.
+## CR-003 — AIS layer follow-ups (deferred from `feat/ais-layer`)
+
+- **Logged:** 2026-07-14
+- **Status:** open
+- **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
+- **Items to resolve before wider rollout:**
+  - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.
+  - **Default state.** Layer currently defaults OFF (opt-in via toggle). Product decision needed on whether to default ON at launch of full rollout.
+  - **Own-asset styling.** Should known RCMSAR MMSIs be styled distinctly (colour, pinned always-on, "own vessel" badge)? Requires the MMSI list per unit.
+  - **Coverage expansion.** Broaden bbox from Salish Sea to full BC coast (WCVI, north coast) as we enable AIS on outer-coast stations.
+  - **Station rollout.** Enable `ais.show` on stations beyond sar33 once the above is settled.
+  - **Breadcrumbs.** Spec §1 says historical trails are a non-goal at launch; revisit if crews ask for a short (5–15 min) tail behind moving vessels.
+  - **Observability.** Add real health monitoring on the `/health` route (uptime pings, alert on `upstream != "live"` > N minutes).
+  - **API key rotation.** aisstream key is a `wrangler secret`. Note a rotation cadence and where the key lives.
 
 ## CR-002 — Preserve wind stations missing from a pull
 

@@ -1,0 +1,27 @@
+name = "ais-proxy"
+main = "src/worker.js"
+compatibility_date = "2026-07-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[durable_objects.bindings]]
+name = "AIS_HUB"
+class_name = "AisHub"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["AisHub"]
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+BBOX_NW_LAT = "51.5"
+BBOX_NW_LON = "-128.5"
+BBOX_SE_LAT = "48.0"
+BBOX_SE_LON = "-122.0"
+STALE_MINUTES = "30"
+BROADCAST_MS = "1500"
+UPSTREAM_URL = "https://stream.aisstream.io/v0/stream"
+
+# AISSTREAM_KEY is a secret. Set via:
+#   wrangler secret put AISSTREAM_KEY

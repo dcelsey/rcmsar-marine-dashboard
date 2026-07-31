@@ -63,6 +63,10 @@ export type StationConfig = {
     center?: Point;
     zoom?: number;
   };
+  ais?: {
+    show: boolean;
+    wsUrl: string;
+  };
 };
 
 export const STATIONS = {
@@ -146,6 +150,10 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',       href: 'https://www.theweathernetwork.com/en/city/ca/british-columbia/oak-bay/hourly' },
       { label: 'DFO tides — 07130 ↗',              href: 'https://www.tides.gc.ca/en/stations/07130' },
     ],
+    ais: {
+      show: true,
+      wsUrl: 'wss://ais-proxy.fetchwind.workers.dev/ais',
+    },
   } satisfies StationConfig,
   sar25: {
     slug: 'sar25',
