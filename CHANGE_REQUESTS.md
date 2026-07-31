@@ -40,6 +40,16 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 > stash (`stash@{0}`), not on `main`. It reappears when that work is unstashed. Numbering
 > here skips to CR-004 to avoid clobbering it.
 
+## CR-006 — Serve `wind.json` from a Cloudflare Worker instead of the deploy bundle
+
+- **Logged:** 2026-07-31
+- **Status:** open — agreed direction, not started
+- **Problem:** the client reads `/data/wind.json` out of the Vercel deploy bundle, so every 15-min bot commit must trigger a full rebuild just to move a ~26 KB file. That's **~96 deploys/day against the Hobby tier's 100/day cap** (93–96/day observed all week). Nothing has broken, but the headroom is a few deploys, and the failure mode is silent: fresh data lands in the repo while the site serves a stale build. Commit-message tokens are **not** a lever — Vercel here ignores both `[skip ci]` and `[skip vercel]` (CR-005).
+- **Direction:** serve `wind.json` from a Cloudflare Worker (or R2), so data freshness stops depending on a rebuild. Deploys would drop from ~96/day to a handful — only real code changes. This reuses infrastructure already in place and understood: `cf-workers/fetch-wind-trigger/` and `cf-workers/ais-proxy/`. Duncan's call, 2026-07-31, on realising the AIS layer already works this way and costs zero deploys.
+- **Why a Worker over raw.githubusercontent:** raw does work — it sends `access-control-allow-origin: *` and caches 5 min, comfortably inside the 15-min refresh — and it was tried in `7c265ce`, then reverted in `e0281fd`. It's the zero-infrastructure option and a reasonable fallback. A Worker is preferred because it gives control over cache headers, can serve currents/tides the same way, and keeps the data path on infrastructure we already operate rather than depending on GitHub's CDN behaviour for a SAR tool.
+- **Sequencing — this is the trap that bit once already.** The loader change must be **live in production** before any attempt to reduce deploys. Deploys are what ship the loader, so cutting them first strands the very change that makes cutting them safe. Order: (1) change the client to read from the Worker, (2) merge and confirm the **deployed bundle** actually fetches from it, (3) only then reduce deploy frequency. Verify with the deployed asset, not the repo.
+- **Also worth doing at the same time:** `currents.json` and `tides-map.json` have the same shape (6-hourly, ~8 deploys/day between them). Moving all three makes the deploy count reflect code changes only.
+
 ## CR-005 — Vercel skips commits that land during an in-flight build
 
 - **Logged:** 2026-07-30 · **corrected 2026-07-31** (the original diagnosis below was wrong)
