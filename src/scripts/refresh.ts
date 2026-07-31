@@ -590,11 +590,16 @@ function fmtAge(ms: number): string {
  *
  * This is deliberately conservative: AIS reception is patchy and a missed report is
  * normal, so 'ageing' starts well past the expected interval rather than at it.
+ *
+ * The states describe the DATA, not the vessel — 'stale', never 'overdue'. In a marine
+ * context "overdue" is a formal status meaning a vessel failed to arrive when expected
+ * and is cause for concern, so putting it on a marker because a packet is late could be
+ * read by a crew as a genuine alert. Keep this vocabulary about position currency.
  */
-function aisFreshness(ageMs: number, cadenceMs: number | null | undefined): 'fresh' | 'ageing' | 'overdue' {
+function aisFreshness(ageMs: number, cadenceMs: number | null | undefined): 'fresh' | 'ageing' | 'stale' {
   const ageingAfter  = cadenceMs ? Math.max(45_000, cadenceMs * 1.5) : 5 * 60_000;
-  const overdueAfter = cadenceMs ? Math.max(120_000, cadenceMs * 3)  : 15 * 60_000;
-  if (ageMs >= overdueAfter) return 'overdue';
+  const staleAfter = cadenceMs ? Math.max(120_000, cadenceMs * 3)  : 15 * 60_000;
+  if (ageMs >= staleAfter) return 'stale';
   if (ageMs >= ageingAfter) return 'ageing';
   return 'fresh';
 }
@@ -657,12 +662,12 @@ async function renderAIS(): Promise<void> {
     // "last heard" rather than a bare age: this is when the AIS network last reported
     // the vessel to us, which is the strongest claim the data supports.
     const cadenceNote = v.cadenceMs ? ` · reports ~every ${fmtAge(v.cadenceMs)}` : '';
-    const overdueNote = freshness === 'overdue'
-      ? '<div class="ais-overdue-note">overdue — position may be well out of date</div>'
+    const staleNote = freshness === 'stale'
+      ? '<div class="ais-stale-note">stale — position may be well out of date</div>'
       : '';
     const metaLine = `<div class="tiny muted">${category} · MMSI ${safeMmsi}`
       + ` · last heard ${fmtAge(ageMs)} ago${cadenceNote}</div>`;
-    const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}${overdueNote}</div>`;
+    const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}${staleNote}</div>`;
 
     const existing = aisMarkers.get(key);
     if (existing) {

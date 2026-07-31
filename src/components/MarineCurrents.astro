@@ -68,8 +68,11 @@ import 'leaflet/dist/leaflet.css';
       <span class="cl-item ais-status" id="ais-status" data-state="offline">
         <span class="ais-dot"></span><span class="ais-label">offline</span>
       </span>
-      <span class="cl-item"><span class="cl-swatch av-other avf-ageing"></span>quiet</span>
-      <span class="cl-item"><span class="cl-swatch av-other avf-overdue"></span>overdue</span>
+      <!-- These label the DATA, never the vessel. Avoid "overdue": in a marine/SAR
+           context that's a formal status meaning a vessel failed to arrive when
+           expected and is cause for concern — not "we haven't had a packet lately". -->
+      <span class="cl-item"><span class="cl-swatch av-other avf-ageing"></span>ageing</span>
+      <span class="cl-item"><span class="cl-swatch av-other avf-stale"></span>stale</span>
       <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · faded = not heard from recently, position may be out of date · times are when the AIS network last heard the vessel, not when it was there · via aisstream.io</span>
     </div>
   </div>
@@ -262,16 +265,16 @@ import 'leaflet/dist/leaflet.css';
      authoritative as one reporting now — it may have moved miles since. Judged against
      each vessel's own reporting rate, so "quiet" means quiet *for that vessel*. */
   :global(.ais-vessel-icon.avf-ageing)  { opacity: 0.55; }
-  :global(.ais-vessel-icon.avf-overdue) { opacity: 0.28; }
-  /* Legend swatches carry the same fade, or "quiet"/"overdue" would be unreadable. */
+  :global(.ais-vessel-icon.avf-stale) { opacity: 0.28; }
+  /* Legend swatches carry the same fade, or "ageing"/"stale" would be unreadable. */
   .cl-swatch.avf-ageing  { opacity: 0.55; }
-  .cl-swatch.avf-overdue { opacity: 0.28; }
-  .ais-overdue-note {
+  .cl-swatch.avf-stale { opacity: 0.28; }
+  .ais-stale-note {
     margin-top: 3px; font-size: 11px; font-weight: 600;
     color: #c62828;
   }
-  :global(.leaflet-tooltip) .ais-overdue-note,
-  :global(.leaflet-popup-content) .ais-overdue-note { color: #ef5350; }
+  :global(.leaflet-tooltip) .ais-stale-note,
+  :global(.leaflet-popup-content) .ais-stale-note { color: #ef5350; }
 
   .ais-status { display: inline-flex; align-items: center; gap: 5px; }
   .ais-status .ais-dot {
