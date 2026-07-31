@@ -40,14 +40,24 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 > stash (`stash@{0}`), not on `main`. It reappears when that work is unstashed. Numbering
 > here skips to CR-004 to avoid clobbering it.
 
-## CR-005 — Vercel deploys only ride the wind-bot commits
+## CR-005 — Vercel skips commits that land during an in-flight build
 
-- **Logged:** 2026-07-30
-- **Status:** open — needs Vercel dashboard access (can't be diagnosed from the repo)
-- **Problem:** Plain code pushes to `main` do not trigger a Vercel deployment. Across the last 100+ deployments, **every single one** corresponds to a `chore(wind|currents|tides)` bot commit; zero correspond to a code commit. Code changes reach production only by riding the tree of the next bot commit that deploys. Duncan recalls code pushes triggering deploys previously, so something changed.
-- **Also established:** Vercel ignores **both** `[skip ci]` and `[skip vercel]` here — `dd76a98` carried `[skip ci] [skip vercel]` and deployed anyway. So commit-message tokens are **not** a usable lever for reducing deploy count. An attempt to use one was reverted.
-- **Why it matters:** the wind bot drives ~96 deploys/day against the Hobby tier's **100/day** cap (93–96/day observed all week). Nothing has broken yet, but headroom is thin, and the failure mode is silent — fresh data lands in the repo while the site serves a stale build.
-- **Fix direction:** the real fix is decoupling data delivery from the deploy bundle (serve `wind.json` from raw.githubusercontent, a Worker, or R2) so data freshness doesn't need a rebuild at all. A first attempt at the raw.githubusercontent half was reverted in `e0281fd` — not because it was wrong, but because it was unverified in-browser and pointless while the skip token doesn't work. Check the project's **Ignored Build Step / Git integration settings** first; that's the likely explanation for code pushes not deploying, and it changes which approach is right.
+- **Logged:** 2026-07-30 · **corrected 2026-07-31** (the original diagnosis below was wrong)
+- **Status:** understood — no action needed beyond knowing the behaviour
+- **What's actually true.** Vercel deploys **promptly and indiscriminately**: every deploy studied ran **14–18 s after its commit**, for bot and code commits alike. What decides whether a commit deploys is **isolation in time**, not its author or message. A commit landing while a previous build is in flight is coalesced away; its content ships with the next deploy instead.
+
+  Over the last 24 h (102 deployed / 32 skipped):
+
+  | | median gap from previous commit |
+  |---|---|
+  | deployed | **899 s** (~15 min) |
+  | skipped | **326 s** (~5 min) |
+
+  Bot commits arrive 15 min apart in isolation, so they nearly always deploy. Hand-pushed commits tend to arrive in bursts, so they usually don't — which is the whole illusion.
+- **Practical implication:** after pushing code, expect it to reach production on the **next isolated commit**, typically within one 15-min bot cycle. Don't push a burst and assume the last one shipped, and **don't read a missing deployment record as a failure**. Verify by checking whether the deployed SHA *contains* your commit (`git merge-base --is-ancestor <yours> <deployed>`), not by looking for your own SHA.
+- **Still true:** Vercel ignores **both** `[skip ci]` and `[skip vercel]` here — `dd76a98` carried both and deployed anyway. Commit-message tokens are not a usable lever for cutting deploy count. An attempt to use one was reverted in `5918c7a`.
+- **Why the original diagnosis was wrong** (worth recording, because the method failed silently): it claimed *"plain code pushes don't deploy — zero of the last 100 deployments correspond to a code commit."* Two compounding errors. (1) The 100-deployment sample ended at 19:45 on 2026-07-30, and the only code commits inside it had been coalesced; `e0281fd` — a code commit — deployed at 20:15:10 with a normal 15 s lag, just *after* the sampled window. (2) The per-commit probe used `GET /deployments?sha=<full-sha>`, which returned `0` even for `e0281fd`, a commit that demonstrably deployed. **That filter is unreliable — enumerate deployments and match on `.sha` instead.** Duncan caught this by comparing a commit time to its actual deploy time in the Vercel dashboard.
+- **Deploy volume:** the wind bot still drives ~96 deploys/day against the Hobby tier's **100/day** cap (93–96/day observed). Nothing has broken, but headroom is thin. Reducing it means decoupling data delivery from the deploy bundle (serve `wind.json` from raw.githubusercontent, a Worker, or R2) so freshness doesn't need a rebuild — commit-message tokens won't do it. A first attempt at the raw.githubusercontent half was reverted in `e0281fd` as unverified, not as wrong.
 
 ## CR-002 — Preserve wind stations missing from a pull
 
