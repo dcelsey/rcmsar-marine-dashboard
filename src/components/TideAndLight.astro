@@ -1,7 +1,10 @@
 ---
 import type { StationConfig } from '../lib/stations';
-interface Props { station: StationConfig }
-const { station } = Astro.props;
+/* `showSun` lets a view take the tide card without the sun card. The kiosk is a
+   ready-room glance surface where twilight times are reference material, not something
+   read before a callout — it opts out. */
+interface Props { station: StationConfig; showSun?: boolean }
+const { station, showSun = true } = Astro.props;
 const { labels } = station;
 ---
 <h2 class="section">Tide &amp; light</h2>
@@ -15,9 +18,11 @@ const { labels } = station;
     </table>
     <p class="tiny muted" style="margin:8px 2px 0">Metres, chart datum. Predictions (astronomical) from DFO IWLS.</p>
   </div>
-  <div class="card sun-card">
-    <h3>Sun &amp; twilight</h3>
-    <table id="sun-table"><tbody><tr><td class="skel">Loading…</td></tr></tbody></table>
-    <p class="tiny muted" style="margin:8px 2px 0">{labels.sunFootnote}</p>
-  </div>
+  {showSun && (
+    <div class="card sun-card">
+      <h3>Sun &amp; twilight</h3>
+      <table id="sun-table"><tbody><tr><td class="skel">Loading…</td></tr></tbody></table>
+      <p class="tiny muted" style="margin:8px 2px 0">{labels.sunFootnote}</p>
+    </div>
+  )}
 </div>

@@ -1,17 +1,103 @@
 /* Layered on top of ultrawide.css for the /kiosk route.
    Bumps typography ~20% for readability on 10-15" panels. */
 
-/* Kiosk omits the Windy embed — reclaim its column for the wind table,
-   which now carries live + forecast rows and needs the width. */
+/* ---------------------------------------------------------------------------
+   Ready-room layout.
+
+   This screen is read standing up, in the minutes before a training run or a
+   callout, to answer "what is it doing out there right now, and what is it
+   about to do". Everything long-range is cut at the source rather than hidden
+   here — kiosk.astro drops the 7-day weather and wave outlooks entirely and
+   takes the tide card without sun & twilight.
+
+   What's left gets the whole viewport: observed wind on the left, the
+   conditions map spanning the centre, tides on the right, and the next-hours
+   strip across the foot. One content row instead of two, so the map and both
+   tables are considerably taller than they were.
+   --------------------------------------------------------------------------- */
+
+/* Four explicit variants, keyed on which cards the station actually renders.
+   Stated in full rather than layered as overrides: a card with no grid area
+   auto-places into an implicit row below the fold and crushes the content row,
+   which is exactly how this view broke before. sar106 (Shuswap, freshwater)
+   is currently the only station without a map, and also the only one without a
+   tide station — but the two are separate conditions and are treated as such,
+   so a future coastal unit lacking tide predictions can't reopen that bug. */
 body.ultrawide > .wrap {
-  grid-template-columns: 1.6fr 1fr 1fr;
-  grid-template-areas:
-    "warnbar warnbar warnbar"
-    "glance  glance  glance"
-    "wind    tide    sun"
-    "wind    daily   marine"
-    "hourly  hourly  hourly";
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
 }
+
+/* map + tide — every coastal unit */
+body.ultrawide > .wrap:has(.currents-card):has(.tide-card) {
+  grid-template-columns: 1fr 1.7fr 1fr;
+  grid-template-areas:
+    "warnbar warnbar  warnbar"
+    "glance  glance   glance"
+    "wind    currents tide"
+    "hourly  hourly   hourly";
+}
+
+/* map, no tide predictions */
+body.ultrawide > .wrap:has(.currents-card):not(:has(.tide-card)) {
+  grid-template-columns: 1fr 1.7fr;
+  grid-template-areas:
+    "warnbar warnbar"
+    "glance  glance"
+    "wind    currents"
+    "hourly  hourly";
+}
+
+/* tide, no map */
+body.ultrawide > .wrap:not(:has(.currents-card)):has(.tide-card) {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "warnbar warnbar"
+    "glance  glance"
+    "wind    tide"
+    "hourly  hourly";
+}
+
+/* neither — inland units, where wind is the whole story */
+body.ultrawide > .wrap:not(:has(.currents-card)):not(:has(.tide-card)) {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "warnbar"
+    "glance"
+    "wind"
+    "hourly";
+}
+
+body.ultrawide .card.currents-card {
+  grid-area: currents;
+  padding: 9px;
+  gap: 7px;
+}
+
+/* The chrome around the map is fixed-height; the map absorbs what's left. Its
+   4:3 aspect-ratio and 340px floor are sized for the scrolling standard view
+   and would overflow a fixed-height grid cell here. */
+body.ultrawide .currents-card .currents-bar,
+body.ultrawide .currents-card .currents-slider {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+body.ultrawide .currents-card .currents-bar { gap: 9px; min-height: 0; }
+body.ultrawide .currents-card .currents-slider { padding: 5px 9px; }
+body.ultrawide .currents-card .currents-map {
+  aspect-ratio: auto;
+  flex: 1 1 auto;
+  /* A floor, not a size. The map is the point of the card, so it claims its
+     space before the legend does — on a short panel the legend scrolls rather
+     than the map thinning to a strip. */
+  min-height: 190px;
+}
+
+/* Legend and provenance are reference material for someone studying the map;
+   this view is glanced at. Both stay on the standard view — dropping them here
+   hands their combined height back to the map itself, which is the thing being
+   read. The colour ramps are on the standard view for anyone who needs them. */
+body.ultrawide .currents-card .currents-legend,
+body.ultrawide .currents-card .currents-foot { display: none; }
 
 body.ultrawide .tile .big { font-size: 40px; }
 body.ultrawide .tile .lbl { font-size: 14px; }
@@ -26,14 +112,49 @@ body.ultrawide .card table { font-size: 17px; }
 body.ultrawide th, body.ultrawide td { font-size: 17px; padding: 6px 5px; }
 body.ultrawide th { font-size: 14px; }
 
-/* Give the Location column of the wind table most of the width so
-   names like "Willows Beach" and "Victoria Hbr" don't wrap. */
+/* Give the Location column of the wind table most of the width so names like
+   "Willows Beach" and "Victoria Hbr" don't wrap. Only relevant to the inland
+   two-column layout now — the map layout sizes every column explicitly below. */
 body.ultrawide #wind-table th:first-child,
 body.ultrawide #wind-table td:first-child { width: 45%; }
 
-/* Compact the time column in Sun & twilight so labels like
-   "Civil dawn (first light)" fit on one line. */
-body.ultrawide #sun-table td:last-child { width: 88px; white-space: nowrap; }
+/* All five columns, not just the first.
+   The table is `table-layout: fixed`, so naming only the Location width left the
+   other four to split the remainder EQUALLY — 43px each on an iPad. That is far
+   more than Gust needs and less than Dir or Reported do, and the two unbreakable
+   strings ("forecast", and long station names like SAANICHTON) then overflowed
+   their cells by 6-10px. Because the tbody scrolls vertically, CSS computes its
+   overflow-x to auto as well, so those few pixels produced a real horizontal
+   scrollbar. Sizing each column to its actual content removes the cause. */
+body.ultrawide .wrap:has(.currents-card) #wind-table th:nth-child(1),
+body.ultrawide .wrap:has(.currents-card) #wind-table td:nth-child(1) { width: 34%; }
+body.ultrawide .wrap:has(.currents-card) #wind-table th:nth-child(2),
+body.ultrawide .wrap:has(.currents-card) #wind-table td:nth-child(2) { width: 14%; }
+body.ultrawide .wrap:has(.currents-card) #wind-table th:nth-child(3),
+body.ultrawide .wrap:has(.currents-card) #wind-table td:nth-child(3) { width: 10%; }
+body.ultrawide .wrap:has(.currents-card) #wind-table th:nth-child(4),
+body.ultrawide .wrap:has(.currents-card) #wind-table td:nth-child(4) { width: 20%; }
+body.ultrawide .wrap:has(.currents-card) #wind-table th:nth-child(5),
+body.ultrawide .wrap:has(.currents-card) #wind-table td:nth-child(5) { width: 22%; }
+
+/* The tide card owns a full-height column here, so the curve gets real vertical
+   space instead of the 64px sliver it was drawn at. The list is capped at six
+   events by the renderer and so has a natural height — let it take that and give
+   the curve everything left over, rather than pinning the chart to a guessed
+   pixel height per breakpoint and leaving a gap.
+
+   `!important` is load-bearing: renderTideChart writes height:64px as an inline
+   style on the <svg>, which nothing else can outrank. The SVG is
+   preserveAspectRatio="none", so it simply stretches — no reflow needed. */
+body.ultrawide #tide-chart {
+  flex: 1 1 auto;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+body.ultrawide #tide-chart .tide-chart-wrap { flex: 1 1 auto; min-height: 0; }
+body.ultrawide #tide-chart svg { height: 100% !important; }
+body.ultrawide #tide-table { flex: 0 1 auto; }
 
 body.ultrawide .hcol {
   flex: 0 0 105px;
@@ -48,12 +169,6 @@ body.ultrawide .hcol .em { font-size: 27px; line-height: 1; }
 body.ultrawide .hcol .v { font-size: 19px; line-height: 1.1; }
 body.ultrawide .hcol .w { font-size: 15px; line-height: 1.15; }
 
-body.ultrawide .daily .d { padding: 3px 0; gap: 4px; }
-body.ultrawide .daily .dow { width: 46px; font-size: 15px; }
-body.ultrawide .daily .em { font-size: 23px; width: 26px; }
-body.ultrawide .daily .rng { font-size: 15px; }
-body.ultrawide .daily .wind { font-size: 14px; min-width: 125px; }
-
 body.ultrawide .tiny { font-size: 14px; }
 body.ultrawide .muted { font-size: 15px; }
 body.ultrawide button.refresh { font-size: 15px; padding: 5px 12px; }
@@ -61,3 +176,57 @@ body.ultrawide button.refresh { font-size: 15px; padding: 5px 12px; }
 body.ultrawide .top .wrap { max-width: 1050px; }
 body.ultrawide .view-switch { padding: 5px; gap: 4px; }
 body.ultrawide .view-tab { padding: 9px 16px; font-size: 15.5px; }
+
+/* ---------------------------------------------------------------------------
+   Tablets — either dimension. A ready-room iPad rather than a large wall screen.
+
+   The type bump above is sized for the wall case. On a short panel the fixed
+   rows (summary tiles, next-hours strip) eat the viewport and leave the content
+   row ~330px; on a narrow one the wind card is only ~300px wide, so station
+   names wrap to two lines and row height doubles to 56px — which is most of why
+   fourteen rows need 648px.
+
+   Keyed on EITHER dimension deliberately: a 12.9" iPad is 1024px tall, so a
+   height-only query missed it entirely while still handing it a 360px column.
+   Nothing is removed here — the chrome just stops being oversized.
+   --------------------------------------------------------------------------- */
+@media (max-height: 900px), (max-width: 1500px) {
+  body.ultrawide .tile { padding: 6px 10px; }
+  body.ultrawide .tile .big { font-size: 30px; }
+  body.ultrawide .tile .lbl { font-size: 12px; }
+  body.ultrawide .tile .sub { font-size: 13px; }
+  body.ultrawide .tile .big small { font-size: 15px; }
+  body.ultrawide .warnbar { font-size: 15px; padding: 6px 12px; }
+
+  body.ultrawide .hcol { flex: 0 0 88px; padding: 4px 3px; gap: 2px; }
+  body.ultrawide .hcol .t { font-size: 13px; }
+  body.ultrawide .hcol .em { font-size: 20px; }
+  body.ultrawide .hcol .v { font-size: 16px; }
+  body.ultrawide .hcol .w { font-size: 13px; }
+
+  body.ultrawide .card { font-size: 16px; }
+  body.ultrawide .card h3 { font-size: 16px; }
+  body.ultrawide .card table { font-size: 15px; }
+  body.ultrawide th, body.ultrawide td { font-size: 15px; padding: 4px; }
+  /* The header is uppercased with .5px tracking, which makes "REPORTED" wider
+     than the column it labels. Tighten it rather than clip it. */
+  body.ultrawide th { font-size: 11.5px; letter-spacing: 0; }
+  body.ultrawide .tiny { font-size: 12px; }
+  body.ultrawide .muted { font-size: 13px; }
+  body.ultrawide #tide-chart { min-height: 100px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Narrow viewports: rebalance the columns toward the tables.
+
+   At 1fr 1.7fr 1fr an iPad gives the wind card ~300px, which is what forces the
+   station names onto two lines. Taking ~60px back from the map buys enough width
+   for most names to sit on one line, which roughly halves the height of a
+   fourteen-row list. The map is the one element that degrades gracefully — it
+   just shows slightly less water.
+   --------------------------------------------------------------------------- */
+@media (max-width: 1500px) {
+  body.ultrawide > .wrap:has(.currents-card):has(.tide-card) {
+    grid-template-columns: 1.3fr 1.5fr 1fr;
+  }
+}

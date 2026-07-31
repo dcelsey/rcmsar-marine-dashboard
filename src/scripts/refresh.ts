@@ -356,6 +356,19 @@ async function ensureCurrentsMap(container: HTMLElement): Promise<CurrentsMapSta
       try { openTooltipLayer?.closeTooltip(); } catch { /* already detached */ }
       openTooltipLayer = null;
     });
+
+    // On the standard view the map is a fixed 4:3 box, so its size at init is its
+    // size forever. On kiosk it flexes to fill a grid cell, and the cell's leftover
+    // height changes whenever the legend does — toggling AIS on adds a row and
+    // shortens the map. Leaflet caches container size, so without this the tiles
+    // keep the old dimensions and grey bands appear along the edge.
+    if (typeof ResizeObserver !== 'undefined') {
+      let pending = 0;
+      new ResizeObserver(() => {
+        cancelAnimationFrame(pending);
+        pending = requestAnimationFrame(() => map.invalidateSize({ animate: false }));
+      }).observe(container);
+    }
     currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), aisMarkers: new Map(), fitted: false };
     return currentsMapState;
   })();

@@ -7,7 +7,6 @@ import WindByLocation from '../../components/WindByLocation.astro';
 import MarineCurrents from '../../components/MarineCurrents.astro';
 import TideAndLight from '../../components/TideAndLight.astro';
 import HourlyStrip from '../../components/HourlyStrip.astro';
-import SevenDayOutlook from '../../components/SevenDayOutlook.astro';
 import { STATIONS, getStation } from '../../lib/stations';
 import '../../styles/ultrawide.css';
 import '../../styles/kiosk.css';
@@ -24,9 +23,12 @@ const station = getStation(Astro.params.station!);
     <Glance station={station} />
     <WindByLocation />
     {station.currents?.show !== false && <MarineCurrents station={station} />}
-    <TideAndLight station={station} />
+    {/* No tide station means the card can only ever render "no data" — on a glance
+        surface an empty card is worse than no card, so inland units drop it and give
+        the width to wind. The Tide summary tile still says "Freshwater — no tide",
+        which is where that fact belongs. */}
+    {station.tideStationId && <TideAndLight station={station} showSun={false} />}
     <HourlyStrip />
-    <SevenDayOutlook station={station} />
   </div>
 </Base>
 
