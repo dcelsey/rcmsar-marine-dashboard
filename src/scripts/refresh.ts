@@ -1,7 +1,7 @@
 import SunCalc from 'suncalc';
 import type * as LeafletNS from 'leaflet';
 import type { StationConfig } from '../lib/stations';
-import { fmtTime, fmtDay, fmtNow, compass, wmo } from '../lib/format';
+import { fmtTime, fmtDay, fmtNow, compass, wmo, escapeHtml } from '../lib/format';
 import {
   loadWeather, loadWindByLocation, loadMarine, loadTides, loadLiveWind, loadCurrents, loadTidesMap,
   getNearbyLiveStations, pointHasNearbyLive,
@@ -621,14 +621,18 @@ async function renderAIS(): Promise<void> {
       iconAnchor: [16, 16],
     });
 
-    const nameLine = v.name ? `<b>${v.name}</b>` : `<b>MMSI ${v.mmsi}</b>`;
+    // name/destination are free text broadcast by the vessel — escape before innerHTML.
+    const safeName = escapeHtml(v.name);
+    const safeMmsi = escapeHtml(v.mmsi);
+    const nameLine = safeName ? `<b>${safeName}</b>` : `<b>MMSI ${safeMmsi}</b>`;
     const speedLine = moving && v.sog !== null
       ? `<div><b>${v.sog.toFixed(1)} kn</b> · ${v.cog !== null ? compass(v.cog) + ' · ' + Math.round(v.cog) + '°' : 'course —'}</div>`
       : `<div>stopped / anchored</div>`;
     const statusLine = v.navStatus !== null && NAV_STATUS_TEXT[v.navStatus]
       ? `<div>${NAV_STATUS_TEXT[v.navStatus]}</div>` : '';
-    const destLine = v.destination ? `<div>→ ${v.destination}</div>` : '';
-    const metaLine = `<div class="tiny muted">${category} · MMSI ${v.mmsi} · ${fmtAge(now - v.lastMsgMs)} ago</div>`;
+    const safeDest = escapeHtml(v.destination);
+    const destLine = safeDest ? `<div>→ ${safeDest}</div>` : '';
+    const metaLine = `<div class="tiny muted">${category} · MMSI ${safeMmsi} · ${fmtAge(now - v.lastMsgMs)} ago</div>`;
     const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}</div>`;
 
     const existing = aisMarkers.get(key);

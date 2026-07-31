@@ -51,3 +51,20 @@ export const fmtNow = (tz: string): string =>
   new Date().toLocaleTimeString('en-CA', {
     timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false,
   });
+
+/**
+ * Escape a value for interpolation into an innerHTML string.
+ *
+ * Needed because AIS vessel names and destinations are free text broadcast by third
+ * parties over the air — nothing upstream validates them, so they must never reach
+ * innerHTML raw. Also trims: AIS pads these fields to a fixed width with spaces
+ * ("SEASPAN RAVEN       ").
+ */
+export const escapeHtml = (v: string | number | null | undefined): string =>
+  String(v ?? '')
+    .trim()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');

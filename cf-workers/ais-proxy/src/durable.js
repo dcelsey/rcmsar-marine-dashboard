@@ -58,7 +58,6 @@ export class AisHub {
     }
 
     if (url.pathname === "/keepalive") {
-      console.log("keepalive: ensuring upstream, current state =", this.upstreamState);
       // Await the connect attempt so any error surfaces before the response
       // returns. connectUpstream returns quickly after WS open; the
       // long-lived listeners keep the DO alive.
@@ -182,14 +181,12 @@ export class AisHub {
       this.broadcastStatus();
       return;
     }
-    console.log("connectUpstream: dialing", this.upstreamUrl);
     this.upstreamState = "connecting";
     this.broadcastStatus();
     try {
       const resp = await fetch(this.upstreamUrl, {
         headers: { Upgrade: "websocket" },
       });
-      console.log("connectUpstream: fetch resolved status =", resp.status, "hasWebSocket =", !!resp.webSocket);
       const ws = resp.webSocket;
       if (!ws) {
         const body = await resp.text().catch(() => "<no body>");
@@ -203,13 +200,12 @@ export class AisHub {
         BoundingBoxes: [this.bbox],
         FilterMessageTypes: SUBSCRIBE_MSG_TYPES,
       };
-      console.log("connectUpstream: subscribing with bbox", JSON.stringify(this.bbox));
       ws.send(JSON.stringify(subscription));
       this.upstream = ws;
       this.upstreamState = "live";
       this.reconnectDelayMs = RECONNECT_MIN_MS;
       this.broadcastStatus();
-      console.log("connectUpstream: live");
+      console.log("ais-proxy: upstream live, bbox", JSON.stringify(this.bbox));
 
       ws.addEventListener("message", (ev) => this.handleUpstreamMessage(ev));
       ws.addEventListener("close", (ev) => {
@@ -274,11 +270,6 @@ export class AisHub {
     } catch (err) {
       if (this.msgCount <= 5) console.error("decode failed:", err && err.message, "typeof =", typeof ev.data);
       return;
-    }
-    if (this.msgCount === 1) {
-      console.log("first upstream msg preview:", text.slice(0, 800));
-    } else if (this.msgCount % 25 === 0) {
-      console.log("upstream msg count =", this.msgCount, "vessels =", this.vessels.size);
     }
     let msg;
     try {
