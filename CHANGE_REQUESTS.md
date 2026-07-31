@@ -68,7 +68,9 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 ## CR-003 — AIS layer follow-ups (deferred from `feat/ais-layer`)
 
 - **Logged:** 2026-07-14
-- **Status:** open
+- **Status:** open — the layer itself **shipped to `main` 2026-07-31**; these are the deferred items
+- **Shipped in that merge**, beyond the original branch: debug logging stripped from the Durable Object; AIS free text (vessel name, destination) escaped before reaching `innerHTML`; the upstream connection now opens only when the layer is switched on rather than on every page load; position currency judged per vessel against its own observed reporting cadence, with markers fading and popups saying "last heard"; the feed-health indicator moved out of the legend to sit beside the AIS toggle, with a 30 s silence watchdog so it can't keep claiming "live" after a silently dropped socket.
+- **Needs a `wrangler deploy`:** the `cadenceMs` measurement and the `MetaData.time_utc` preference are in `cf-workers/ais-proxy/` but not yet live. Until deployed, the frontend falls back to flat 5/15 min staleness thresholds — verified to degrade gracefully, so this is not urgent.
 - **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
 - **Items to resolve before wider rollout:**
   - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.
