@@ -10,6 +10,13 @@ import 'leaflet/dist/leaflet.css';
       <button type="button" class="layer-toggle" data-layer="wind" aria-pressed="true">Wind</button>
       <button type="button" class="layer-toggle" data-layer="ais" aria-pressed="false">AIS</button>
     </div>
+    <!-- Feed health, deliberately NOT in the legend. It lived among the vessel-category
+         swatches, where it read as another colour key and sat below the fold — useless
+         as the one cue telling a crew whether the vessels shown are live. It belongs
+         beside the toggle that turns the layer on, which is where the eye already is. -->
+    <span class="ais-status" id="ais-status" data-state="offline">
+      <span class="ais-dot"></span>AIS feed · <span class="ais-label">offline</span>
+    </span>
     <span class="currents-meta" id="currents-r"></span>
   </div>
 
@@ -65,9 +72,6 @@ import 'leaflet/dist/leaflet.css';
       <span class="cl-item"><span class="cl-swatch av-sar"></span>SAR</span>
       <span class="cl-item"><span class="cl-swatch av-sailing"></span>sailing</span>
       <span class="cl-item"><span class="cl-swatch av-other"></span>other</span>
-      <span class="cl-item ais-status" id="ais-status" data-state="offline">
-        <span class="ais-dot"></span><span class="ais-label">offline</span>
-      </span>
       <!-- These label the DATA, never the vessel. Avoid "overdue": in a marine/SAR
            context that's a formal status meaning a vessel failed to arrive when
            expected and is cause for concern — not "we haven't had a packet lately". -->
@@ -276,16 +280,39 @@ import 'leaflet/dist/leaflet.css';
   :global(.leaflet-tooltip) .ais-stale-note,
   :global(.leaflet-popup-content) .ais-stale-note { color: #ef5350; }
 
-  .ais-status { display: inline-flex; align-items: center; gap: 5px; }
+  /* Reads as a status readout, not a chip — the layer toggles beside it are pill-shaped
+     and clickable, so this is deliberately square-ish, bordered and non-interactive. */
+  .ais-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; line-height: 1.4;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card2);
+    color: var(--muted);
+  }
+  .ais-status .ais-label { font-weight: 600; color: var(--ink); }
   .ais-status .ais-dot {
     width: 8px; height: 8px; border-radius: 50%; background: #9e9e9e; display: inline-block;
+    flex: none;
   }
   .ais-status[data-state="live"] .ais-dot {
-    background: #388e3c;
+    background: #43a047;
     animation: aisPulse 1.6s ease-in-out infinite;
   }
+  .ais-status[data-state="live"] .ais-label { color: #66bb6a; }
+  .ais-status[data-state="connecting"] .ais-dot,
   .ais-status[data-state="reconnecting"] .ais-dot { background: #f9a825; }
+  /* Losing the feed must be legible at a glance — a wallpaper is read from across a
+     room, and "we are no longer receiving vessels" is the one state that matters. */
+  .ais-status[data-state="reconnecting"] {
+    border-color: #f9a825; background: rgba(249, 168, 37, 0.12);
+  }
+  .ais-status[data-state="reconnecting"] .ais-label { color: #ffb300; }
   .ais-status[data-state="offline"] .ais-dot { background: #9e9e9e; }
+
+  /* Only meaningful while the layer is on. */
+  .currents-card.no-ais .ais-status { display: none !important; }
   .ais-note { color: var(--muted); font-style: italic; }
 
   @keyframes aisPulse {
