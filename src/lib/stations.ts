@@ -69,6 +69,25 @@ export type StationConfig = {
   };
 };
 
+/**
+ * Live AIS, via the shared Cloudflare proxy that fans one aisstream.io subscription out
+ * to every dashboard.
+ *
+ * The proxy subscribes to a single bounding box — 48–51.5°N, 128.5–122°W, set by the
+ * BBOX_* vars in cf-workers/ais-proxy/wrangler.toml — and broadcasts the whole vessel
+ * set to every connected client. So a unit either sits inside that box and gets the feed
+ * for free, or it sees nothing at all; there is no per-station subscription to tune.
+ *
+ * Units north of 51.5° (sar45, sar63, sar64, sar65, sar70) are deliberately left without
+ * an `ais` block: the box does not reach them, and claiming a feed we cannot deliver is
+ * worse than showing no AIS control. Extending the box upcoast means widening BBOX_NW_LAT
+ * and redeploying the Worker, after which they can be added here.
+ */
+const AIS_COVERED = {
+  show: true,
+  wsUrl: 'wss://ais-proxy.fetchwind.workers.dev/ais',
+} as const;
+
 export const STATIONS = {
   sar33: {
     slug: 'sar33',
@@ -150,10 +169,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',       href: 'https://www.theweathernetwork.com/en/city/ca/british-columbia/oak-bay/hourly' },
       { label: 'DFO tides — 07130 ↗',              href: 'https://www.tides.gc.ca/en/stations/07130' },
     ],
-    ais: {
-      show: true,
-      wsUrl: 'wss://ais-proxy.fetchwind.workers.dev/ais',
-    },
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar25: {
     slug: 'sar25',
@@ -210,6 +226,7 @@ export const STATIONS = {
       { label: 'DFO tides — Crofton 07450 ↗',     href: 'https://www.tides.gc.ca/en/stations/07450' },
       { label: 'DFO tides — Fulford Hbr 07330 ↗', href: 'https://www.tides.gc.ca/en/stations/07330' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   hq: {
     slug: 'hq',
@@ -269,6 +286,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07080 Pedder Bay ↗',         href: 'https://www.tides.gc.ca/en/stations/07080' },
       { label: 'DFO currents — 07090 Race Passage ↗',    href: 'https://www.tides.gc.ca/en/stations/07090' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar01: {
     slug: 'sar01',
@@ -320,6 +338,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',       href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/west-vancouver' },
       { label: 'DFO tides — 07795 Point Atkinson ↗', href: 'https://www.tides.gc.ca/en/stations/07795' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar02: {
     slug: 'sar02',
@@ -374,6 +393,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07735 Vancouver ↗',    href: 'https://www.tides.gc.ca/en/stations/07735' },
       { label: 'DFO currents — 07745 Second Narrows ↗', href: 'https://www.tides.gc.ca/en/stations/07745' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar04: {
     slug: 'sar04',
@@ -423,6 +443,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07811 Squamish ↗',     href: 'https://www.tides.gc.ca/en/stations/07811' },
       { label: 'DFO tides — 07808 Darrell Bay ↗',  href: 'https://www.tides.gc.ca/en/stations/07808' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar05: {
     slug: 'sar05',
@@ -476,6 +497,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07579 Crescent Beach ↗', href: 'https://www.tides.gc.ca/en/stations/07579' },
       { label: 'DFO tides — 07577 White Rock ↗',     href: 'https://www.tides.gc.ca/en/stations/07577' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar08: {
     slug: 'sar08',
@@ -527,6 +549,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07592 Roberts Bank ↗', href: 'https://www.tides.gc.ca/en/stations/07592' },
       { label: 'DFO tides — 07590 Tsawwassen ↗',   href: 'https://www.tides.gc.ca/en/stations/07590' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar10: {
     slug: 'sar10',
@@ -577,6 +600,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07607 Steveston ↗',    href: 'https://www.tides.gc.ca/en/stations/07607' },
       { label: 'DFO tides — 07594 Sand Heads ↗',   href: 'https://www.tides.gc.ca/en/stations/07594' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar12: {
     slug: 'sar12',
@@ -628,6 +652,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',       href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/halfmoon-bay' },
       { label: 'DFO tides — 07830 Halfmoon Bay ↗', href: 'https://www.tides.gc.ca/en/stations/07830' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar14: {
     slug: 'sar14',
@@ -677,6 +702,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',   href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/gibsons' },
       { label: 'DFO tides — 07820 Gibsons ↗',  href: 'https://www.tides.gc.ca/en/stations/07820' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar20: {
     slug: 'sar20',
@@ -728,6 +754,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',           href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/pender-island' },
       { label: 'DFO tides — 07350 Bedwell Harbour ↗',  href: 'https://www.tides.gc.ca/en/stations/07350' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar27: {
     slug: 'sar27',
@@ -782,6 +809,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',          href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/nanaimo' },
       { label: 'DFO tides — 07917 Nanaimo Harbour ↗', href: 'https://www.tides.gc.ca/en/stations/07917' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar29: {
     slug: 'sar29',
@@ -835,6 +863,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07460 Ladysmith ↗',   href: 'https://www.tides.gc.ca/en/stations/07460' },
       { label: 'DFO tides — 07455 Chemainus ↗',   href: 'https://www.tides.gc.ca/en/stations/07455' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar31: {
     slug: 'sar31',
@@ -889,6 +918,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07280 Brentwood Bay ↗', href: 'https://www.tides.gc.ca/en/stations/07280' },
       { label: 'DFO tides — 07277 Patricia Bay ↗', href: 'https://www.tides.gc.ca/en/stations/07277' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar34: {
     slug: 'sar34',
@@ -942,6 +972,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07310 Cowichan Bay ↗', href: 'https://www.tides.gc.ca/en/stations/07310' },
       { label: 'DFO tides — 07315 Maple Bay ↗',    href: 'https://www.tides.gc.ca/en/stations/07315' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar35: {
     slug: 'sar35',
@@ -997,6 +1028,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',         href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/victoria' },
       { label: 'DFO tides — 07120 Victoria Hbr ↗',   href: 'https://www.tides.gc.ca/en/stations/07120' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar36: {
     slug: 'sar36',
@@ -1048,6 +1080,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',   href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/sidney' },
       { label: 'DFO tides — 07260 Sidney ↗',   href: 'https://www.tides.gc.ca/en/stations/07260' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar37: {
     slug: 'sar37',
@@ -1099,6 +1132,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',   href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/sooke' },
       { label: 'DFO tides — 07020 Sooke ↗',    href: 'https://www.tides.gc.ca/en/stations/07020' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar38: {
     slug: 'sar38',
@@ -1144,6 +1178,7 @@ export const STATIONS = {
       { label: 'DFO tides — 08595 Ucluelet ↗',  href: 'https://www.tides.gc.ca/en/stations/08595' },
       { label: 'ECCC marine — WCVI south ↗',    href: 'https://weather.gc.ca/marine/region_e.html?mapID=03' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar39: {
     slug: 'sar39',
@@ -1191,6 +1226,7 @@ export const STATIONS = {
       { label: 'DFO tides — 08545 Bamfield ↗',      href: 'https://www.tides.gc.ca/en/stations/08545' },
       { label: 'ECCC marine — WCVI south ↗',        href: 'https://weather.gc.ca/marine/region_e.html?mapID=03' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar45: {
     slug: 'sar45',
@@ -1288,6 +1324,7 @@ export const STATIONS = {
       { label: 'DFO tides — 07953 Hornby Is. ↗', href: 'https://www.tides.gc.ca/en/stations/07953' },
       { label: 'DFO tides — 07955 Denman Is. ↗', href: 'https://www.tides.gc.ca/en/stations/07955' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar60: {
     slug: 'sar60',
@@ -1337,6 +1374,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',   href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/comox' },
       { label: 'DFO tides — 07965 Comox ↗',    href: 'https://www.tides.gc.ca/en/stations/07965' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar61: {
     slug: 'sar61',
@@ -1389,6 +1427,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',           href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/pender-harbour' },
       { label: 'DFO tides — 07836 Irvines Landing ↗',  href: 'https://www.tides.gc.ca/en/stations/07836' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar63: {
     slug: 'sar63',
@@ -1617,6 +1656,7 @@ export const STATIONS = {
       { label: 'Weather Network — hourly ↗',   href: 'https://www.theweathernetwork.com/ca/hourly-weather-forecast/british-columbia/vancouver' },
       { label: 'DFO tides — 07735 Vancouver ↗', href: 'https://www.tides.gc.ca/en/stations/07735' },
     ],
+    ais: AIS_COVERED,
   } satisfies StationConfig,
   sar106: {
     slug: 'sar106',

@@ -1,5 +1,15 @@
 ---
 import 'leaflet/dist/leaflet.css';
+import type { StationConfig } from '../lib/stations';
+interface Props { station: StationConfig }
+const { station } = Astro.props;
+
+/* No AIS block means the unit sits outside the proxy's bounding box, so no vessels will
+   ever arrive. Rendering the toggle and the feed-status chip anyway left every such unit
+   reporting "AIS feed · offline" — which reads as "the feed is down right now" when the
+   truth is "AIS was never available here". Same reason "overdue" became "stale": the
+   label has to describe the actual state of the data. */
+const hasAis = station.ais?.show === true;
 ---
 <h2 class="section">Marine Conditions Overview</h2>
 <div class="card currents-card" id="currents-card">
@@ -8,15 +18,17 @@ import 'leaflet/dist/leaflet.css';
       <button type="button" class="layer-toggle" data-layer="currents" aria-pressed="true">Currents</button>
       <button type="button" class="layer-toggle" data-layer="tides" aria-pressed="true">Tides</button>
       <button type="button" class="layer-toggle" data-layer="wind" aria-pressed="true">Wind</button>
-      <button type="button" class="layer-toggle" data-layer="ais" aria-pressed="false">AIS</button>
+      {hasAis && <button type="button" class="layer-toggle" data-layer="ais" aria-pressed="false">AIS</button>}
     </div>
     <!-- Feed health, deliberately NOT in the legend. It lived among the vessel-category
          swatches, where it read as another colour key and sat below the fold — useless
          as the one cue telling a crew whether the vessels shown are live. It belongs
          beside the toggle that turns the layer on, which is where the eye already is. -->
-    <span class="ais-status" id="ais-status" data-state="offline">
-      <span class="ais-dot"></span>AIS feed · <span class="ais-label">offline</span>
-    </span>
+    {hasAis && (
+      <span class="ais-status" id="ais-status" data-state="offline">
+        <span class="ais-dot"></span>AIS feed · <span class="ais-label">offline</span>
+      </span>
+    )}
     <span class="currents-meta" id="currents-r"></span>
   </div>
 
@@ -72,6 +84,7 @@ import 'leaflet/dist/leaflet.css';
         <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
       </div>
     </div>
+    {hasAis && (
     <div class="cl-group" data-legend-layer="ais">
       <span class="cl-label">AIS</span>
       <div class="cl-items">
@@ -91,6 +104,7 @@ import 'leaflet/dist/leaflet.css';
         <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · faded = not heard from recently, position may be out of date · times are when the AIS network last heard the vessel, not when it was there · via aisstream.io</span>
       </div>
     </div>
+    )}
   </div>
 
   <div class="currents-foot tiny muted" id="currents-foot">
