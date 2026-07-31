@@ -33,6 +33,7 @@ import 'leaflet/dist/leaflet.css';
 
   <div class="currents-legend tiny muted">
     <div class="cl-group" data-legend-layer="currents">
+      <span class="cl-label">current</span>
       <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.2</span>
       <span class="cl-item"><span class="cl-swatch ca-green"></span>0.2–1.5</span>
       <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
@@ -42,12 +43,10 @@ import 'leaflet/dist/leaflet.css';
       <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
     </div>
     <div class="cl-group" data-legend-layer="tides">
-      <span class="cl-sep">|</span>
       <span class="cl-item"><span class="cl-swatch cl-tide-rising"></span> tide rising</span>
       <span class="cl-item"><span class="cl-swatch cl-tide-falling"></span> tide falling</span>
     </div>
     <div class="cl-group" data-legend-layer="wind">
-      <span class="cl-sep">|</span>
       <span class="cl-item">
         <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
           <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
@@ -63,7 +62,7 @@ import 'leaflet/dist/leaflet.css';
       <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
     </div>
     <div class="cl-group" data-legend-layer="ais">
-      <span class="cl-sep">|</span>
+      <span class="cl-label">AIS</span>
       <span class="cl-item"><span class="cl-swatch av-passenger"></span>passenger</span>
       <span class="cl-item"><span class="cl-swatch av-cargo"></span>cargo</span>
       <span class="cl-item"><span class="cl-swatch av-tanker"></span>tanker</span>
@@ -170,27 +169,24 @@ import 'leaflet/dist/leaflet.css';
     font-size: 13px;
   }
 
+  /* One layer per line. Run together on a single wrapped line the four groups read as
+     one long undifferentiated strip, and it isn't obvious which swatch belongs to which
+     layer — the separators were doing work the line breaks now do better. */
   .currents-legend {
-    display: flex; align-items: center; flex-wrap: wrap;
-    gap: 6px 8px; margin-top: 10px; padding: 6px 2px;
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 5px; margin-top: 10px; padding: 6px 2px;
   }
   .cl-group {
-    display: inline-flex; align-items: center; flex-wrap: wrap;
-    gap: 6px 12px;
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 5px 12px; width: 100%;
   }
   .cl-item { display: inline-flex; align-items: center; gap: 5px; }
-  .cl-sep {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 400;
-    margin: 0 4px 0 -2px;
-    opacity: .55;
-  }
-
-  @media (max-width: 640px) {
-    .currents-legend { flex-direction: column; align-items: flex-start; gap: 4px; }
-    .cl-group { display: flex; width: 100%; }
-    .cl-group .cl-sep { display: none; }
+  /* Names the layer where its items don't already say it — the tide and wind rows read
+     "tide rising" / "live wind" on their own, so labelling those too would just stutter. */
+  .cl-label {
+    color: var(--ink);
+    font-weight: 600;
+    min-width: 3.5em;
   }
   .cl-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
   .cl-glyph { font-size: 13px; line-height: 1; }
