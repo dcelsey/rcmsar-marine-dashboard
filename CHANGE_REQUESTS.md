@@ -142,7 +142,30 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
   - Temperature (°C ↔ °F)
   - Distance / height (m ↔ ft) — tide heights, wave heights, visibility
   - Precipitation (mm ↔ in)
-- **Open questions:**
-  - Where should the toggle live in the UI? (header, settings drawer, per-tile?)
-  - Marine convention keeps wind in knots regardless — should "imperial" mean mph or stay knots?
+- **Open questions (mostly answered 2026-07-31, see below):**
+  - ~~Where should the toggle live in the UI? (header, settings drawer, per-tile?)~~ → settings icon opening a popup.
+  - ~~Marine convention keeps wind in knots regardless — should "imperial" mean mph or stay knots?~~ → dissolved: speed is a three-way choice, not part of a binary.
   - Should the toggle apply to forecast tiles as well as live/glance tiles?
+
+### 2026-07-31 — Duncan's direction
+
+Not scheduled; logged so the shape isn't re-derived later. Re-raised independently of this entry, which suggests it's a real recurring want rather than a one-off.
+
+**It isn't one imperial/metric switch — it's per-quantity selectors.** That supersedes the binary framing above:
+
+- **Speed** (wind *and* current): knots / km/h / mph — three options, so the "does imperial mean mph or knots" question no longer arises. A crew can keep knots for water and still read km/h for wind if that's what they think in.
+- **Distance / height:** m / ft
+- **Temperature:** °C / °F
+
+**Persist in a cookie, not localStorage** — correcting the proposal above. This matters beyond preference: the map-layer toggles already use a cookie (`map-layers`) read by an inline pre-paint script in `MarineCurrents.astro`, precisely so the page doesn't paint the wrong state and then correct itself. Units have the same problem in a worse form — a wind speed that renders as `12` and flips to `22` a moment later is briefly *wrong*, not merely restyled. Follow the existing pattern.
+
+**UI:** a settings icon opening a popup. Worth noting the kiosk and widescreen views have no room for another control and are read from a distance, so this likely belongs on the standard view with both other views inheriting the cookie.
+
+**Scope worth knowing before estimating.** Units are formatted in more places than the tiles:
+
+- `refresh.ts` renderers — glance tiles, wind table, hourly strip, daily list, marine/wave table, tide table
+- Leaflet marker tooltips and popups for wind barbs, tide markers, current arrows, AIS vessels
+- The **map legend's speed ramp** is labelled in knots (`< 0.2`, `5+ kn`) and the wind chips in `< 15 / 15–21 / 22+ kn` — the thresholds themselves are conventional in knots, so converting the labels without rethinking the bands would produce odd boundaries like `27.8+ km/h`
+- AIS vessel speed (SOG) and the wave/period columns
+
+A single formatting helper reading the cookie is the obvious approach; the work is in routing every call site through it rather than in the conversion itself.
