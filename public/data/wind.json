@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-31T10:16:11.882Z",
+  "generated_at": "2026-07-31T10:31:41.642Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
+  "degraded": true,
   "station_count": 79,
   "stations": [
     {
@@ -1246,13 +1246,13 @@
       "lat": 51.38,
       "lon": -128.77,
       "elevation_m": 0,
-      "obs_time": "2026-07-31T09:00:00Z",
-      "wind_dir_deg": 140,
+      "obs_time": "2026-07-31T10:00:00Z",
+      "wind_dir_deg": 150,
       "wind_speed_kmh": 32,
-      "wind_gust_kmh": 40,
+      "wind_gust_kmh": 36,
       "wind_speed_kn": 17.5,
-      "wind_gust_kn": 21.4,
-      "stale": true,
+      "wind_gust_kn": 19.4,
+      "stale": false,
       "quality": "ok"
     },
     {
