@@ -1,5 +1,40 @@
-/* Layered on top of ultrawide.css for the /ultrawide (Lively wallpaper)
+/* Layered on top of ultrawide.css for the /widescreen (Lively wallpaper)
    route: inset the dashboard so desktop icons on the left and taskbar
    on the bottom stay visible. */
 
 body.ultrawide { padding: 5vh 12.5vw; }
+
+/* ---------------------------------------------------------------------------
+   The combined conditions map takes the centre column, in place of the Windy
+   embed. It inherits the `windy` grid area rather than introducing a new one, so
+   inland units falling back to the embed land in exactly the same cell.
+
+   These rules live here rather than in ultrawide.css because that file is shared
+   with the kiosk route, which places the same card in its own `currents` area.
+   --------------------------------------------------------------------------- */
+body.ultrawide .card.currents-card {
+  grid-area: windy;
+  padding: 9px;
+  gap: 7px;
+}
+
+/* The chrome around the map is fixed-height; the map absorbs what's left. Its
+   4:3 aspect-ratio and 340px floor are sized for the scrolling standard view and
+   would overflow this fixed-height grid cell. */
+body.ultrawide .currents-card .currents-bar,
+body.ultrawide .currents-card .currents-slider {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+body.ultrawide .currents-card .currents-bar { gap: 9px; min-height: 0; }
+body.ultrawide .currents-card .currents-slider { padding: 5px 9px; }
+body.ultrawide .currents-card .currents-map {
+  aspect-ratio: auto;
+  flex: 1 1 auto;
+  min-height: 150px;
+}
+
+/* Legend hidden: this is wallpaper, read at a glance from across a room and
+   partly behind desktop icons. The colour ramps are reference material and stay
+   on the standard view for anyone who wants to look them up. */
+body.ultrawide .currents-card .currents-legend { display: none; }

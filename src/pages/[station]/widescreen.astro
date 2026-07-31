@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Warnbar from '../../components/Warnbar.astro';
 import Glance from '../../components/Glance.astro';
 import WindByLocation from '../../components/WindByLocation.astro';
+import MarineCurrents from '../../components/MarineCurrents.astro';
 import TideAndLight from '../../components/TideAndLight.astro';
 import HourlyStrip from '../../components/HourlyStrip.astro';
 import SevenDayOutlook from '../../components/SevenDayOutlook.astro';
@@ -26,7 +27,12 @@ const station = getStation(Astro.params.station!);
     <TideAndLight station={station} />
     <HourlyStrip />
     <SevenDayOutlook station={station} />
-    <WindyEmbed station={station} />
+    {/* The centre column shows the combined conditions map where we have currents
+        data for it. Inland units have none, so they keep the Windy embed rather
+        than an empty column — both occupy the same `windy` grid area. */}
+    {station.currents?.show !== false
+      ? <MarineCurrents station={station} />
+      : <WindyEmbed station={station} />}
   </div>
 </Base>
 
