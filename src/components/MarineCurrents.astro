@@ -32,53 +32,64 @@ import 'leaflet/dist/leaflet.css';
   </div>
 
   <div class="currents-legend tiny muted">
+    <!-- Each row is label + a separate items column. The wrapper is what produces the
+         hanging indent: items wrap inside their own column, so on a narrow screen the
+         overflow lines up under the first item instead of running back under the label. -->
     <div class="cl-group" data-legend-layer="currents">
       <span class="cl-label">Current</span>
-      <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.2</span>
-      <span class="cl-item"><span class="cl-swatch ca-green"></span>0.2–1.5</span>
-      <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
-      <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
-      <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
-      <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
-      <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+      <div class="cl-items">
+        <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.2</span>
+        <span class="cl-item"><span class="cl-swatch ca-green"></span>0.2–1.5</span>
+        <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
+        <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
+        <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
+        <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
+        <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+      </div>
     </div>
     <div class="cl-group" data-legend-layer="tides">
       <span class="cl-label">Tide</span>
-      <span class="cl-item"><span class="cl-swatch cl-tide-rising"></span> rising</span>
-      <span class="cl-item"><span class="cl-swatch cl-tide-falling"></span> falling</span>
+      <div class="cl-items">
+        <span class="cl-item"><span class="cl-swatch cl-tide-rising"></span> rising</span>
+        <span class="cl-item"><span class="cl-swatch cl-tide-falling"></span> falling</span>
+      </div>
     </div>
     <div class="cl-group" data-legend-layer="wind">
       <span class="cl-label">Wind</span>
-      <span class="cl-item">
-        <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
-          <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        live
-      </span>
-      <span class="cl-item">
-        <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
-          <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        forecast
-      </span>
-      <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
+      <div class="cl-items">
+        <span class="cl-item">
+          <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
+            <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          live
+        </span>
+        <span class="cl-item">
+          <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
+            <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          forecast
+        </span>
+        <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
+      </div>
     </div>
     <div class="cl-group" data-legend-layer="ais">
       <span class="cl-label">AIS</span>
-      <span class="cl-item"><span class="cl-swatch av-passenger"></span>passenger</span>
-      <span class="cl-item"><span class="cl-swatch av-cargo"></span>cargo</span>
-      <span class="cl-item"><span class="cl-swatch av-tanker"></span>tanker</span>
-      <span class="cl-item"><span class="cl-swatch av-fishing"></span>fishing</span>
-      <span class="cl-item"><span class="cl-swatch av-tug"></span>tug</span>
-      <span class="cl-item"><span class="cl-swatch av-sar"></span>SAR</span>
-      <span class="cl-item"><span class="cl-swatch av-sailing"></span>sailing</span>
-      <span class="cl-item"><span class="cl-swatch av-other"></span>other</span>
-      <!-- These label the DATA, never the vessel. Avoid "overdue": in a marine/SAR
-           context that's a formal status meaning a vessel failed to arrive when
-           expected and is cause for concern — not "we haven't had a packet lately". -->
-      <span class="cl-item"><span class="cl-swatch av-other avf-ageing"></span>ageing</span>
-      <span class="cl-item"><span class="cl-swatch av-other avf-stale"></span>stale</span>
-      <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · faded = not heard from recently, position may be out of date · times are when the AIS network last heard the vessel, not when it was there · via aisstream.io</span>
+      <div class="cl-items">
+        <span class="cl-item"><span class="cl-swatch av-passenger"></span>passenger</span>
+        <span class="cl-item"><span class="cl-swatch av-cargo"></span>cargo</span>
+        <span class="cl-item"><span class="cl-swatch av-tanker"></span>tanker</span>
+        <span class="cl-item"><span class="cl-swatch av-fishing"></span>fishing</span>
+        <span class="cl-item"><span class="cl-swatch av-tug"></span>tug</span>
+        <span class="cl-item"><span class="cl-swatch av-sar"></span>SAR</span>
+        <span class="cl-item"><span class="cl-swatch av-sailing"></span>sailing</span>
+        <span class="cl-item"><span class="cl-swatch av-other"></span>other</span>
+        <!-- These label the DATA, never the vessel. Avoid "overdue": in a marine/SAR
+             context that's a formal status meaning a vessel failed to arrive when
+             expected and is cause for concern — not "we haven't had a packet lately". -->
+        <span class="cl-item"><span class="cl-swatch av-other avf-ageing"></span>ageing</span>
+        <span class="cl-item"><span class="cl-swatch av-other avf-stale"></span>stale</span>
+        <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · faded = not heard from recently, position may be out of date · times are when the AIS network last heard the vessel, not when it was there · via aisstream.io</span>
+      </div>
     </div>
   </div>
 
@@ -181,9 +192,17 @@ import 'leaflet/dist/leaflet.css';
     display: flex; flex-direction: column; align-items: flex-start;
     gap: 12px; margin-top: 10px; padding: 6px 2px;
   }
+  /* Label sits in its own fixed column; the items get the rest and wrap within it. That
+     gives a hanging indent for free — wrapped items line up under the first item rather
+     than sliding back under the label, which is what makes a narrow screen readable. */
   .cl-group {
+    display: flex; align-items: baseline;
+    gap: 12px; width: 100%;
+  }
+  .cl-items {
     display: flex; align-items: center; flex-wrap: wrap;
-    gap: 3px 12px; width: 100%;
+    gap: 3px 12px;
+    flex: 1 1 auto; min-width: 0;
   }
   .cl-item { display: inline-flex; align-items: center; gap: 5px; }
   /* Names the layer, so the items themselves can stay bare — "rising" not "tide rising",
@@ -191,8 +210,11 @@ import 'leaflet/dist/leaflet.css';
   .cl-label {
     color: var(--ink);
     font-weight: 600;
-    min-width: 4.5em;
+    flex: 0 0 auto;
+    width: 4.5em;
   }
+  /* Always starts its own line — it's a caveat about the row, not another key. */
+  .ais-note { flex-basis: 100%; }
   .cl-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
   .cl-glyph { font-size: 13px; line-height: 1; }
   .cl-ref { color: var(--good); }
