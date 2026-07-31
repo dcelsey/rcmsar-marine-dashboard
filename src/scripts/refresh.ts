@@ -220,6 +220,20 @@ let aisSub: AisSubscription | null = null;
 const aisVessels: Map<string, AisVessel> = new Map();
 let aisRerenderTimer: number | null = null;
 
+/**
+ * Re-render cadence for position ageing, independent of incoming traffic.
+ *
+ * renderAIS is normally driven by messages arriving, which is fine while the feed is
+ * healthy — other vessels' updates keep the loop ticking, so a vessel that goes quiet
+ * visibly fades. But if the feed itself dies (proxy down, upstream dropped, network
+ * lost) no messages arrive, so nothing re-renders and every marker freezes at whatever
+ * freshness it had at that instant. The map would go on looking current indefinitely —
+ * on an unattended kiosk or the Lively wallpaper, the worst possible way for this to
+ * fail. Tick independently so age always advances on its own.
+ */
+const AIS_AGE_TICK_MS = 30_000;
+let aisAgeTimer: number | null = null;
+
 type BarbEntry = {
   key: string;
   lat: number;
@@ -722,6 +736,7 @@ function aisLayerEnabled(): boolean {
 function stopAis(): void {
   aisSub?.close();
   aisSub = null;
+  if (aisAgeTimer !== null) { clearInterval(aisAgeTimer); aisAgeTimer = null; }
   aisVessels.clear();
   void renderAIS();   // with the vessel map empty this removes all existing markers
   updateAisStatus('offline');
@@ -752,6 +767,8 @@ function startAisIfConfigured(): void {
     },
     onStatus: updateAisStatus,
   });
+
+  aisAgeTimer ??= window.setInterval(() => { void renderAIS(); }, AIS_AGE_TICK_MS);
 }
 
 function renderTide(tides: TideBundle): void {
@@ -1051,4 +1068,5 @@ document.getElementById('currents-card')?.addEventListener('click', (ev) => {
 window.addEventListener('pagehide', () => {
   aisSub?.close();
   aisSub = null;
+  if (aisAgeTimer !== null) { clearInterval(aisAgeTimer); aisAgeTimer = null; }
 });
