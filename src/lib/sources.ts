@@ -120,6 +120,8 @@ export type LiveWindStation = {
   lon: number;
   elevation_m: number | null;
   obs_time: string;
+  /** Inferred reporting interval in minutes; drives the cadence-aware `stale` rule. */
+  cadence_min: number | null;
   wind_dir_deg: number | null;
   wind_speed_kmh: number | null;
   wind_gust_kmh: number | null;

@@ -6,16 +6,45 @@ import { dirname } from 'node:path';
 const OUT = 'public/data/wind.json';
 const BBOX = '-133.5,48.0,-122.0,55.0';   // BC coast
 const STALE_MIN = 60;                      // per spec: SAR-critical
-// Match the look-back to STALE_MIN. Marine sites (KELP REEFS, DISCOVERY ISLAND,
-// Victoria Harbour) only report hourly, so a shorter window missed them on most
-// runs — Oak Bay fell back to forecast-only. Nothing inside this window is stale
-// by definition, and the per-station reduction below keeps only the newest ob.
-const WINDOW_MIN = STALE_MIN;              // SWOB look-back window
+// Look back FURTHER than STALE_MIN, never equal to it. Marine sites (KELP REEFS,
+// DISCOVERY ISLAND, Victoria Harbour) report hourly and ECCC publishes the ob ~5-6 min
+// after the hour. With the window equal to STALE_MIN, a run between :00 and :06 saw the
+// previous ob as just outside the look-back and the current one as not yet published,
+// so those stations vanished from the payload entirely — and whichever snapshot
+// deployed froze that gap for a full 15-min cycle (CR-004).
+// The window decides what we *can* see; `stale` decides what actually renders. Anything
+// here too old still gets written, flagged stale, and filtered downstream.
+// It must also be wide enough to hold at least TWO obs from an hourly station, since
+// that's how medianCadenceMin infers the cadence the staleness rule depends on. 180 min
+// always spans three hour boundaries, so an hourly site yields >=2 obs at any moment;
+// at 120 it intermittently yielded 1, cadence came back null, and the station fell back
+// to the flat floor and vanished again. Cheap because of SWOB_PROPS below (~2 MB).
+// Sites reporting less often than ~90 min still infer null and use the STALE_MIN floor.
+const WINDOW_MIN = 3 * STALE_MIN;          // SWOB look-back window
 const TIMEOUT_MS = 15_000;
 const RETRIES = 2;
 
 const KMH_PER_KN = 0.539957;
 const MS_TO_KMH = 3.6;
+
+// Fallback chains, best source first. Each is tried in order until one has a value.
+const SPD_FIELDS  = ['avg_wnd_spd_10m_pst10mts', 'avg_wnd_spd_10m_pst2mts', 'avg_wnd_spd_10m_pst1mt', 'avg_wnd_spd_10m_pst1hr'];
+const GUST_FIELDS = ['max_wnd_spd_10m_pst10mts', 'max_wnd_spd_10m_pst1mt', 'max_wnd_spd_10m_pst1hr'];
+const DIR_FIELDS  = ['avg_wnd_dir_10m_pst10mts', 'avg_wnd_dir_10m_pst2mts', 'avg_wnd_dir_10m_pst1mt', 'avg_wnd_dir_10m_pst1hr'];
+const WIND_FIELDS = [...SPD_FIELDS, ...GUST_FIELDS, ...DIR_FIELDS];
+
+// Ask for only the fields we read. SWOB features carry ~230 properties each; without
+// this the 120-min window pulls ~25 MB per run (~2.4 GB/day off a public API), with it
+// ~1.8 MB and roughly half the latency. The `-qa` siblings must be listed explicitly or
+// pickWithQa silently loses its suspect-data detection — they're absent from many
+// features but are valid collection fields, so requesting them is safe.
+// WARNING: one unknown name makes GeoMet 400 the entire query. Verify any field you add
+// against the collection schema before shipping it.
+const SWOB_PROPS = [
+  'msc_id-value', 'stn_nam-value', 'obs_date_tm',
+  ...WIND_FIELDS,
+  ...WIND_FIELDS.map(f => `${f}-qa`),
+];
 
 const NDBC_BUOYS = [
   { id: '46146', name: 'Halibut Bank',    lat: 49.34, lon: -123.73 },
@@ -65,16 +94,21 @@ async function fetchSwob() {
   const url = 'https://api.weather.gc.ca/collections/swob-realtime/items'
     + `?bbox=${BBOX}`
     + `&datetime=${encodeURIComponent(start)}/..`
+    + `&properties=${SWOB_PROPS.join(',')}`
     + '&sortby=-obs_date_tm&limit=10000&f=json';
   const res = await fetchWithRetry(url, 'SWOB');
   const { features = [] } = await res.json();
 
-  // Reduce to newest observation per station.
+  // Reduce to newest observation per station, keeping every obs time seen so each
+  // station's reporting cadence can be inferred for the staleness rule.
   const latest = new Map();
+  const seenTimes = new Map();
   for (const f of features) {
     const p = f.properties || {};
     const key = p['msc_id-value'];
     if (!key) continue;
+    if (!seenTimes.has(key)) seenTimes.set(key, []);
+    seenTimes.get(key).push(p.obs_date_tm);
     const prev = latest.get(key);
     if (!prev || new Date(p.obs_date_tm) > new Date(prev.properties.obs_date_tm)) {
       latest.set(key, f);
@@ -84,9 +118,9 @@ async function fetchSwob() {
   const swob = [...latest.values()].map(f => {
     const p = f.properties;
     const [lon, lat, elev] = f.geometry.coordinates;
-    const spd  = pickWithQa(p, ['avg_wnd_spd_10m_pst10mts','avg_wnd_spd_10m_pst2mts','avg_wnd_spd_10m_pst1mt','avg_wnd_spd_10m_pst1hr']);
-    const gust = pickWithQa(p, ['max_wnd_spd_10m_pst10mts','max_wnd_spd_10m_pst1mt','max_wnd_spd_10m_pst1hr']);
-    const dir  = pickWithQa(p, ['avg_wnd_dir_10m_pst10mts','avg_wnd_dir_10m_pst2mts','avg_wnd_dir_10m_pst1mt','avg_wnd_dir_10m_pst1hr']);
+    const spd  = pickWithQa(p, SPD_FIELDS);
+    const gust = pickWithQa(p, GUST_FIELDS);
+    const dir  = pickWithQa(p, DIR_FIELDS);
     return normalize({
       id: `swob:${p['msc_id-value']}`,
       source: 'swob',
@@ -94,6 +128,7 @@ async function fetchSwob() {
       lat, lon,
       elevation_m: elev ?? null,
       obs_time: p.obs_date_tm,
+      cadence_min: medianCadenceMin(seenTimes.get(p['msc_id-value']) ?? []),
       dir: dir.value,
       kmh: spd.value,
       gust_kmh: gust.value,
@@ -141,6 +176,13 @@ async function fetchNdbc() {
       const wspd = num(c[6]);
       const gst  = num(c[7]);
       const wdir = num(c[5]);
+      // realtime2 is newest-first, so the first few rows give the buoy's reporting
+      // interval directly — same cadence-aware staleness rule as the SWOB sites.
+      const rowTime = (r) => {
+        const f = r.trim().split(/\s+/);
+        return `${f[0]}-${f[1]}-${f[2]}T${f[3]}:${f[4]}:00Z`;
+      };
+      const cadence = medianCadenceMin(rows.slice(0, 6).map(rowTime));
       out.push(normalize({
         id: `ndbc:${b.id}`,
         source: 'ndbc',
@@ -149,6 +191,7 @@ async function fetchNdbc() {
         lon: b.lon,
         elevation_m: 0,
         obs_time: obs,
+        cadence_min: cadence,
         dir: wdir,
         kmh: wspd === null ? null : wspd * MS_TO_KMH,
         gust_kmh: gst === null ? null : gst * MS_TO_KMH,
@@ -161,10 +204,35 @@ async function fetchNdbc() {
   return out;
 }
 
-const isStale = (obsTime) => (Date.now() - new Date(obsTime).getTime()) > STALE_MIN * 60_000;
+const CADENCE_GRACE_MIN = 15;   // publication lag + schedule jitter
+
+// A station is stale when it has actually MISSED a report — not merely when its newest
+// reading is old. Hourly sites (KELP REEFS, DISCOVERY ISLAND, Victoria Harbour) are
+// never fresher than ~60 min by definition, so a flat 60-min bound hid them for ~6 min
+// of every hour while they were reporting perfectly on schedule (CR-004). Judge each
+// station against its own cadence instead, keeping STALE_MIN as the floor so frequent
+// reporters retain the tight SAR-critical bound: a 1-min station that dies is still
+// stale at 60 min, while an hourly one stays visible until it genuinely misses.
+const staleAfterMin = (cadenceMin) => Math.max(STALE_MIN, (cadenceMin ?? 0) + CADENCE_GRACE_MIN);
+
+const isStale = (obsTime, cadenceMin) =>
+  (Date.now() - new Date(obsTime).getTime()) / 60_000 > staleAfterMin(cadenceMin);
+
+// Median gap between a station's observations, in minutes. Median rather than mean so a
+// single missed report doesn't inflate it. null when there's too little history to tell,
+// which falls back to the STALE_MIN floor.
+function medianCadenceMin(times) {
+  const ms = [...new Set(times)].map(t => new Date(t).getTime()).sort((a, b) => a - b);
+  if (ms.length < 2) return null;
+  const gaps = [];
+  for (let i = 1; i < ms.length; i++) gaps.push((ms[i] - ms[i - 1]) / 60_000);
+  gaps.sort((a, b) => a - b);
+  const mid = Math.floor(gaps.length / 2);
+  return Math.round(gaps.length % 2 ? gaps[mid] : (gaps[mid - 1] + gaps[mid]) / 2);
+}
 
 function normalize(s) {
-  const stale = isStale(s.obs_time);
+  const stale = isStale(s.obs_time, s.cadence_min);
   const kn  = s.kmh === null ? null : +(s.kmh * KMH_PER_KN).toFixed(1);
   const gkn = s.gust_kmh === null ? null : +(s.gust_kmh * KMH_PER_KN).toFixed(1);
   return {
@@ -175,6 +243,7 @@ function normalize(s) {
     lon: s.lon,
     elevation_m: s.elevation_m,
     obs_time: s.obs_time,
+    cadence_min: s.cadence_min ?? null,
     wind_dir_deg: s.dir === null ? null : Math.round(s.dir),
     wind_speed_kmh: s.kmh === null ? null : Math.round(s.kmh),
     wind_gust_kmh: s.gust_kmh === null ? null : Math.round(s.gust_kmh),
@@ -220,7 +289,7 @@ results.forEach((r, i) => {
   // STALE_MIN — so a prolonged outage decays to nothing instead of freezing an
   // ancient snapshot on screen.
   const carried = (previous?.stations ?? [])
-    .filter(s => s.source === key && !isStale(s.obs_time))
+    .filter(s => s.source === key && !isStale(s.obs_time, s.cadence_min))
     .map(s => ({ ...s, stale: false }));
   stations.push(...carried);
   counts[key] = carried.length;

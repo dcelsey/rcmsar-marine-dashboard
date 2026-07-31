@@ -7,7 +7,7 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 ## CR-004 — Hourly marine stations blank out at the top of each hour
 
 - **Logged:** 2026-07-30
-- **Status:** open — **diagnosed, fix not applied**
+- **Status:** done (2026-07-31)
 - **Problem:** Kelp Reefs, Discovery Island and Victoria Harbour disappear from the sar33 wind card for part of each hour. Reported live on 2026-07-30 after the CR-002 work.
 - **Cause:** CR-002 set `WINDOW_MIN = STALE_MIN` (60) in `scripts/fetch-wind.mjs`. That leaves zero slack for publication lag. These sites report hourly on the hour, and ECCC publishes the ob roughly 5–6 min later. A fetch running between :00 and :06 therefore sees the previous hour's ob as *just* outside the 60-min look-back (60.5 min old → excluded) while the current one isn't published yet → the station is absent entirely. Confirmed: the 20:00:27 run wrote `count=34` with all three absent; the 20:06:32 run wrote `count=78` with all three present and fresh.
 - **Why it's worse than it sounds:** whichever snapshot happens to deploy freezes for the full 15-min deploy cycle, so a blackout fetch can strand the dashboard without those stations for 15 minutes. This is still better than the pre-CR-002 behaviour (20-min window missed them ~75% of the time) but it is visibly broken.
@@ -22,6 +22,19 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
   All well under `limit=10000`. 120 min costs ~+12 MB and ~+0.6 s per run against a job that takes 12–45 s, so it is affordable — but ~25 MB every 15 min is ~2.4 GB/day off a public government API.
 - **Worth trying first:** the OGC `&properties=<csv>` parameter to return only the ~14 fields `fetch-wind.mjs` actually reads, which should cut the payload dramatically and make the wider window cheap. **This was never tested** — verify GeoMet supports it, and confirm `geometry.coordinates` and the `*-qa` fields still come back, since `pickWithQa` depends on the latter.
+
+### Resolution (2026-07-31)
+
+Widening the window turned out to be **necessary but not sufficient**, and the second half is the interesting part.
+
+1. **`&properties=` works and is lossless.** 25.0 MB → 1.8 MB and 1.85 s → 0.73 s on the same query. `geometry.coordinates` survives. The `-qa` fields do **not** come back unless named explicitly — they're absent from many features but are valid collection fields, so requesting them is safe. Verified by a differential run against the unfiltered query: 101 stations both ways, **zero** value or QA-flag mismatches. **Gotcha:** one unknown property name makes GeoMet return HTTP 400 for the *entire* query, so any field added here must be checked against the collection schema first.
+2. **The window alone didn't fix the symptom.** With `WINDOW_MIN` widened, the hourly stations were fetched — but `STALE_MIN = 60` still hid them. An hourly station's newest ob is *always* 0–66 min old, so a flat 60-min bound classifies it stale for ~6 min of every hour while it is reporting perfectly on schedule. Caught live at 17:00:13Z with Kelp Reefs at age 60.2 min, flagged stale.
+3. **Fix: cadence-aware staleness.** A station is now stale when it has *missed a report*, not merely when its reading is old: `stale = age > max(STALE_MIN, cadence + 15)`, where cadence is the median gap between that station's own recent obs (`medianCadenceMin`), carried in a new `cadence_min` field. Hourly sites stay visible to 75 min; a 1-min station that dies is still stale at 60 min, so the SAR-critical bound is untouched where it's meaningful.
+4. **`WINDOW_MIN` is 180, not 120.** At 120 an hourly station intermittently had only *one* ob in-window, so cadence came back `null`, fell back to the flat floor, and the station vanished again. 180 always spans three hour boundaries, guaranteeing ≥2 obs. Cheap because of `properties=` (~2 MB, 1.7 s per run).
+
+**Verified:** replayed the pipeline at every minute of the blackout (00–05 past the hour) with realistic publication lag — all three stations shown throughout, where previously all three were absent. Plus a 7-case table covering dead stations at each cadence.
+
+**Known limit:** sites reporting less often than ~90 min still infer `cadence_min: null` and fall back to the `STALE_MIN` floor. None are currently in use near any station; revisit if one is ever added.
 
 > **CR-003 is reserved** — "AIS layer follow-ups", currently living in the `feat/ais-layer`
 > stash (`stash@{0}`), not on `main`. It reappears when that work is unstashed. Numbering
