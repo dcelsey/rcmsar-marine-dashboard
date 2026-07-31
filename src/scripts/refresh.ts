@@ -208,6 +208,17 @@ type CurrentsMapState = {
   aisMarkers: Map<string, LeafletNS.Marker>;
   fitted: boolean;
 };
+/**
+ * Whether this marker's hover tooltip is currently showing.
+ *
+ * Guarded because Leaflet's `isTooltipOpen()` dereferences `this._tooltip` without
+ * checking it exists, so it throws on touch devices — where we deliberately never bind
+ * a tooltip at all.
+ */
+function isHovered(m: LeafletNS.Marker): boolean {
+  return !!m.getTooltip() && m.isTooltipOpen();
+}
+
 let currentsMapState: CurrentsMapState | null = null;
 let currentsMapInitInFlight: Promise<CurrentsMapState | null> | null = null;
 let lastCurrents: CurrentsPayload | null = null;
@@ -317,6 +328,34 @@ async function ensureCurrentsMap(container: HTMLElement): Promise<CurrentsMapSta
       const layer = (e.popup as unknown as { _source?: LeafletNS.Marker })._source;
       layer?.closeTooltip?.();
     });
+
+    // Only ever one hover tooltip. Leaflet closes a tooltip on mouseout, so a marker
+    // whose icon element is removed mid-hover never gets that event and its tooltip
+    // stays on the map — visible as two tooltips at once, the older one stuck. The
+    // setIcon guards below are the actual fix; this makes any residual case
+    // self-clearing on the next hover rather than leaving it stranded over the chart.
+    // The owning layer comes off `tooltip._source`, same as the popup handler above —
+    // the map-level event carries only `{ tooltip }`, no sourceTarget.
+    const tooltipSource = (e: LeafletNS.TooltipEvent): LeafletNS.Marker | null =>
+      (e.tooltip as unknown as { _source?: LeafletNS.Marker })._source ?? null;
+
+    let openTooltipLayer: LeafletNS.Marker | null = null;
+    map.on('tooltipopen', (e: LeafletNS.TooltipEvent) => {
+      const layer = tooltipSource(e);
+      if (openTooltipLayer && openTooltipLayer !== layer) {
+        try { openTooltipLayer.closeTooltip(); } catch { /* already detached */ }
+      }
+      openTooltipLayer = layer;
+    });
+    map.on('tooltipclose', (e: LeafletNS.TooltipEvent) => {
+      if (openTooltipLayer === tooltipSource(e)) openTooltipLayer = null;
+    });
+    // Leaving the map entirely is the other way a stray survives — nothing downstream
+    // will fire mouseout for it once the pointer is off the container.
+    container.addEventListener('mouseleave', () => {
+      try { openTooltipLayer?.closeTooltip(); } catch { /* already detached */ }
+      openTooltipLayer = null;
+    });
     currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), aisMarkers: new Map(), fitted: false };
     return currentsMapState;
   })();
@@ -420,7 +459,17 @@ async function renderCurrents(payload: CurrentsPayload): Promise<void> {
     });
     const existing = markers.get(e.key);
     if (existing) {
-      existing.setIcon(icon);
+      // Replacing the icon element while the cursor is over it means the browser never
+
+      // fires mouseout on the removed node, so Leaflet never closes the tooltip and it
+
+      // sticks on screen. Hold the swap until the pointer leaves; the next render — at
+
+      // most 1.5s away for AIS — applies it. Position updates below are safe: they move
+
+      // the existing element rather than replacing it.
+
+      if (!isHovered(existing)) existing.setIcon(icon);
       existing.setPopupContent(e.popupHtml);
       const tt = existing.getTooltip();
       if (tt) tt.setContent(e.popupHtml);
@@ -502,7 +551,17 @@ async function renderTidesMap(payload: TideMapPayload): Promise<void> {
     });
     const existing = tideMarkers.get(key);
     if (existing) {
-      existing.setIcon(icon);
+      // Replacing the icon element while the cursor is over it means the browser never
+
+      // fires mouseout on the removed node, so Leaflet never closes the tooltip and it
+
+      // sticks on screen. Hold the swap until the pointer leaves; the next render — at
+
+      // most 1.5s away for AIS — applies it. Position updates below are safe: they move
+
+      // the existing element rather than replacing it.
+
+      if (!isHovered(existing)) existing.setIcon(icon);
       existing.setPopupContent(popupHtml);
       const tt = existing.getTooltip();
       if (tt) tt.setContent(popupHtml);
@@ -560,7 +619,17 @@ async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPaylo
     });
     const existing = windMarkers.get(e.key);
     if (existing) {
-      existing.setIcon(icon);
+      // Replacing the icon element while the cursor is over it means the browser never
+
+      // fires mouseout on the removed node, so Leaflet never closes the tooltip and it
+
+      // sticks on screen. Hold the swap until the pointer leaves; the next render — at
+
+      // most 1.5s away for AIS — applies it. Position updates below are safe: they move
+
+      // the existing element rather than replacing it.
+
+      if (!isHovered(existing)) existing.setIcon(icon);
       existing.setPopupContent(e.popupHtml);
       const tt = existing.getTooltip();
       if (tt) tt.setContent(e.popupHtml);
@@ -691,7 +760,17 @@ async function renderAIS(): Promise<void> {
 
     const existing = aisMarkers.get(key);
     if (existing) {
-      existing.setIcon(icon);
+      // Replacing the icon element while the cursor is over it means the browser never
+
+      // fires mouseout on the removed node, so Leaflet never closes the tooltip and it
+
+      // sticks on screen. Hold the swap until the pointer leaves; the next render — at
+
+      // most 1.5s away for AIS — applies it. Position updates below are safe: they move
+
+      // the existing element rather than replacing it.
+
+      if (!isHovered(existing)) existing.setIcon(icon);
       existing.setLatLng([v.lat, v.lon]);
       existing.setPopupContent(popupHtml);
       const tt = existing.getTooltip();
