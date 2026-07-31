@@ -673,6 +673,26 @@ function updateAisStatus(status: AisStatus): void {
   if (label) label.textContent = status;
 }
 
+/**
+ * Whether the AIS map layer is currently switched on.
+ *
+ * The toggle state lives in the `map-layers` cookie and is applied before paint by the
+ * inline script in MarineCurrents.astro. Read the button it already set rather than
+ * re-parsing the cookie here, so there's one source of truth for the default.
+ */
+function aisLayerEnabled(): boolean {
+  return document.querySelector('[data-layer="ais"]')?.getAttribute('aria-pressed') === 'true';
+}
+
+/** Drop the upstream connection and every vessel marker. */
+function stopAis(): void {
+  aisSub?.close();
+  aisSub = null;
+  aisVessels.clear();
+  void renderAIS();   // with the vessel map empty this removes all existing markers
+  updateAisStatus('offline');
+}
+
 function startAisIfConfigured(): void {
   if (aisSub) return;
   if (!station.ais?.show || !station.ais.wsUrl) return;
@@ -979,7 +999,21 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden) void refresh();
 });
 
-startAisIfConfigured();
+// Only hold the upstream connection while the layer is actually on. Connecting on load
+// regardless meant a dashboard left on the Lively wallpaper or a kiosk streamed AIS and
+// updated hundreds of hidden markers around the clock for a layer nobody had enabled —
+// and kept the proxy's client count above zero, so it could never idle.
+if (aisLayerEnabled()) startAisIfConfigured();
+
+document.getElementById('currents-card')?.addEventListener('click', (ev) => {
+  const target = ev.target as Element | null;
+  if (!target?.closest('[data-layer="ais"]')) return;
+  // MarineCurrents.astro's inline script has already flipped aria-pressed by this point:
+  // it binds during parse, this module is deferred, so its handler runs first.
+  if (aisLayerEnabled()) startAisIfConfigured();
+  else stopAis();
+});
+
 window.addEventListener('pagehide', () => {
   aisSub?.close();
   aisSub = null;
