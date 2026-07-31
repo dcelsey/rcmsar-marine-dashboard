@@ -7,7 +7,19 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 ## CR-006 — Stop the 15-min data commits consuming the Vercel deploy budget
 
 - **Logged:** 2026-07-31
-- **Status:** open — **blocking, and it has now actually fired**
+- **Status:** open — **blocking. The budget is saturated, not merely tight.**
+- **Why this is now urgent:** production deploys sit pinned at **95 per rolling 24 h** (CR-005 has the measurement), so the wind bot alone consumes essentially the whole allowance. There is no spare capacity for previews *or* for a normal development session — hand-pushed commits displace the bot's data deploys and the live dashboard falls behind while you work. This isn't a future risk; it happened repeatedly on 2026-07-31.
+
+### 2026-07-31 — the actual model: a saturated rolling window
+
+Duncan's hypothesis, and the measurements bear it out. The limit is a **rolling 24-hour window**, not a daily quota that resets. Across 1790 deployment records, the rolling-24 h production count sits **pinned at exactly 95** — deployment after deployment, all day, not drifting around 95. That's the signature of saturation: the wind bot's 15-min cadence consumes the budget, one slot ages out roughly every 15 min, and whatever attempts next takes it.
+
+Consequences worth internalising:
+
+- **Every hand-pushed commit competes with the wind bot for that single slot, and can win.** Measured on 2026-07-31: bot data deploys at 19:15 and 19:30 both refused, while a code push at 19:24 succeeded — leaving the live site serving `wind.json` 28 min old. **You cannot run a development session and keep the dashboard current at the same time.** Batch commits, and expect data to lag by roughly half the staleness budget while working.
+- **`retry in 24 hours` is generic text, not a literal wait.** The window drains continuously; what looked like a 9-minute "recovery" was simply the next slot freeing. There is nothing to wait out.
+- **Deploys ship the whole tree, so a refusal delays data rather than losing it.** The 19:24 code deploy carried the bot's 19:15 `wind.json` with it — which is why the site had data at all. Any success brings everything current, whoever triggered it. This bounds the damage and is why the earlier "the dashboard is frozen" panic was wrong.
+- **The ceiling isn't cleanly 100.** The rolling count reached **120 on 2026-07-16** without apparent trouble, so there may be burst allowance or the limit has changed. The Vercel usage page is authoritative; **GitHub deployment records miss previews entirely**, so anything inferred from them undercounts.
 
 ### 2026-07-31 18:47Z — the limit fired, briefly
 

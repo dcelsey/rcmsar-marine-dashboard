@@ -1,12 +1,14 @@
 # Handover — rcmsar-marine-dashboard
 
-> ## Deploy headroom is thin — read before pushing branches (2026-07-31)
+> ## The deploy budget is saturated — read before pushing (2026-07-31)
 >
-> **Don't push a branch expecting a Vercel preview.** The wind bot spends ~96 of the Hobby tier's 100 deploys/day, so there is no room for previews. Attempting one on 2026-07-31 produced `Deployment rate limited — retry in 24 hours` and also cost one production deploy: the AIS merge `c91ea03` was refused outright.
+> **You cannot run a development session and keep the dashboard current at the same time.** The Vercel limit is a **rolling 24-hour window**, not a daily reset, and production deploys sit at a pinned **95 in any rolling 24 h** — the wind bot's 15-min cadence consumes essentially the whole budget. One slot frees roughly every 15 min as an old deploy ages out, and the next attempt takes it.
 >
-> **It recovered on its own in ~9 minutes**, not 24 hours — the next bot commit (`addd446`, 19:01Z) deployed normally and carried the AIS merge live with it. So the message overstates the outage, and a refused deploy is *not* a lasting one: content ships with the next commit that gets through. Check whether the deployed SHA contains yours before concluding anything is stuck.
+> So **every commit you push competes with the wind bot for that one slot, and can win.** Observed on 2026-07-31: the bot's 19:15 and 19:30 data deploys were both refused while a code push at 19:24 succeeded, leaving the live site serving `wind.json` 28 minutes old.
 >
-> The squeeze is real even though this instance was brief — see **CR-006**, which moves the 15-min data commits off `main` so deploys track code changes only, and makes branch previews possible for the first time.
+> Two things stop this being an outage. `Deployment rate limited — retry in 24 hours` is **generic text, not a literal wait** — the window drains continuously. And deploys ship the **whole tree**, so a refused deploy *delays* data rather than losing it: the next success, whoever triggers it, brings everything current. Check whether the deployed SHA *contains* your commit (`git merge-base --is-ancestor`) rather than looking for your own SHA.
+>
+> Practical rule: **batch your commits**, and expect data to lag by roughly half the staleness budget while you work. **CR-006** is the fix — move the data commits off `main` and deploys drop to a handful a week, which restores both the data cadence and branch previews.
 
 ## Where things stand
 
