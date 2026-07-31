@@ -78,9 +78,16 @@ export function currentArrowSvg({ speedKn, dirDeg, tint, secondary }: CurrentArr
   const open = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 -60 60 72" width="60" height="72" class="ca ${kindCls} ${tintCls}" aria-hidden="true">`;
   const close = `</svg>`;
 
+  // Invisible hover target sized to the glyph. The 60x72 box exists so an arrow can
+  // point any direction at any length; leaving all of it interactive meant empty space
+  // opened a tooltip for a marker that looked far away, and neighbouring boxes stole
+  // each other's hovers. Matches the wind barb treatment.
+  const hit = (body: string) => `<g class="mk-hit" fill="rgba(0,0,0,0)" stroke="rgba(0,0,0,0)">${body}</g>`;
+
   if (speedKn < 0.2) {
     const ring = `<circle cx="0" cy="0" r="7" fill="currentColor" stroke="#000" stroke-width="1.2"/>`;
-    return open + ring + close;
+    // Slack is a 7px ring adrift in a 60x72 box — by far the worst offender.
+    return open + hit(`<circle cx="0" cy="0" r="12"/>`) + ring + close;
   }
 
   const len = Math.min(52, Math.max(10, 10 + speedKn * 6));
@@ -101,5 +108,9 @@ export function currentArrowSvg({ speedKn, dirDeg, tint, secondary }: CurrentArr
   ].join(' ');
   const arrow = `<polygon points="${points}" fill="currentColor" stroke="#000" stroke-width="1.2" stroke-linejoin="round"/>`;
 
-  return `${open}<g transform="rotate(${dirDeg})">${arrow}</g>${close}`;
+  // Target rides inside the rotation, so the hover area follows the arrow rather than
+  // covering all four quadrants, and grows with the arrow as speed lengthens it.
+  const shaftHit = hit(`<line x1="0" y1="5" x2="0" y2="${-len - headH - 2}" stroke-width="18"/>`);
+  return `${open}${hit(`<circle cx="0" cy="0" r="9"/>`)}`
+    + `<g transform="rotate(${dirDeg})">${shaftHit}${arrow}</g>${close}`;
 }

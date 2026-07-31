@@ -299,9 +299,16 @@ import 'leaflet/dist/leaflet.css';
      `.leaflet-marker-icon.leaflet-interactive { pointer-events: auto }`, so a
      single-class selector here loses on specificity and silently does nothing. */
   :global(.leaflet-marker-icon.wind-barb-icon),
-  :global(.leaflet-marker-icon.tide-marker-icon) { pointer-events: none; }
+  :global(.leaflet-marker-icon.tide-marker-icon),
+  :global(.leaflet-marker-icon.current-arrow-icon) { pointer-events: none; }
   :global(.wind-barb-icon .mk-hit),
-  :global(.tide-marker-icon .mk-hit) { pointer-events: all; cursor: pointer; }
+  :global(.tide-marker-icon .mk-hit),
+  :global(.current-arrow-icon .mk-hit) { pointer-events: all; cursor: pointer; }
+
+  /* Tooltips sit beside the marker, not over it — centring kept the tooltip close but
+     hid the very glyph being inspected. 'auto' flips left/right near the map edge. */
+  :global(.leaflet-tooltip.wm-hover.leaflet-tooltip-right) { margin-left: 12px; }
+  :global(.leaflet-tooltip.wm-hover.leaflet-tooltip-left)  { margin-left: -12px; }
 
   /* Position currency. A vessel we haven't heard from in a while must not look as
      authoritative as one reporting now — it may have moved miles since. Judged against
