@@ -78,6 +78,8 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
   - **Station rollout.** Enable `ais.show` on stations beyond sar33 once the above is settled.
   - **Breadcrumbs.** Spec §1 says historical trails are a non-goal at launch; revisit if crews ask for a short (5–15 min) tail behind moving vessels.
   - **Observability.** Add real health monitoring on the `/health` route (uptime pings, alert on `upstream != "live"` > N minutes).
+  - **Idle when no clients** (noted 2026-07-31). The `*/5` Cloudflare cron keeps the Durable Object warm permanently, so it holds the upstream WebSocket and processes AIS traffic 24/7 even with nobody watching — observed live as `clients: 0` alongside `upstream: "live"`, 417 vessels. Deliberate (a cold start would make the first viewer wait for the cache to fill) but it is the only ongoing cost the layer carries. If CF Durable Object duration ever becomes a concern, the lever is idling the upstream after N minutes with no clients and reconnecting on demand — **not** reducing `BROADCAST_MS`. Check DO duration in the CF dashboard before assuming it matters.
+  - **Note for cost discussions:** AIS adds **zero** GitHub commits and **zero** Vercel deploys — the browser talks to the Worker over a WebSocket at runtime, and `wrangler deploy` is a separate Cloudflare quota. Merging the branch costs one Vercel deploy, once. This is the opposite of the wind pipeline (CR-006), and the two shouldn't be reasoned about together.
   - **API key rotation.** aisstream key is a `wrangler secret`. Note a rotation cadence and where the key lives.
 
 ## CR-002 — Preserve wind stations missing from a pull
