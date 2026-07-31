@@ -65,9 +65,24 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 
 **Known limit:** sites reporting less often than ~90 min still infer `cadence_min: null` and fall back to the `STALE_MIN` floor. None are currently in use near any station; revisit if one is ever added.
 
-> **CR-003 is reserved** — "AIS layer follow-ups", currently living in the `feat/ais-layer`
-> stash (`stash@{0}`), not on `main`. It reappears when that work is unstashed. Numbering
-> here skips to CR-004 to avoid clobbering it.
+## CR-003 — AIS layer follow-ups (deferred from `feat/ais-layer`)
+
+- **Logged:** 2026-07-14
+- **Status:** open — the layer itself **shipped to `main` 2026-07-31**; these are the deferred items
+- **Shipped in that merge**, beyond the original branch: debug logging stripped from the Durable Object; AIS free text (vessel name, destination) escaped before reaching `innerHTML`; the upstream connection now opens only when the layer is switched on rather than on every page load; position currency judged per vessel against its own observed reporting cadence, with markers fading and popups saying "last heard"; the feed-health indicator moved out of the legend to sit beside the AIS toggle, with a 30 s silence watchdog so it can't keep claiming "live" after a silently dropped socket.
+- **Needs a `wrangler deploy`:** the `cadenceMs` measurement and the `MetaData.time_utc` preference are in `cf-workers/ais-proxy/` but not yet live. Until deployed, the frontend falls back to flat 5/15 min staleness thresholds — verified to degrade gracefully, so this is not urgent.
+- **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
+- **Items to resolve before wider rollout:**
+  - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.
+  - **Default state.** Layer currently defaults OFF (opt-in via toggle). Product decision needed on whether to default ON at launch of full rollout.
+  - **Own-asset styling.** Should known RCMSAR MMSIs be styled distinctly (colour, pinned always-on, "own vessel" badge)? Requires the MMSI list per unit.
+  - **Coverage expansion.** Broaden bbox from Salish Sea to full BC coast (WCVI, north coast) as we enable AIS on outer-coast stations.
+  - **Station rollout.** Enable `ais.show` on stations beyond sar33 once the above is settled.
+  - **Breadcrumbs.** Spec §1 says historical trails are a non-goal at launch; revisit if crews ask for a short (5–15 min) tail behind moving vessels.
+  - **Observability.** Add real health monitoring on the `/health` route (uptime pings, alert on `upstream != "live"` > N minutes).
+  - **Idle when no clients** (noted 2026-07-31). The `*/5` Cloudflare cron keeps the Durable Object warm permanently, so it holds the upstream WebSocket and processes AIS traffic 24/7 even with nobody watching — observed live as `clients: 0` alongside `upstream: "live"`, 417 vessels. Deliberate (a cold start would make the first viewer wait for the cache to fill) but it is the only ongoing cost the layer carries. If CF Durable Object duration ever becomes a concern, the lever is idling the upstream after N minutes with no clients and reconnecting on demand — **not** reducing `BROADCAST_MS`. Check DO duration in the CF dashboard before assuming it matters.
+  - **Note for cost discussions:** AIS adds **zero** GitHub commits and **zero** Vercel deploys — the browser talks to the Worker over a WebSocket at runtime, and `wrangler deploy` is a separate Cloudflare quota. Merging the branch costs one Vercel deploy, once. This is the opposite of the wind pipeline (CR-006), and the two shouldn't be reasoned about together.
+  - **API key rotation.** aisstream key is a `wrangler secret`. Note a rotation cadence and where the key lives.
 
 ## CR-002 — Preserve wind stations missing from a pull
 

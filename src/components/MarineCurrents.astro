@@ -8,7 +8,15 @@ import 'leaflet/dist/leaflet.css';
       <button type="button" class="layer-toggle" data-layer="currents" aria-pressed="true">Currents</button>
       <button type="button" class="layer-toggle" data-layer="tides" aria-pressed="true">Tides</button>
       <button type="button" class="layer-toggle" data-layer="wind" aria-pressed="true">Wind</button>
+      <button type="button" class="layer-toggle" data-layer="ais" aria-pressed="false">AIS</button>
     </div>
+    <!-- Feed health, deliberately NOT in the legend. It lived among the vessel-category
+         swatches, where it read as another colour key and sat below the fold — useless
+         as the one cue telling a crew whether the vessels shown are live. It belongs
+         beside the toggle that turns the layer on, which is where the eye already is. -->
+    <span class="ais-status" id="ais-status" data-state="offline">
+      <span class="ais-dot"></span>AIS feed · <span class="ais-label">offline</span>
+    </span>
     <span class="currents-meta" id="currents-r"></span>
   </div>
 
@@ -24,35 +32,64 @@ import 'leaflet/dist/leaflet.css';
   </div>
 
   <div class="currents-legend tiny muted">
+    <!-- Each row is label + a separate items column. The wrapper is what produces the
+         hanging indent: items wrap inside their own column, so on a narrow screen the
+         overflow lines up under the first item instead of running back under the label. -->
     <div class="cl-group" data-legend-layer="currents">
-      <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.2</span>
-      <span class="cl-item"><span class="cl-swatch ca-green"></span>0.2–1.5</span>
-      <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
-      <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
-      <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
-      <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
-      <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+      <span class="cl-label">Current</span>
+      <div class="cl-items">
+        <span class="cl-item"><span class="cl-swatch ca-calm"></span>&lt; 0.2</span>
+        <span class="cl-item"><span class="cl-swatch ca-green"></span>0.2–1.5</span>
+        <span class="cl-item"><span class="cl-swatch ca-yellow"></span>1.5–2.5</span>
+        <span class="cl-item"><span class="cl-swatch ca-orange"></span>2.5–3.5</span>
+        <span class="cl-item"><span class="cl-swatch ca-redorange"></span>3.5–5</span>
+        <span class="cl-item"><span class="cl-swatch ca-red"></span>5+ kn</span>
+        <span class="cl-item"><span class="cl-glyph cl-slack">●</span> slack</span>
+      </div>
     </div>
     <div class="cl-group" data-legend-layer="tides">
-      <span class="cl-sep">|</span>
-      <span class="cl-item"><span class="cl-swatch cl-tide-rising"></span> tide rising</span>
-      <span class="cl-item"><span class="cl-swatch cl-tide-falling"></span> tide falling</span>
+      <span class="cl-label">Tide</span>
+      <div class="cl-items">
+        <span class="cl-item"><span class="cl-swatch cl-tide-rising"></span> rising</span>
+        <span class="cl-item"><span class="cl-swatch cl-tide-falling"></span> falling</span>
+      </div>
     </div>
     <div class="cl-group" data-legend-layer="wind">
-      <span class="cl-sep">|</span>
-      <span class="cl-item">
-        <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
-          <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        live wind
-      </span>
-      <span class="cl-item">
-        <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
-          <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        forecast wind
-      </span>
-      <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
+      <span class="cl-label">Wind</span>
+      <div class="cl-items">
+        <span class="cl-item">
+          <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
+            <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          live
+        </span>
+        <span class="cl-item">
+          <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
+            <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          forecast
+        </span>
+        <span class="cl-item"><span class="chip g">&lt; 15</span> <span class="chip w">15–21</span> <span class="chip a">22+ kn</span></span>
+      </div>
+    </div>
+    <div class="cl-group" data-legend-layer="ais">
+      <span class="cl-label">AIS</span>
+      <div class="cl-items">
+        <span class="cl-item"><span class="cl-swatch av-passenger"></span>passenger</span>
+        <span class="cl-item"><span class="cl-swatch av-cargo"></span>cargo</span>
+        <span class="cl-item"><span class="cl-swatch av-tanker"></span>tanker</span>
+        <span class="cl-item"><span class="cl-swatch av-fishing"></span>fishing</span>
+        <span class="cl-item"><span class="cl-swatch av-tug"></span>tug</span>
+        <span class="cl-item"><span class="cl-swatch av-sar"></span>SAR</span>
+        <span class="cl-item"><span class="cl-swatch av-sailing"></span>sailing</span>
+        <span class="cl-item"><span class="cl-swatch av-other"></span>other</span>
+        <!-- These label the DATA, never the vessel. Avoid "overdue": in a marine/SAR
+             context that's a formal status meaning a vessel failed to arrive when
+             expected and is cause for concern — not "we haven't had a packet lately". -->
+        <span class="cl-item"><span class="cl-swatch av-other avf-ageing"></span>ageing</span>
+        <span class="cl-item"><span class="cl-swatch av-other avf-stale"></span>stale</span>
+        <span class="cl-item ais-note">AIS-equipped, transmitting vessels only · situational awareness, not a complete picture · faded = not heard from recently, position may be out of date · times are when the AIS network last heard the vessel, not when it was there · via aisstream.io</span>
+      </div>
     </div>
   </div>
 
@@ -95,10 +132,12 @@ import 'leaflet/dist/leaflet.css';
      both the map markers and the corresponding legend group. */
   .currents-card.no-currents :global(.current-arrow-icon),
   .currents-card.no-tides    :global(.tide-marker-icon),
-  .currents-card.no-wind     :global(.wind-barb-icon) { display: none !important; }
+  .currents-card.no-wind     :global(.wind-barb-icon),
+  .currents-card.no-ais      :global(.ais-vessel-icon) { display: none !important; }
   .currents-card.no-currents [data-legend-layer="currents"],
   .currents-card.no-tides    [data-legend-layer="tides"],
-  .currents-card.no-wind     [data-legend-layer="wind"] { display: none !important; }
+  .currents-card.no-wind     [data-legend-layer="wind"],
+  .currents-card.no-ais      [data-legend-layer="ais"] { display: none !important; }
 
   .currents-slider {
     display: flex;
@@ -143,28 +182,39 @@ import 'leaflet/dist/leaflet.css';
     font-size: 13px;
   }
 
+  /* One layer per line. Run together on a single wrapped line the four groups read as
+     one long undifferentiated strip, and it isn't obvious which swatch belongs to which
+     layer — the separators were doing work the line breaks now do better. */
+  /* Gap between layers is deliberately much larger than the gap inside one. The AIS
+     caveat wraps onto its own line but belongs to the AIS row, and with uniform spacing
+     it read as a fifth, unrelated row of the legend. */
   .currents-legend {
-    display: flex; align-items: center; flex-wrap: wrap;
-    gap: 6px 8px; margin-top: 10px; padding: 6px 2px;
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 12px; margin-top: 10px; padding: 6px 2px;
   }
+  /* Label sits in its own fixed column; the items get the rest and wrap within it. That
+     gives a hanging indent for free — wrapped items line up under the first item rather
+     than sliding back under the label, which is what makes a narrow screen readable. */
   .cl-group {
-    display: inline-flex; align-items: center; flex-wrap: wrap;
-    gap: 6px 12px;
+    display: flex; align-items: baseline;
+    gap: 12px; width: 100%;
+  }
+  .cl-items {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 3px 12px;
+    flex: 1 1 auto; min-width: 0;
   }
   .cl-item { display: inline-flex; align-items: center; gap: 5px; }
-  .cl-sep {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 400;
-    margin: 0 4px 0 -2px;
-    opacity: .55;
+  /* Names the layer, so the items themselves can stay bare — "rising" not "tide rising",
+     "live" not "live wind". Fixed width so every row's first swatch lines up. */
+  .cl-label {
+    color: var(--ink);
+    font-weight: 600;
+    flex: 0 0 auto;
+    width: 4.5em;
   }
-
-  @media (max-width: 640px) {
-    .currents-legend { flex-direction: column; align-items: flex-start; gap: 4px; }
-    .cl-group { display: flex; width: 100%; }
-    .cl-group .cl-sep { display: none; }
-  }
+  /* Always starts its own line — it's a caveat about the row, not another key. */
+  .ais-note { flex-basis: 100%; }
   .cl-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
   .cl-glyph { font-size: 13px; line-height: 1; }
   .cl-ref { color: var(--good); }
@@ -212,13 +262,95 @@ import 'leaflet/dist/leaflet.css';
   .cl-tide-rising { color: #2a7bd8; }
   .cl-tide-falling { color: #d84a4a; }
   .cl-barb-glyph { color: var(--good); vertical-align: middle; }
+
+  /* AIS vessel markers — colour via `av-<category>` class, matching the
+     `ca-<tint>` pattern used by currents. */
+  :global(.av-passenger) { color: #1976d2; }
+  :global(.av-cargo)     { color: #d4670a; }
+  :global(.av-tanker)    { color: #7a1fa2; }
+  :global(.av-fishing)   { color: #388e3c; }
+  :global(.av-tug)       { color: #f9a825; }
+  :global(.av-sar)       { color: #c62828; }
+  :global(.av-sailing)   { color: #00838f; }
+  :global(.av-other),
+  :global(.av-unknown)   { color: #616161; }
+
+  :global(.ais-vessel-icon) {
+    background: transparent !important;
+    border: none !important;
+  }
+  :global(.ais-vessel-icon svg) {
+    display: block;
+    overflow: visible;
+    transition: transform 800ms linear;
+  }
+  :global(.leaflet-marker-icon.ais-vessel-icon) {
+    transition: transform 800ms linear;
+  }
+
+  /* Position currency. A vessel we haven't heard from in a while must not look as
+     authoritative as one reporting now — it may have moved miles since. Judged against
+     each vessel's own reporting rate, so "quiet" means quiet *for that vessel*. */
+  :global(.ais-vessel-icon.avf-ageing)  { opacity: 0.55; }
+  :global(.ais-vessel-icon.avf-stale) { opacity: 0.28; }
+  /* Legend swatches carry the same fade, or "ageing"/"stale" would be unreadable. */
+  .cl-swatch.avf-ageing  { opacity: 0.55; }
+  .cl-swatch.avf-stale { opacity: 0.28; }
+  .ais-stale-note {
+    margin-top: 3px; font-size: 11px; font-weight: 600;
+    color: #c62828;
+  }
+  :global(.leaflet-tooltip) .ais-stale-note,
+  :global(.leaflet-popup-content) .ais-stale-note { color: #ef5350; }
+
+  /* Reads as a status readout, not a chip — the layer toggles beside it are pill-shaped
+     and clickable, so this is deliberately square-ish, bordered and non-interactive. */
+  .ais-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; line-height: 1.4;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card2);
+    color: var(--muted);
+  }
+  .ais-status .ais-label { font-weight: 600; color: var(--ink); }
+  .ais-status .ais-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #9e9e9e; display: inline-block;
+    flex: none;
+  }
+  .ais-status[data-state="live"] .ais-dot {
+    background: #43a047;
+    animation: aisPulse 1.6s ease-in-out infinite;
+  }
+  .ais-status[data-state="live"] .ais-label { color: #66bb6a; }
+  .ais-status[data-state="connecting"] .ais-dot,
+  .ais-status[data-state="reconnecting"] .ais-dot { background: #f9a825; }
+  /* Losing the feed must be legible at a glance — a wallpaper is read from across a
+     room, and "we are no longer receiving vessels" is the one state that matters. */
+  .ais-status[data-state="reconnecting"] {
+    border-color: #f9a825; background: rgba(249, 168, 37, 0.12);
+  }
+  .ais-status[data-state="reconnecting"] .ais-label { color: #ffb300; }
+  .ais-status[data-state="offline"] .ais-dot { background: #9e9e9e; }
+
+  /* Only meaningful while the layer is on. */
+  .currents-card.no-ais .ais-status { display: none !important; }
+  .ais-note { color: var(--muted); font-style: italic; }
+
+  @keyframes aisPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.4); }
+  }
 </style>
 
 <script is:inline>
   (function () {
-    var LAYERS = ['currents', 'tides', 'wind'];
+    var LAYERS = ['currents', 'tides', 'wind', 'ais'];
+    // AIS defaults OFF at first load — experimental; the other three default ON.
+    var DEFAULT_ON = ['currents', 'tides', 'wind'];
     var m = document.cookie.match(/(?:^|; )map-layers=([^;]*)/);
-    var enabled = m ? decodeURIComponent(m[1]).split(',').filter(Boolean) : LAYERS.slice();
+    var enabled = m ? decodeURIComponent(m[1]).split(',').filter(Boolean) : DEFAULT_ON.slice();
     var card = document.getElementById('currents-card');
     if (card) {
       LAYERS.forEach(function (l) {

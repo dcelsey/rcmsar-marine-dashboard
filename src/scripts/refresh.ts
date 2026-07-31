@@ -1,16 +1,19 @@
 import SunCalc from 'suncalc';
 import type * as LeafletNS from 'leaflet';
 import type { StationConfig } from '../lib/stations';
-import { fmtTime, fmtDay, fmtNow, compass, wmo } from '../lib/format';
+import { fmtTime, fmtDay, fmtNow, compass, wmo, escapeHtml } from '../lib/format';
 import {
   loadWeather, loadWindByLocation, loadMarine, loadTides, loadLiveWind, loadCurrents, loadTidesMap,
   getNearbyLiveStations, pointHasNearbyLive,
   type WeatherResponse, type WindPointResponse, type MarineResponse, type TideBundle, type LiveWindPayload,
   type CurrentsPayload, type ReferenceCurrentStation, type SecondaryCurrentStation, type TideMapPayload,
+  type AisVessel, type AisStatus,
 } from '../lib/sources';
 import { windBarbSvg, speedTint } from '../lib/windBarb';
 import { currentArrowSvg, currentTint, interpolateCurrentAt, nextExtremum } from '../lib/currentArrow';
 import { tideStateAt, tideMarkerSvg } from '../lib/tideMarker';
+import { aisVesselSvg, aisVesselCategory } from '../lib/aisVessel';
+import { subscribeAis, type AisSubscription } from '../lib/aisClient';
 
 const station: StationConfig = JSON.parse(
   document.getElementById('station-config')!.textContent!,
@@ -202,6 +205,7 @@ type CurrentsMapState = {
   markers: Map<string, LeafletNS.Marker>;
   tideMarkers: Map<string, LeafletNS.Marker>;
   windMarkers: Map<string, LeafletNS.Marker>;
+  aisMarkers: Map<string, LeafletNS.Marker>;
   fitted: boolean;
 };
 let currentsMapState: CurrentsMapState | null = null;
@@ -209,6 +213,26 @@ let currentsMapInitInFlight: Promise<CurrentsMapState | null> | null = null;
 let lastCurrents: CurrentsPayload | null = null;
 let lastTidesMap: TideMapPayload | null = null;
 let currentsOffsetSec = 0;  // 0 = now; positive = forward look-ahead
+
+// AIS subscription is push-based (WebSocket) — separate lifecycle from the
+// poll-based refresh() cycle. Populated by startAisIfConfigured().
+let aisSub: AisSubscription | null = null;
+const aisVessels: Map<string, AisVessel> = new Map();
+let aisRerenderTimer: number | null = null;
+
+/**
+ * Re-render cadence for position ageing, independent of incoming traffic.
+ *
+ * renderAIS is normally driven by messages arriving, which is fine while the feed is
+ * healthy — other vessels' updates keep the loop ticking, so a vessel that goes quiet
+ * visibly fades. But if the feed itself dies (proxy down, upstream dropped, network
+ * lost) no messages arrive, so nothing re-renders and every marker freezes at whatever
+ * freshness it had at that instant. The map would go on looking current indefinitely —
+ * on an unattended kiosk or the Lively wallpaper, the worst possible way for this to
+ * fail. Tick independently so age always advances on its own.
+ */
+const AIS_AGE_TICK_MS = 30_000;
+let aisAgeTimer: number | null = null;
 
 type BarbEntry = {
   key: string;
@@ -293,7 +317,7 @@ async function ensureCurrentsMap(container: HTMLElement): Promise<CurrentsMapSta
       const layer = (e.popup as unknown as { _source?: LeafletNS.Marker })._source;
       layer?.closeTooltip?.();
     });
-    currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), fitted: false };
+    currentsMapState = { L, map, markers: new Map(), tideMarkers: new Map(), windMarkers: new Map(), aisMarkers: new Map(), fitted: false };
     return currentsMapState;
   })();
   const s = await currentsMapInitInFlight;
@@ -558,6 +582,193 @@ async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPaylo
       windMarkers.delete(key);
     }
   }
+}
+
+function fmtAge(ms: number): string {
+  const s = Math.max(0, Math.round(ms / 1000));
+  if (s < 60) return `${s}s`;
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return `${h}h ${m - h * 60}m`;
+}
+
+/**
+ * How current a vessel's position is, judged against that vessel's own reporting rate.
+ *
+ * A flat age threshold can't work here: a ferry reporting every 10 s and a tug at anchor
+ * reporting every 3 min are both healthy, but 4 minutes of silence means very different
+ * things for each. Where the proxy has measured a cadence, judge against it — the same
+ * approach the wind stations use (CR-004). Fall back to fixed thresholds when it hasn't
+ * (too few samples yet, or an older proxy build that doesn't send one).
+ *
+ * This is deliberately conservative: AIS reception is patchy and a missed report is
+ * normal, so 'ageing' starts well past the expected interval rather than at it.
+ *
+ * The states describe the DATA, not the vessel — 'stale', never 'overdue'. In a marine
+ * context "overdue" is a formal status meaning a vessel failed to arrive when expected
+ * and is cause for concern, so putting it on a marker because a packet is late could be
+ * read by a crew as a genuine alert. Keep this vocabulary about position currency.
+ */
+function aisFreshness(ageMs: number, cadenceMs: number | null | undefined): 'fresh' | 'ageing' | 'stale' {
+  const ageingAfter  = cadenceMs ? Math.max(45_000, cadenceMs * 1.5) : 5 * 60_000;
+  const staleAfter = cadenceMs ? Math.max(120_000, cadenceMs * 3)  : 15 * 60_000;
+  if (ageMs >= staleAfter) return 'stale';
+  if (ageMs >= ageingAfter) return 'ageing';
+  return 'fresh';
+}
+
+const NAV_STATUS_TEXT: Record<number, string> = {
+  0: 'under way (engine)', 1: 'at anchor', 2: 'not under command',
+  3: 'restricted maneuverability', 4: 'constrained by draught', 5: 'moored',
+  6: 'aground', 7: 'fishing', 8: 'under way (sailing)', 15: 'undefined',
+};
+
+function scheduleAisRerender(): void {
+  if (aisRerenderTimer !== null) return;
+  aisRerenderTimer = window.setTimeout(() => {
+    aisRerenderTimer = null;
+    void renderAIS();
+  }, 500);
+}
+
+async function renderAIS(): Promise<void> {
+  if (!station.ais?.show) return;
+  const container = $<HTMLDivElement>('#currents-map');
+  if (!container) return;
+  if (container.offsetWidth === 0 || container.offsetHeight === 0) return;
+
+  const state = await ensureCurrentsMap(container);
+  if (!state) return;
+  const { L, map, aisMarkers } = state;
+  const canHover = window.matchMedia('(hover: hover)').matches;
+  const now = Date.now();
+
+  const seen = new Set<string>();
+  for (const v of aisVessels.values()) {
+    if (typeof v.lat !== 'number' || typeof v.lon !== 'number') continue;
+    const key = `ais:${v.mmsi}`;
+    seen.add(key);
+    const category = aisVesselCategory(v.type);
+    const moving = (v.sog ?? 0) > 0.3;
+    const headingDeg = v.heading ?? v.cog ?? null;
+    const html = aisVesselSvg({ headingDeg, moving, category });
+    const ageMs = now - v.lastMsgMs;
+    const freshness = aisFreshness(ageMs, v.cadenceMs);
+    const icon = L.divIcon({
+      html,
+      className: `ais-vessel-icon av-${category} avf-${freshness}`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    });
+
+    // name/destination are free text broadcast by the vessel — escape before innerHTML.
+    const safeName = escapeHtml(v.name);
+    const safeMmsi = escapeHtml(v.mmsi);
+    const nameLine = safeName ? `<b>${safeName}</b>` : `<b>MMSI ${safeMmsi}</b>`;
+    const speedLine = moving && v.sog !== null
+      ? `<div><b>${v.sog.toFixed(1)} kn</b> · ${v.cog !== null ? compass(v.cog) + ' · ' + Math.round(v.cog) + '°' : 'course —'}</div>`
+      : `<div>stopped / anchored</div>`;
+    const statusLine = v.navStatus !== null && NAV_STATUS_TEXT[v.navStatus]
+      ? `<div>${NAV_STATUS_TEXT[v.navStatus]}</div>` : '';
+    const safeDest = escapeHtml(v.destination);
+    const destLine = safeDest ? `<div>→ ${safeDest}</div>` : '';
+    // "last heard" rather than a bare age: this is when the AIS network last reported
+    // the vessel to us, which is the strongest claim the data supports.
+    const cadenceNote = v.cadenceMs ? ` · reports ~every ${fmtAge(v.cadenceMs)}` : '';
+    const staleNote = freshness === 'stale'
+      ? '<div class="ais-stale-note">stale — position may be well out of date</div>'
+      : '';
+    const metaLine = `<div class="tiny muted">${category} · MMSI ${safeMmsi}`
+      + ` · last heard ${fmtAge(ageMs)} ago${cadenceNote}</div>`;
+    const popupHtml = `<div class="wm-popup">${nameLine}${speedLine}${statusLine}${destLine}${metaLine}${staleNote}</div>`;
+
+    const existing = aisMarkers.get(key);
+    if (existing) {
+      existing.setIcon(icon);
+      existing.setLatLng([v.lat, v.lon]);
+      existing.setPopupContent(popupHtml);
+      const tt = existing.getTooltip();
+      if (tt) tt.setContent(popupHtml);
+    } else {
+      const m = L.marker([v.lat, v.lon], { icon, riseOnHover: true });
+      m.bindPopup(popupHtml, { className: 'wm-popup-wrap', closeButton: true });
+      if (canHover) {
+        m.bindTooltip(popupHtml, {
+          direction: 'top',
+          offset: [0, -14],
+          className: 'wm-hover',
+          opacity: 1,
+        });
+      }
+      m.addTo(map);
+      aisMarkers.set(key, m);
+    }
+  }
+  for (const [key, m] of aisMarkers) {
+    if (!seen.has(key)) {
+      m.remove();
+      aisMarkers.delete(key);
+    }
+  }
+}
+
+function updateAisStatus(status: AisStatus): void {
+  const el = document.getElementById('ais-status');
+  if (!el) return;
+  el.setAttribute('data-state', status);
+  const label = el.querySelector('.ais-label');
+  if (label) label.textContent = status;
+}
+
+/**
+ * Whether the AIS map layer is currently switched on.
+ *
+ * The toggle state lives in the `map-layers` cookie and is applied before paint by the
+ * inline script in MarineCurrents.astro. Read the button it already set rather than
+ * re-parsing the cookie here, so there's one source of truth for the default.
+ */
+function aisLayerEnabled(): boolean {
+  return document.querySelector('[data-layer="ais"]')?.getAttribute('aria-pressed') === 'true';
+}
+
+/** Drop the upstream connection and every vessel marker. */
+function stopAis(): void {
+  aisSub?.close();
+  aisSub = null;
+  if (aisAgeTimer !== null) { clearInterval(aisAgeTimer); aisAgeTimer = null; }
+  aisVessels.clear();
+  void renderAIS();   // with the vessel map empty this removes all existing markers
+  updateAisStatus('offline');
+}
+
+function startAisIfConfigured(): void {
+  if (aisSub) return;
+  if (!station.ais?.show || !station.ais.wsUrl) return;
+  if (station.ais.wsUrl.includes('<SUBDOMAIN>')) {
+    console.warn('AIS wsUrl still contains <SUBDOMAIN> placeholder; skipping subscribe');
+    return;
+  }
+  aisSub = subscribeAis({
+    url: station.ais.wsUrl,
+    onSnapshot: (vessels, upstream) => {
+      aisVessels.clear();
+      for (const v of vessels) aisVessels.set(v.mmsi, v);
+      updateAisStatus(upstream);
+      void renderAIS();
+    },
+    onUpdate: (vessels) => {
+      for (const v of vessels) aisVessels.set(v.mmsi, v);
+      scheduleAisRerender();
+    },
+    onRemove: (mmsis) => {
+      for (const mmsi of mmsis) aisVessels.delete(mmsi);
+      scheduleAisRerender();
+    },
+    onStatus: updateAisStatus,
+  });
+
+  aisAgeTimer ??= window.setInterval(() => { void renderAIS(); }, AIS_AGE_TICK_MS);
 }
 
 function renderTide(tides: TideBundle): void {
@@ -837,4 +1048,25 @@ void refresh();
 setInterval(() => { void refresh(); }, station.refreshMs);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) void refresh();
+});
+
+// Only hold the upstream connection while the layer is actually on. Connecting on load
+// regardless meant a dashboard left on the Lively wallpaper or a kiosk streamed AIS and
+// updated hundreds of hidden markers around the clock for a layer nobody had enabled —
+// and kept the proxy's client count above zero, so it could never idle.
+if (aisLayerEnabled()) startAisIfConfigured();
+
+document.getElementById('currents-card')?.addEventListener('click', (ev) => {
+  const target = ev.target as Element | null;
+  if (!target?.closest('[data-layer="ais"]')) return;
+  // MarineCurrents.astro's inline script has already flipped aria-pressed by this point:
+  // it binds during parse, this module is deferred, so its handler runs first.
+  if (aisLayerEnabled()) startAisIfConfigured();
+  else stopAis();
+});
+
+window.addEventListener('pagehide', () => {
+  aisSub?.close();
+  aisSub = null;
+  if (aisAgeTimer !== null) { clearInterval(aisAgeTimer); aisAgeTimer = null; }
 });
