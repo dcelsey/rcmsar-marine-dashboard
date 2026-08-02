@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-02T17:45:29.547Z",
+  "generated_at": "2026-08-02T18:01:04.781Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 83,
   "stations": [
     {
       "id": "swob:1016640",
@@ -552,23 +552,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1038204",
-      "source": "swob",
-      "name": "Tofino",
-      "lat": 49.0821,
-      "lon": -125.772,
-      "elevation_m": 24.4,
-      "obs_time": "2026-08-02T17:00:00.000Z",
-      "cadence_min": 18,
-      "wind_dir_deg": 270,
-      "wind_speed_kmh": 10,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 5.6,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1100909",
       "source": "swob",
       "name": "Vancouver Boundary Bay",
@@ -581,23 +564,6 @@
       "wind_speed_kmh": 13,
       "wind_gust_kmh": null,
       "wind_speed_kn": 6.8,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1066482",
-      "source": "swob",
-      "name": "Prince Rupert",
-      "lat": 54.2859,
-      "lon": -130.445,
-      "elevation_m": 35.4,
-      "obs_time": "2026-08-02T17:00:00.000Z",
-      "cadence_min": 12,
-      "wind_dir_deg": 278,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.1,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
@@ -768,23 +734,6 @@
       "wind_speed_kmh": 7,
       "wind_gust_kmh": null,
       "wind_speed_kn": 3.5,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-08-02T17:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 230,
-      "wind_speed_kmh": 2,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
@@ -1045,23 +994,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1096439",
-      "source": "swob",
-      "name": "Prince George",
-      "lat": 53.884,
-      "lon": -122.678,
-      "elevation_m": 690.7,
-      "obs_time": "2026-08-02T17:00:00.000Z",
-      "cadence_min": 41,
-      "wind_dir_deg": 195,
-      "wind_speed_kmh": 15,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 8,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1063496",
       "source": "swob",
       "name": "HOLLAND ROCK",
@@ -1210,23 +1142,6 @@
       "wind_speed_kmh": 11,
       "wind_gust_kmh": null,
       "wind_speed_kn": 6,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1108395",
-      "source": "swob",
-      "name": "Vancouver International",
-      "lat": 49.1947,
-      "lon": -123.184,
-      "elevation_m": 4,
-      "obs_time": "2026-08-02T17:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 228,
-      "wind_speed_kmh": 13,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 7,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
