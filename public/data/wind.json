@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-02T20:30:27.495Z",
+  "generated_at": "2026-08-02T20:45:58.601Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1086081",
@@ -1365,40 +1365,6 @@
       "wind_speed_kn": 14.6,
       "wind_gust_kn": 19.3,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054503",
-      "source": "swob",
-      "name": "LANGARA ISLAND RCS",
-      "lat": 54.2553,
-      "lon": -133.0583,
-      "elevation_m": 50.5,
-      "obs_time": "2026-08-02T19:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 319,
-      "wind_speed_kmh": 1,
-      "wind_gust_kmh": 3,
-      "wind_speed_kn": 0.3,
-      "wind_gust_kn": 1.6,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1051351",
-      "source": "swob",
-      "name": "CAPE ST JAMES CS",
-      "lat": 51.9358,
-      "lon": -131.0158,
-      "elevation_m": 89.3,
-      "obs_time": "2026-08-02T19:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 304,
-      "wind_speed_kmh": 25,
-      "wind_gust_kmh": 29,
-      "wind_speed_kn": 13.3,
-      "wind_gust_kn": 15.8,
-      "stale": true,
       "quality": "ok"
     },
     {
