@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-03T16:45:25.609Z",
+  "generated_at": "2026-08-03T17:00:57.278Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1106178",
@@ -1147,23 +1147,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-08-03T16:00:00.000Z",
-      "cadence_min": 13,
-      "wind_dir_deg": 167,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 2.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1057052",
       "source": "swob",
       "name": "Sandspit",
@@ -1382,40 +1365,6 @@
       "wind_speed_kn": 5,
       "wind_gust_kn": 7.9,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1032731",
-      "source": "swob",
-      "name": "ESTEVAN POINT CS",
-      "lat": 49.3832,
-      "lon": -126.5447,
-      "elevation_m": 8,
-      "obs_time": "2026-08-03T15:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 4,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": 6,
-      "wind_speed_kn": 2.6,
-      "wind_gust_kn": 3.3,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054222",
-      "source": "swob",
-      "name": "KINDAKUN ROCKS (AUT)",
-      "lat": 53.3156,
-      "lon": -132.772,
-      "elevation_m": 15.15,
-      "obs_time": "2026-08-03T15:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 341,
-      "wind_speed_kmh": 14,
-      "wind_gust_kmh": 17,
-      "wind_speed_kn": 7.5,
-      "wind_gust_kn": 9.3,
-      "stale": true,
       "quality": "ok"
     },
     {
