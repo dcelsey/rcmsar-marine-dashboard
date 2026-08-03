@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-03T20:45:41.901Z",
+  "generated_at": "2026-08-03T21:01:16.113Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 84,
   "stations": [
     {
       "id": "swob:1064324",
@@ -722,23 +722,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1026271",
-      "source": "swob",
-      "name": "Port Hardy",
-      "lat": 50.6806,
-      "lon": -127.367,
-      "elevation_m": 21.6,
-      "obs_time": "2026-08-03T20:00:00.000Z",
-      "cadence_min": 44,
-      "wind_dir_deg": 22,
-      "wind_speed_kmh": 13,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 7,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1018619",
       "source": "swob",
       "name": "Victoria Harbour",
@@ -977,23 +960,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1096629",
-      "source": "swob",
-      "name": "Quesnel",
-      "lat": 53.0261,
-      "lon": -122.51,
-      "elevation_m": 545,
-      "obs_time": "2026-08-03T20:00:00.000Z",
-      "cadence_min": 33,
-      "wind_dir_deg": 287,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1066482",
       "source": "swob",
       "name": "Prince Rupert",
@@ -1006,23 +972,6 @@
       "wind_speed_kmh": 8,
       "wind_gust_kmh": null,
       "wind_speed_kn": 4.1,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1068134",
-      "source": "swob",
-      "name": "Terrace",
-      "lat": 54.4685,
-      "lon": -128.578,
-      "elevation_m": 217.3,
-      "obs_time": "2026-08-03T20:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 319,
-      "wind_speed_kmh": 7,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 3.7,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
@@ -1382,40 +1331,6 @@
       "wind_speed_kn": 19.7,
       "wind_gust_kn": 21.7,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1017101",
-      "source": "swob",
-      "name": "SATURNA ISLAND",
-      "lat": 48.783215,
-      "lon": -123.045807,
-      "elevation_m": 25.4,
-      "obs_time": "2026-08-03T19:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 270,
-      "wind_speed_kmh": 7,
-      "wind_gust_kmh": 19,
-      "wind_speed_kn": 3.7,
-      "wind_gust_kn": 10.4,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1017099",
-      "source": "swob",
-      "name": "SATURNA CAPMON",
-      "lat": 48.775203,
-      "lon": -123.128286,
-      "elevation_m": 179.5,
-      "obs_time": "2026-08-03T19:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 218,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": 12,
-      "wind_speed_kn": 2.5,
-      "wind_gust_kn": 6.6,
-      "stale": true,
       "quality": "ok"
     },
     {
