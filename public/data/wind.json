@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-04T10:45:34.285Z",
+  "generated_at": "2026-08-04T11:01:14.318Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 85,
   "stations": [
     {
       "id": "swob:1016943",
@@ -530,23 +530,6 @@
       "wind_speed_kmh": 3,
       "wind_gust_kmh": null,
       "wind_speed_kn": 1.6,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1096439",
-      "source": "swob",
-      "name": "Prince George",
-      "lat": 53.884,
-      "lon": -122.678,
-      "elevation_m": 690.7,
-      "obs_time": "2026-08-04T10:00:00.000Z",
-      "cadence_min": 2,
-      "wind_dir_deg": 205,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
@@ -1096,23 +1079,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1057052",
-      "source": "swob",
-      "name": "Sandspit",
-      "lat": 53.2543,
-      "lon": -131.814,
-      "elevation_m": 6.4,
-      "obs_time": "2026-08-04T10:00:00.000Z",
-      "cadence_min": 43,
-      "wind_dir_deg": 291,
-      "wind_speed_kmh": 17,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1021270",
       "source": "swob",
       "name": "Campbell River",
@@ -1176,23 +1142,6 @@
       "wind_speed_kmh": 4,
       "wind_gust_kmh": null,
       "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1018621",
-      "source": "swob",
-      "name": "Victoria International",
-      "lat": 48.6472,
-      "lon": -123.426,
-      "elevation_m": 19.5,
-      "obs_time": "2026-08-04T10:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 250,
-      "wind_speed_kmh": 3,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.7,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
