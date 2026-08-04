@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-04T12:45:35.452Z",
+  "generated_at": "2026-08-04T13:01:12.627Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 85,
   "stations": [
     {
       "id": "swob:1086558",
@@ -535,23 +535,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1096629",
-      "source": "swob",
-      "name": "Quesnel",
-      "lat": 53.0261,
-      "lon": -122.51,
-      "elevation_m": 545,
-      "obs_time": "2026-08-04T12:00:00.000Z",
-      "cadence_min": 10,
-      "wind_dir_deg": 45,
-      "wind_speed_kmh": 2,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:110Q44V",
       "source": "swob",
       "name": "Vancouver Harbour",
@@ -615,23 +598,6 @@
       "wind_speed_kmh": 7,
       "wind_gust_kmh": null,
       "wind_speed_kn": 3.5,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1066482",
-      "source": "swob",
-      "name": "Prince Rupert",
-      "lat": 54.2859,
-      "lon": -130.445,
-      "elevation_m": 35.4,
-      "obs_time": "2026-08-04T12:00:00.000Z",
-      "cadence_min": 17,
-      "wind_dir_deg": 169,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
@@ -1382,23 +1348,6 @@
       "wind_speed_kn": 17.7,
       "wind_gust_kn": 25.5,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1022689",
-      "source": "swob",
-      "name": "ENTRANCE ISLAND",
-      "lat": 49.208664,
-      "lon": -123.810536,
-      "elevation_m": 8.979,
-      "obs_time": "2026-08-04T11:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 291,
-      "wind_speed_kmh": 43,
-      "wind_gust_kmh": 49,
-      "wind_speed_kn": 23.1,
-      "wind_gust_kn": 26.3,
-      "stale": true,
       "quality": "ok"
     },
     {
