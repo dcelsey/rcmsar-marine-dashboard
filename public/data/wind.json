@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-05T19:45:30.642Z",
+  "generated_at": "2026-08-05T20:00:12.581Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 88,
   "stations": [
     {
       "id": "swob:1091174",
@@ -752,23 +752,6 @@
       "wind_gust_kmh": 42,
       "wind_speed_kn": 15.2,
       "wind_gust_kn": 22.6,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-08-05T19:00:00.000Z",
-      "cadence_min": 32,
-      "wind_dir_deg": 154,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.1,
-      "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
     },
