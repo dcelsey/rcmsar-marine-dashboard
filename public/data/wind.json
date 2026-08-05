@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-05T15:30:34.171Z",
+  "generated_at": "2026-08-05T15:33:38.725Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1064324",
@@ -1365,40 +1365,6 @@
       "wind_speed_kn": 7.7,
       "wind_gust_kn": 9.5,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1021830",
-      "source": "swob",
-      "name": "Comox",
-      "lat": 49.71,
-      "lon": -124.89,
-      "elevation_m": 26,
-      "obs_time": "2026-08-05T14:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 300,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.1,
-      "wind_gust_kn": null,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054503",
-      "source": "swob",
-      "name": "LANGARA ISLAND RCS",
-      "lat": 54.2553,
-      "lon": -133.0583,
-      "elevation_m": 50.5,
-      "obs_time": "2026-08-05T14:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 7,
-      "wind_speed_kmh": 15,
-      "wind_gust_kmh": 24,
-      "wind_speed_kn": 8.2,
-      "wind_gust_kn": 13,
-      "stale": true,
       "quality": "ok"
     },
     {
