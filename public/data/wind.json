@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-05T23:30:30.283Z",
+  "generated_at": "2026-08-05T23:45:59.422Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 87,
   "stations": [
     {
       "id": "swob:1036B06",
@@ -1382,40 +1382,6 @@
       "wind_speed_kn": 10.7,
       "wind_gust_kn": 16,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054503",
-      "source": "swob",
-      "name": "LANGARA ISLAND RCS",
-      "lat": 54.2553,
-      "lon": -133.0583,
-      "elevation_m": 50.5,
-      "obs_time": "2026-08-05T22:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 5,
-      "wind_speed_kmh": 14,
-      "wind_gust_kmh": 19,
-      "wind_speed_kn": 7.5,
-      "wind_gust_kn": 10.3,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1098941",
-      "source": "swob",
-      "name": "Williams Lake",
-      "lat": 52.1834,
-      "lon": -122.054,
-      "elevation_m": 939.7,
-      "obs_time": "2026-08-05T21:26:00.000Z",
-      "cadence_min": 26,
-      "wind_dir_deg": 13,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.5,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
