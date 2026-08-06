@@ -13,6 +13,13 @@ const SUBSCRIBE_MSG_TYPES = ["PositionReport", "ShipStaticData"];
 const RECONNECT_MIN_MS = 1000;
 const RECONNECT_MAX_MS = 30_000;
 const CADENCE_SAMPLES = 8;          // rolling window of obs times per vessel
+/**
+ * Force a re-dial after this long with nothing at all from upstream.
+ *
+ * The bbox covers the whole Salish Sea and normally delivers many messages a second, so
+ * total silence this long means the connection is gone, not that the water is quiet.
+ */
+const UPSTREAM_SILENCE_MS = 60_000;
 const MAX_UPSTREAM_SKEW_MS = 60_000; // reject upstream stamps this far in the future
 const MAX_UPSTREAM_AGE_MS = 6 * 3_600_000; // ...or implausibly far in the past
 
@@ -66,6 +73,9 @@ export class AisHub {
     this.upstream = null;
     this.upstreamState = "idle"; // "idle" | "connecting" | "live" | "reconnecting"
     this.lastUpstreamMsMs = 0;
+    this.upstreamOpenedMs = 0;
+    this.msgCount = 0;
+    this.silenceMs = Number(env.UPSTREAM_SILENCE_MS || UPSTREAM_SILENCE_MS);
     this.reconnectDelayMs = RECONNECT_MIN_MS;
     this.reconnectTimer = null;
     this.upstreamConnectInFlight = null;
@@ -82,6 +92,10 @@ export class AisHub {
           vessels: this.vessels.size,
           clients: this.clients.size,
           last_msg_age_ms: this.lastUpstreamMsMs ? Date.now() - this.lastUpstreamMsMs : null,
+          // Distinguishes "socket never opened" from "socket open but upstream mute" —
+          // with only last_msg_age_ms, both read as null and look identical.
+          msgs_this_connection: this.msgCount,
+          connection_age_ms: this.upstreamOpenedMs ? Date.now() - this.upstreamOpenedMs : null,
           bbox: this.bbox,
         }),
         { headers: { "content-type": "application/json" } },
@@ -175,16 +189,54 @@ export class AisHub {
   async alarm() {
     this.tickCount++;
     this.broadcastUpdates();
+    this.checkUpstreamSilence();
     // Sweep stale vessels roughly once a minute.
     if (this.tickCount * this.bcastMs >= 60_000) {
       this.tickCount = 0;
       this.sweepStale();
     }
-    // Keep the tick running as long as we have clients OR an active upstream
-    // (so the cache warms on schedule even before anyone connects).
-    if (this.clients.size > 0 || this.upstreamState === "live") {
+    // Keep the tick running as long as we have clients OR any upstream work in flight
+    // (so the cache warms on schedule even before anyone connects). Testing `this.upstream`
+    // rather than `upstreamState === "live"` matters now that "live" waits for the first
+    // message: an upstream that opens and never speaks must still be ticked, or the
+    // watchdog above would never get to run on it. "reconnecting" keeps the object warm
+    // while the backoff timer counts down.
+    if (this.clients.size > 0 || this.upstream || this.upstreamState === "reconnecting") {
       await this.state.storage.setAlarm(Date.now() + this.bcastMs);
     }
+  }
+
+  /**
+   * Tear down and re-dial an upstream socket that has gone silent.
+   *
+   * A dead TCP connection does not reliably surface as a `close` or `error` event — the
+   * socket can sit open indefinitely with nothing behind it. Nothing else in this object
+   * can recover from that: `upstreamState` only changes on those events, `ensureUpstream`
+   * short-circuits on the stale `this.upstream`, `/keepalive` short-circuits the same way,
+   * and the cron keeps the DO warm so it never restarts into a fresh connection. The
+   * browser client has guarded its own leg this way from the start; the upstream leg
+   * never got the same treatment, so a half-open socket was terminal.
+   */
+  checkUpstreamSilence() {
+    if (!this.upstream) return;
+    // Measure from the last message, or from connect time if none has ever arrived —
+    // otherwise a subscription that is rejected in silence would never trip the check.
+    const since = Math.max(this.lastUpstreamMsMs, this.upstreamOpenedMs);
+    if (!since) return;
+    const silentMs = Date.now() - since;
+    if (silentMs < this.silenceMs) return;
+    console.warn(
+      "ais-proxy: upstream silent for", silentMs, "ms (msgs this connection:",
+      this.msgCount, ") — forcing reconnect",
+    );
+    const dead = this.upstream;
+    this.upstream = null;
+    this.upstreamOpenedMs = 0;
+    this.msgCount = 0;
+    try { dead.close(); } catch { /* already gone */ }
+    // scheduleReconnect sets state to "reconnecting" first, so the close event this may
+    // provoke lands in handleUpstreamClose's early return rather than double-scheduling.
+    this.scheduleReconnect();
   }
 
   ensureUpstream() {
@@ -234,10 +286,15 @@ export class AisHub {
       };
       ws.send(JSON.stringify(subscription));
       this.upstream = ws;
-      this.upstreamState = "live";
-      this.reconnectDelayMs = RECONNECT_MIN_MS;
+      this.upstreamOpenedMs = Date.now();
+      // Deliberately NOT "live" yet. An open socket only proves aisstream accepted the
+      // TCP/WS handshake; it says nothing about whether our subscription was accepted or
+      // whether data will ever flow. Claiming "live" here is what let this DO sit for days
+      // telling every client the feed was healthy while zero messages had ever arrived.
+      // The first inbound message promotes us to "live" — see handleUpstreamMessage.
+      this.upstreamState = "connecting";
       this.broadcastStatus();
-      console.log("ais-proxy: upstream live, bbox", JSON.stringify(this.bbox));
+      console.log("ais-proxy: upstream socket open, bbox", JSON.stringify(this.bbox));
 
       ws.addEventListener("message", (ev) => this.handleUpstreamMessage(ev));
       ws.addEventListener("close", (ev) => {
@@ -320,6 +377,15 @@ export class AisHub {
   async handleUpstreamMessage(ev) {
     this.lastUpstreamMsMs = Date.now();
     this.msgCount = (this.msgCount || 0) + 1;
+    if (this.upstreamState !== "live") {
+      // Data is flowing, so the subscription really was accepted. Only now is the backoff
+      // safe to reset: resetting it on socket-open would make a connection that opens and
+      // then goes silent re-dial every minute forever without ever backing off.
+      this.upstreamState = "live";
+      this.reconnectDelayMs = RECONNECT_MIN_MS;
+      this.broadcastStatus();
+      console.log("ais-proxy: upstream live, first message received");
+    }
     let text;
     try {
       text = await this.decodeMsgData(ev.data);

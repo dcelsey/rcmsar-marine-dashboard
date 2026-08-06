@@ -2,6 +2,9 @@
 .vscode/
 prototype.html
 
+# Claude Code per-machine settings (the shared .claude/settings.json is not ignored)
+.claude/settings.local.json
+
 # Astro build
 dist/
 .astro/

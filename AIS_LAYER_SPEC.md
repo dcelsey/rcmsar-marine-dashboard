@@ -24,7 +24,7 @@ This is **decision-support / situational awareness** for search-and-rescue — t
 
 - Endpoint: `wss://stream.aisstream.io/v0/stream`
 - On connect, send a subscription JSON: `APIKey`, `BoundingBoxes`, `FilterMessageTypes`.
-- Bounding box format: `[[lat_max, lon_min], [lat_min, lon_max]]` (NW corner, then SE corner). **Note this is [lat, lon] order and NW-then-SE** — easy to get wrong.
+- Bounding box format: `[[lat, lon], [lat, lon]]` — two opposite corners. **The `[lat, lon]` order matters; the corner order does not** — upstream documents that "the order of the bounding box corners has no affect", so our NW-then-SE spelling is fine as written. (An earlier revision of this line warned that NW-then-SE was "easy to get wrong", which sent a 2026-08-06 outage investigation chasing a bbox bug that did not exist.)
 - Message types we use: `PositionReport` (moving data) and `ShipStaticData` (name, type, destination, callsign).
 
 ### Message shape (as consumed in the POC — verify against live feed on first run)
