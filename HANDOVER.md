@@ -9,6 +9,15 @@
 > Two things stop this being an outage. `Deployment rate limited — retry in 24 hours` is **generic text, not a literal wait** — the window drains continuously. And deploys ship the **whole tree**, so a refused deploy *delays* data rather than losing it: the next success, whoever triggers it, brings everything current. Check whether the deployed SHA *contains* your commit (`git merge-base --is-ancestor`) rather than looking for your own SHA.
 >
 > Practical rule: **batch your commits**, and expect data to lag by roughly half the staleness budget while you work. **CR-006** is the fix — move the data commits off `main` and deploys drop to a handful a week, which restores both the data cadence and branch previews.
+>
+> ### 2026-08-04 — both platform limits analysed, fixes agreed, nothing built yet
+>
+> Duncan raised adding a Bluehost server to escape the Vercel and Cloudflare limits. The analysis says **three pressures, three different causes** — full write-up in **CR-007**, executable plan at `C:\Users\DuncanElsey\.claude\plans\we-have-built-a-partitioned-willow.md`. Two things to know before touching either platform:
+>
+> - **The Cloudflare 90% emails are arithmetic, not growth.** `crons = ["*/5 * * * *"]` in `cf-workers/ais-proxy/wrangler.toml` pins the Durable Object awake 24/7: ~11,000 GB-s/day against a 13,000 free allowance (~85%) before anyone opens the map, plus ~57,600 alarm invocations against 100,000 requests. **A server does not fix this** — shared hosting is the worst place to hold a persistent WebSocket. Fix is ~30 lines in `src/durable.js` (idle when `clients === 0`) plus dropping the cron.
+> - **Deploy pressure is one wrong coupling, not a capacity problem.** 2,052 bot commits vs 105 human commits in the 30 days to 2026-08-04. Code-only deploys would be ~3.5/day against a ~95 ceiling.
+>
+> Agreed direction: free fixes first (CR-006 + the DO idle), *then* decide on the server; flat files not a DB; **the site stays on Vercel**. The Bluehost data server is gated on confirming cPanel has "Setup Node.js App" — without Node it becomes a PHP rewrite of `fetch-wind.mjs`, which is a separate go/no-go.
 
 ## Where things stand
 
@@ -23,7 +32,9 @@
 - **Vercel**: **connected and live at `https://rcmsar-marine-dashboard.vercel.app`** (this entry previously said "not yet connected" — that was wrong; it has been deploying every 15 min for weeks). Two things about it are counter-intuitive, both logged as **CR-005**: (1) Vercel deploys promptly (**14–18 s** after a commit) but **skips commits that land while a previous build is in flight** — so a burst of pushes yields one deploy, and your code reaches production on the next isolated commit, usually within one 15-min bot cycle. Check whether the deployed SHA *contains* your commit rather than looking for your own SHA, and note that `GET /deployments?sha=` is unreliable — enumerate and match instead. (2) Vercel here ignores **both** `[skip ci]` and `[skip vercel]`, so commit-message tokens can't be used to cut the ~96 deploys/day (vs the Hobby tier's 100/day cap).
 - **Old repo** (`OBSR Conditions Dashboard` / `rcmsar33-oak-bay-conditions.vercel.app`) still deployed on `main` and is what Lively currently points at. Leave running until the new deploy is verified for sar33; then update the Lively URL.
 
-- **Live AIS overlay (2026-07-31)**: vessel layer on the marine map for **sar33 only**, gated on `station.ais?.show`. Defaults **off** and does not open its upstream connection until switched on. Data is a live WebSocket from the `ais-proxy` Cloudflare Worker (`cf-workers/ais-proxy/`), *not* a fetched-and-committed JSON file — so unlike wind/tides/currents it costs **zero commits and zero Vercel deploys**. Markers fade as a position ages, judged against each vessel's own measured reporting cadence. See CR-003 for the deferred items, and note the Worker still needs a `wrangler deploy` to pick up the `cadenceMs` / `time_utc` work.
+- **Live AIS overlay (2026-07-31)**: vessel layer on the marine map for **sar33 only**, gated on `station.ais?.show`. Defaults **off** and does not open its upstream connection until switched on. Data is a live WebSocket from the `ais-proxy` Cloudflare Worker (`cf-workers/ais-proxy/`), *not* a fetched-and-committed JSON file — so unlike wind/tides/currents it costs **zero commits and zero Vercel deploys**. Markers fade as a position ages, judged against each vessel's own measured reporting cadence. See CR-003 for the deferred items. The `cadenceMs` / `time_utc` work was **deployed 2026-08-06**.
+
+- **AIS depends on aisstream.io, which is chronically unreliable (2026-08-06)**: it went mute at 2026-08-05 13:31 UTC — socket open, subscription accepted, zero messages — and other users confirmed the same on their issue tracker. **Check `aisstream/issues` before debugging our stack.** First call is `curl https://ais-proxy.fetchwind.workers.dev/health`: `msgs_this_connection: 0` with `connection_age_ms` climbing means the fault is upstream. The same investigation fixed two of our own defects (a feed that falsely reported `live`, and an upstream socket that could go mute permanently with no way to recover) — full write-up in CR-003.
 
 ## Architecture
 

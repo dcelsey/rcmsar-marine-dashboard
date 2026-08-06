@@ -4,6 +4,54 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
+## CR-007 — Platform limits and the "add a server" question
+
+- **Logged:** 2026-08-04
+- **Status:** parked — analysis done, direction agreed, **no code written**. Resume from the full plan at `C:\Users\DuncanElsey\.claude\plans\we-have-built-a-partitioned-willow.md`.
+- **Prompt:** four pressures arriving together — Vercel deploys at the limit, Cloudflare sending 90%-of-quota emails, GitHub Actions unreliability, and general complexity (static site + data files + Actions + two Workers + git-as-deploy-trigger) — plus an expectation of coming requests for per-user preferences ("my station", which cards to show). Duncan's proposal: rather than paying for more Vercel capacity, add a server on the existing (already-paid-for) Bluehost account. Either **(1)** a data-only server — cron fetches, data in a DB rather than JSON files, something pokes cron — or **(2)** move everything, Astro build included.
+
+### The finding: three pressures, three different causes
+
+Only one of them is server-shaped, and the Cloudflare one gets *worse* with a shared host.
+
+| Symptom | Actual cause | Fixed by a Bluehost server? |
+|---|---|---|
+| Vercel pinned at 95 deploys / rolling 24 h | Data commits to `main` rebuild 95 static pages to move a 39 KB file. **2,052 bot commits vs 105 human commits in the 30 days to 2026-08-04.** | Yes — but so does a free change |
+| Cloudflare 90% emails | See arithmetic below — a cron pins the Durable Object awake 24/7 | **No.** Shared hosting is the worst place to hold a persistent WebSocket |
+| GH Actions unreliability | Already worked around via `fetch-wind-trigger` → `workflow_dispatch` | Yes — the cleanest genuine server win |
+| Complexity | Five moving parts | Only if the server *replaces* pieces rather than joining them |
+
+### The Cloudflare alert is arithmetic, not growth
+
+`crons = ["*/5 * * * *"]` in `cf-workers/ais-proxy/wrangler.toml` exists solely to keep the Durable Object warm. A DO pinned awake bills wall-clock × memory:
+
+- **Duration:** 86,400 s/day × 128 MB = **~11,000 GB-s/day against a 13,000 GB-s/day free allowance ≈ 85%** — before anyone opens the map.
+- **Requests:** the `BROADCAST_MS = 1500` alarm tick is ~57,600 alarm invocations/day against a **100,000/day** free allowance ≈ 58%.
+
+That is why the emails arrive regardless of whether the layer is being used. Both metrics collapse together under the fix already logged in CR-003 ("idle when no clients"): with zero clients there is no wall-clock and no alarm tick.
+
+**Correction to CR-003:** that entry says the lever is *not* `BROADCAST_MS`. True for **duration**, false for **requests** — alarm invocations are billed as requests, so 1500 → 3000 ms would halve that number. Idling is still the better fix; keep `BROADCAST_MS` as a second lever if the 90% email names requests rather than duration.
+
+### The strongest argument for a data server — and it wasn't on the original list
+
+Every browser calls Open-Meteo, marine-api and DFO IWLS **directly, every 10 minutes, per viewer** (`refreshMs: 10 * 60 * 1000` on all 31 units; `loadWeather` / `loadWindByLocation` / `loadMarine` / `loadTides` in `src/lib/sources.ts`). With ready-room kiosks running 24/7 across 31 units that is an unbounded per-viewer dependency on two third-party APIs, with no cache, no shielding and no fallback if one gets slow. A data server collapses it to a handful of calls per interval. Neither a data branch nor a Worker buys that cheaply, and operationally it matters more than stored history does.
+
+### Decisions taken (2026-08-04)
+
+1. **Free fixes first, then decide on the server.** Both immediate pains have ~1-hour fixes that cost nothing and lock nothing in. Deploys ~68/day → ~3.5/day against a ~95 ceiling; DO usage → near zero. See CR-006 for the deploy half.
+2. **Flat files, no database.** Decoupling data from deploys is the win. Structure the fetch scripts so a later history write is additive rather than a rewrite.
+3. **The site stays on Vercel.** Option 2's motivation is the deploy ceiling, which the free fix removes. `dist/` is only 95 HTML files / 3.5 MB so moving it *would* work, but you would build in Actions and FTP-deploy — re-introducing the dependency being shed — and trade a CDN, branch previews and push-to-deploy for consolidation alone.
+4. **Bluehost Node.js support is unverified and gates everything.** If cPanel has "Setup Node.js App" / Node.js Selector, the three `.mjs` scripts move across near-verbatim (~a day's work). If it does not, this becomes a PHP rewrite of `fetch-wind.mjs` — cadence inference, QA flags, co-located dedupe, per-source carry-forward — with real risk of silent behaviour drift. That is a separate go/no-go, not an assumption. Also verify: cron granularity, outbound HTTPS, a subdomain with Let's Encrypt SSL, and the host's long-process policy against `fetch-tides.mjs` (327 stations × 2.1 s ≈ **11–12 min wall clock**, mostly sleeping on network I/O, 4×/day).
+5. **No cron-poker Worker is needed.** cPanel cron is real cron — that is much of the point of the move.
+
+### Per-user preferences: cookie, not server
+
+"My station" and "which cards to show" are the same shape as CR-001's unit selectors, and CR-001 already settled the storage question — **cookie, read by an inline pre-paint script**, following the `map-layers` precedent in `src/components/MarineCurrents.astro`. A server buys exactly one extra thing: cross-device sync, which needs identity → accounts → password resets and member-data handling for a volunteer organisation. **Don't build it until someone asks specifically for settings following them between devices.** Note Lively strips query strings *and* fragments, so URL-encoded preferences aren't available for the widescreen view.
+
+### If the free fixes ever fail, for reference
+
+Vercel Pro is $20/mo and fixes only deploys; Cloudflare Workers Paid is $5/mo and fixes only the DO. The free fixes address both.
+
 ## CR-006 — Stop the 15-min data commits consuming the Vercel deploy budget
 
 - **Logged:** 2026-07-31
@@ -38,6 +86,15 @@ The earlier framing — "serve `wind.json` from a Worker" — was half right. **
 
 1. **Data branch** (preferred, no new infrastructure): fetch workflows commit to a `data` branch; `vercel.json` sets `git.deploymentEnabled` false for it; the client reads `wind.json` from `raw.githubusercontent` at that branch. Deploys then track code changes only — a handful a week — and branch previews become possible for the first time.
 2. **R2 / KV**: workflows write there instead of the repo. No data commits anywhere, cleanest, but more moving parts and Cloudflare setup.
+
+### 2026-08-04 — implementation detail worked out (not yet built)
+
+Designed alongside CR-007; four things that aren't obvious until you try to write it.
+
+- **Build the seam first, and make it the deliverable.** Add one `DATA_BASE` constant in `src/lib/sources.ts` and route `loadLiveWind`, `loadCurrents` and `loadTidesMap` through it. All three already share the identical `fetch(url + '?t=' + Date.now())` → `res.json()` shape, so it's one helper and three one-line changes. That constant is what later flips to Bluehost, R2 or a Worker as a **one-line change** — so this step is worth doing even if the destination changes.
+- **The workflow must keep checking out `main`.** Checking out `data` would run whatever stale copy of `scripts/fetch-wind.mjs` that branch happens to hold. Check out `main` for the script, run it, then commit only the output onto `data` via a worktree (`git fetch origin data` → `git worktree add ../data-out data` → copy → commit + push from there). **Keep the 5-attempt `git pull --rebase` retry loop** — the three workflows now race each other on `data` instead of on `main`; the race is smaller, not gone.
+- **`vercel.json` is essential, not optional.** There is none in the repo today (Vercel zero-config auto-detects Astro and will continue to). Without `{"git": {"deploymentEnabled": {"data": false}}}`, a push to `data` creates a *preview* deploy, which counts against the same budget.
+- **Keep the same-origin `/data/*.json` files as a fallback, because the staleness machinery makes a frozen copy fail safe.** A stranded `wind.json` ages past `max(STALE_MIN, cadence + 15)` within ~75 min and the frontend hard-filters `!stale`, so it renders *nothing* rather than something wrong; currents and tides carry event timestamps and simply run out of upcoming events. Degrading to forecast-only is the correct failure mode here — which is what makes depending on `raw.githubusercontent` acceptable as an interim step.
 
 Do this **before** the next reset, so the first deploy after the limit clears ships the fix along with everything queued behind it. Otherwise the budget re-exhausts the following day.
 
@@ -104,7 +161,28 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 - **Logged:** 2026-07-14
 - **Status:** open — the layer itself **shipped to `main` 2026-07-31**; these are the deferred items
 - **Shipped in that merge**, beyond the original branch: debug logging stripped from the Durable Object; AIS free text (vessel name, destination) escaped before reaching `innerHTML`; the upstream connection now opens only when the layer is switched on rather than on every page load; position currency judged per vessel against its own observed reporting cadence, with markers fading and popups saying "last heard"; the feed-health indicator moved out of the legend to sit beside the AIS toggle, with a 30 s silence watchdog so it can't keep claiming "live" after a silently dropped socket.
-- **Needs a `wrangler deploy`:** the `cadenceMs` measurement and the `MetaData.time_utc` preference are in `cf-workers/ais-proxy/` but not yet live. Until deployed, the frontend falls back to flat 5/15 min staleness thresholds — verified to degrade gracefully, so this is not urgent.
+- ~~**Needs a `wrangler deploy`:** the `cadenceMs` measurement and the `MetaData.time_utc` preference are in `cf-workers/ais-proxy/` but not yet live.~~ **Deployed 2026-08-06** alongside the watchdog fix below.
+
+### 2026-08-06 — no vessels rendering: an aisstream.io outage, plus two defects it exposed
+
+**The outage is upstream and nothing on our side fixes it.** aisstream.io went mute at **2026-08-05 13:31 UTC**: the handshake succeeds, the subscription is accepted, the socket stays open, and no message is ever sent. Corroborated by other users at `aisstream/issues` **#257** and **#259** — valid keys, freshly issued keys, global bounding boxes and multiple IPs all affected. Their service is chronically unreliable (see also their #21, an expired TLS cert in May 2026), so expect recurrence and **check their issue tracker before debugging our stack**.
+
+**Triage order that got there fastest**, worth reusing:
+
+1. `curl https://ais-proxy.fetchwind.workers.dev/health` — `msgs_this_connection: 0` while `connection_age_ms` climbs means the problem is upstream, full stop.
+2. Probe aisstream directly with a deliberately invalid API key. A bad key is **closed in ~1.2 s with code 1006**, so a connection that *stays open* proves our key is registered and our subscription accepted — credentials ruled out in one step.
+3. Only then look at our code.
+
+**The bounding box is a dead end** — upstream documents that corner order has no effect. The warning in `AIS_LAYER_SPEC.md` that it was "easy to get wrong" sent this investigation chasing a bug that did not exist, and has been corrected.
+
+**Two real defects found and fixed in `durable.js` (deployed 2026-08-06).** Both are why a 24-hour outage was invisible rather than obvious:
+
+- **`upstreamState` was set to `"live"` on socket-open**, before a single message. An open socket only proves the WS handshake succeeded; it says nothing about whether data will ever flow. So the DO spent a day telling every dashboard the feed was healthy while `lastUpstreamMsMs` had never been set. `"live"` now requires a first message, and the reconnect backoff resets there too rather than on open.
+- **No silence watchdog on the upstream leg**, which made a mute or half-open socket *terminal*: `upstreamState` only changed on `close`/`error` events that never fired, `ensureUpstream()` and `/keepalive` both short-circuit on the stale `this.upstream`, and the `*/5` cron kept the DO warm so it never restarted into a fresh connection. A 60 s watchdog now forces a re-dial. The browser client has had exactly this guard since day one (`SILENCE_TIMEOUT_MS` in `src/lib/aisClient.ts`) — only the upstream leg lacked it.
+
+`/health` now also reports `msgs_this_connection` and `connection_age_ms`; without them, "socket never opened" and "socket open but upstream mute" both read as `last_msg_age_ms: null` and are indistinguishable.
+
+**Interacts with "Idle when no clients" below** — the watchdog re-dials every 60 s for the duration of an upstream outage. Harmless at present, but the two should be implemented together so idling wins when client count is zero.
 - **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
 - **Items to resolve before wider rollout:**
   - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.
@@ -115,6 +193,7 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
   - **Breadcrumbs.** Spec §1 says historical trails are a non-goal at launch; revisit if crews ask for a short (5–15 min) tail behind moving vessels.
   - **Observability.** Add real health monitoring on the `/health` route (uptime pings, alert on `upstream != "live"` > N minutes).
   - **Idle when no clients** (noted 2026-07-31). The `*/5` Cloudflare cron keeps the Durable Object warm permanently, so it holds the upstream WebSocket and processes AIS traffic 24/7 even with nobody watching — observed live as `clients: 0` alongside `upstream: "live"`, 417 vessels. Deliberate (a cold start would make the first viewer wait for the cache to fill) but it is the only ongoing cost the layer carries. If CF Durable Object duration ever becomes a concern, the lever is idling the upstream after N minutes with no clients and reconnecting on demand — **not** reducing `BROADCAST_MS`. Check DO duration in the CF dashboard before assuming it matters.
+    - **Promoted 2026-08-04 — it is now the concern, and the arithmetic is in CR-007.** ~11,000 GB-s/day duration against a 13,000 free allowance (~85%) plus ~57,600 alarm invocations against 100,000 requests (~58%), which is what the Cloudflare 90% emails are. Fix: close the upstream and stop scheduling the alarm when client count hits zero, reconnect lazily on the next `/ais` upgrade, and drop the `*/5` cron — its only job is defeating exactly this. **The "not `BROADCAST_MS`" advice above is right for duration and wrong for requests** (alarm invocations bill as requests); keep it as a second lever. This deploy is overdue anyway — the `cadenceMs` / `time_utc` work above is still not live.
   - **Note for cost discussions:** AIS adds **zero** GitHub commits and **zero** Vercel deploys — the browser talks to the Worker over a WebSocket at runtime, and `wrangler deploy` is a separate Cloudflare quota. Merging the branch costs one Vercel deploy, once. This is the opposite of the wind pipeline (CR-006), and the two shouldn't be reasoned about together.
   - **API key rotation.** aisstream key is a `wrangler secret`. Note a rotation cadence and where the key lives.
 
