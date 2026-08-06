@@ -183,6 +183,19 @@ Widening the window turned out to be **necessary but not sufficient**, and the s
 `/health` now also reports `msgs_this_connection` and `connection_age_ms`; without them, "socket never opened" and "socket open but upstream mute" both read as `last_msg_age_ms: null` and are indistinguishable.
 
 **Interacts with "Idle when no clients" below** — the watchdog re-dials every 60 s for the duration of an upstream outage. Harmless at present, but the two should be implemented together so idling wins when client count is zero.
+
+### 2026-08-06, later — upstream changed failure mode, and the churn exposed two more defects
+
+**The outage is the same outage**; only its presentation changed. aisstream stopped holding sockets open and silent and began accepting them then dropping them with code **1006**. The two are indistinguishable from the dashboard — one is closed by our 60 s watchdog, the other by upstream with backoff re-dialling to a 30 s ceiling — so **`msgs_this_connection: 0` is the field that settles it**, not the state field.
+
+**A "connecting" / "reconnecting" status chip is the expected appearance of this, not a second bug.** Worth stating plainly because it *looks* like a regression: before this week the chip would have read a confident "live" throughout, which is precisely the defect that hid the outage for a day. Honest states that change are an improvement over a stable lie.
+
+The higher socket churn exposed two defects in the watchdog work above, both now fixed and deployed:
+
+- **`handleUpstreamClose` acted on whichever socket was current rather than the one the event came from.** A close arriving after we had already discarded that socket and dialled a replacement would tear down the healthy new connection and schedule another reconnect. Harmless while connections lasted minutes; a real hazard once upstream started flapping, because it is a self-inflicted way to never recover when the feed returns. Listeners now name their socket and late events are discarded.
+- **The connection clock was not cleared when a connection ended**, so `/health` reported a climbing `connection_age_ms` while the state said `reconnecting` and no socket was open — a self-contradiction in the one field added to remove exactly that ambiguity.
+
+**General lesson for any reconnecting socket here:** an event handler bound to a connection must verify the connection is still the current one before acting on shared state. The bug only appears under churn, which is when recovery matters most.
 - **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
 - **Items to resolve before wider rollout:**
   - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.
