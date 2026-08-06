@@ -1,5 +1,13 @@
 # Handover — rcmsar-marine-dashboard
 
+> ## Parked 2026-08-06 — AIS is dark because aisstream.io is down, and two commits are waiting to push
+>
+> **Nothing is broken on our side and nothing is in progress.** AIS shows no vessels because the upstream feed went mute at **2026-08-05 13:31 UTC** — aisstream.io accepts the handshake and the subscription, holds the socket open, and sends nothing. Other users confirm the same at `aisstream/issues` **#257** / **#259**. Targets return on their own when they recover; there is no action for us. Check `curl https://ais-proxy.fetchwind.workers.dev/health` — `msgs_this_connection: 0` with `connection_age_ms` climbing means it's still them.
+>
+> **Two commits sit on `main`, unpushed and deliberately so** (`b21dfde` the Worker fix, `6bd3faf` the docs). Neither changes the site output — the Worker is not part of the Astro build — so pushing buys nothing visible while costing one deploy against the saturated budget below. **Batch them with the next real code change.** The Worker fix is already live on Cloudflare (version `af7c8fba`); the commit only brings the source into line, so the repo lagging is cosmetic, not operational.
+>
+> **When picking this back up**, the one open thread is that the new 60 s upstream watchdog re-dials for the whole duration of an outage, which pulls against CR-003's "idle when no clients". Implement the two together so idling wins at zero clients. Full write-up of the outage and the two defects it exposed is in **CR-003**.
+
 > ## The deploy budget is saturated — read before pushing (2026-07-31)
 >
 > **You cannot run a development session and keep the dashboard current at the same time.** The Vercel limit is a **rolling 24-hour window**, not a daily reset, and production deploys sit at a pinned **95 in any rolling 24 h** — the wind bot's 15-min cadence consumes essentially the whole budget. One slot frees roughly every 15 min as an old deploy ages out, and the next attempt takes it.
