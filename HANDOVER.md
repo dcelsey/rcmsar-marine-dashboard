@@ -1,10 +1,12 @@
 # Handover — rcmsar-marine-dashboard
 
-> ## Parked 2026-08-06 — AIS is dark because aisstream.io is down, and two commits are waiting to push
+> ## Parked 2026-08-06 — AIS is dark because aisstream.io is down, and commits are waiting to push
 >
-> **Nothing is broken on our side and nothing is in progress.** AIS shows no vessels because the upstream feed went mute at **2026-08-05 13:31 UTC** — aisstream.io accepts the handshake and the subscription, holds the socket open, and sends nothing. Other users confirm the same at `aisstream/issues` **#257** / **#259**. Targets return on their own when they recover; there is no action for us. Check `curl https://ais-proxy.fetchwind.workers.dev/health` — `msgs_this_connection: 0` with `connection_age_ms` climbing means it's still them.
+> **Nothing is broken on our side and nothing is in progress.** AIS shows no vessels because the upstream feed went mute at **2026-08-05 13:31 UTC**. Other users confirm the same at `aisstream/issues` **#257** / **#259**. Targets return on their own when they recover; there is no action for us.
 >
-> **Two commits sit on `main`, unpushed and deliberately so** (`b21dfde` the Worker fix, `6bd3faf` the docs). Neither changes the site output — the Worker is not part of the Astro build — so pushing buys nothing visible while costing one deploy against the saturated budget below. **Batch them with the next real code change.** The Worker fix is already live on Cloudflare (version `af7c8fba`); the commit only brings the source into line, so the repo lagging is cosmetic, not operational.
+> **The status chip sitting on "connecting" / "reconnecting" is the expected appearance of this outage, not a second bug.** Before 2026-08-06 it would have read a confident "live" throughout — that is the defect that hid the outage for a day. Upstream presents two ways and alternates between them: holding the socket open and silent (our 60 s watchdog closes it and re-dials), or accepting it then dropping with code 1006 (backoff re-dials, 30 s ceiling). Both look identical from the dashboard. Settle it with `curl https://ais-proxy.fetchwind.workers.dev/health` — **`msgs_this_connection: 0` means it is still them**, whatever the state field says.
+>
+> **Several commits sit on `main`, unpushed and deliberately so** — see `git log origin/main..main`. None changes the site output, since the Worker is not part of the Astro build, so pushing buys nothing visible while costing one deploy against the saturated budget below. **Batch them with the next real code change.** Cloudflare already runs the current Worker code (`npx wrangler deployments list` to confirm), so the repo lagging is cosmetic, not operational.
 >
 > **When picking this back up**, the one open thread is that the new 60 s upstream watchdog re-dials for the whole duration of an outage, which pulls against CR-003's "idle when no clients". Implement the two together so idling wins at zero clients. Full write-up of the outage and the two defects it exposed is in **CR-003**.
 

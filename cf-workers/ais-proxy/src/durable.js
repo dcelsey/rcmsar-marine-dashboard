@@ -233,9 +233,10 @@ export class AisHub {
     this.upstream = null;
     this.upstreamOpenedMs = 0;
     this.msgCount = 0;
+    // `this.upstream` is already cleared above, so the close event this provokes no longer
+    // matches the current socket and handleUpstreamClose discards it — no double-schedule,
+    // and no risk of it landing on whatever connection has replaced this one by then.
     try { dead.close(); } catch { /* already gone */ }
-    // scheduleReconnect sets state to "reconnecting" first, so the close event this may
-    // provoke lands in handleUpstreamClose's early return rather than double-scheduling.
     this.scheduleReconnect();
   }
 
@@ -297,13 +298,18 @@ export class AisHub {
       console.log("ais-proxy: upstream socket open, bbox", JSON.stringify(this.bbox));
 
       ws.addEventListener("message", (ev) => this.handleUpstreamMessage(ev));
+      // Each listener names the socket it belongs to. A close/error event can arrive after
+      // we have already given up on that socket and dialled a replacement — likeliest
+      // exactly when upstream is flapping — and an unqualified handler would then tear
+      // down the healthy new connection and schedule yet another reconnect, which is a
+      // self-inflicted way to never recover once the feed comes back.
       ws.addEventListener("close", (ev) => {
         console.warn("upstream ws close event: code =", ev.code, "reason =", ev.reason);
-        this.handleUpstreamClose("close");
+        this.handleUpstreamClose("close", ws);
       });
       ws.addEventListener("error", (ev) => {
         console.error("upstream ws error event:", ev && (ev.message || ev.type));
-        this.handleUpstreamClose("error");
+        this.handleUpstreamClose("error", ws);
       });
     } catch (err) {
       console.error("upstream connect threw:", err && (err.stack || err.message || String(err)));
@@ -311,11 +317,18 @@ export class AisHub {
     }
   }
 
-  handleUpstreamClose(reason) {
+  handleUpstreamClose(reason, sock) {
+    // Ignore a late event from a socket we have already replaced or discarded.
+    if (sock && sock !== this.upstream) return;
     if (this.upstream) {
       try { this.upstream.close(); } catch {}
       this.upstream = null;
     }
+    // Clear the connection clock with the connection. Leaving it set made /health report a
+    // climbing connection_age_ms while the state said "reconnecting" and no socket was
+    // open — a self-contradiction, in the one field added to remove that ambiguity.
+    this.upstreamOpenedMs = 0;
+    this.msgCount = 0;
     if (this.upstreamState === "reconnecting") return;
     console.warn("upstream closed:", reason);
     this.scheduleReconnect();
