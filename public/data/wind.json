@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-06T03:45:27.893Z",
+  "generated_at": "2026-08-06T03:46:41.106Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 88,
   "stations": [
     {
       "id": "swob:1018598",
@@ -1399,23 +1399,6 @@
       "wind_speed_kn": 2.9,
       "wind_gust_kn": 4,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1048899",
-      "source": "swob",
-      "name": "Whistler",
-      "lat": 50.1667,
-      "lon": -122.9,
-      "elevation_m": 657.8,
-      "obs_time": "2026-08-06T01:00:00.000Z",
-      "cadence_min": null,
-      "wind_dir_deg": 180,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
