@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-08T20:45:56.853Z",
+  "generated_at": "2026-08-08T20:53:50.819Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 88,
   "stations": [
     {
       "id": "swob:1026562",
@@ -1399,23 +1399,6 @@
       "wind_speed_kn": 1.2,
       "wind_gust_kn": 2.3,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054222",
-      "source": "swob",
-      "name": "KINDAKUN ROCKS (AUT)",
-      "lat": 53.3156,
-      "lon": -132.772,
-      "elevation_m": 15.15,
-      "obs_time": "2026-08-08T19:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 321,
-      "wind_speed_kmh": 12,
-      "wind_gust_kmh": 13,
-      "wind_speed_kn": 6.3,
-      "wind_gust_kn": 7.2,
-      "stale": true,
       "quality": "ok"
     },
     {
