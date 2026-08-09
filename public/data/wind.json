@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-09T15:53:05.553Z",
+  "generated_at": "2026-08-09T16:01:29.352Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 87,
   "stations": [
     {
       "id": "swob:1016943",
@@ -1215,23 +1215,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1057052",
-      "source": "swob",
-      "name": "Sandspit",
-      "lat": 53.2543,
-      "lon": -131.814,
-      "elevation_m": 6.4,
-      "obs_time": "2026-08-09T15:00:00.000Z",
-      "cadence_min": 38,
-      "wind_dir_deg": 273,
-      "wind_speed_kmh": 17,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1060815",
       "source": "swob",
       "name": "Bella Bella Campbell Island",
@@ -1399,23 +1382,6 @@
       "wind_speed_kn": 9.3,
       "wind_gust_kn": 11.4,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1017101",
-      "source": "swob",
-      "name": "SATURNA ISLAND",
-      "lat": 48.783215,
-      "lon": -123.045807,
-      "elevation_m": 25.4,
-      "obs_time": "2026-08-09T14:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 206,
-      "wind_speed_kmh": 18,
-      "wind_gust_kmh": 22,
-      "wind_speed_kn": 9.8,
-      "wind_gust_kn": 12.1,
-      "stale": true,
       "quality": "ok"
     },
     {
