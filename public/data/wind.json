@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-09T11:50:50.453Z",
+  "generated_at": "2026-08-09T12:01:28.273Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1096453",
@@ -819,40 +819,6 @@
       "wind_speed_kmh": 6,
       "wind_gust_kmh": null,
       "wind_speed_kn": 3.3,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1066482",
-      "source": "swob",
-      "name": "Prince Rupert",
-      "lat": 54.2859,
-      "lon": -130.445,
-      "elevation_m": 35.4,
-      "obs_time": "2026-08-09T11:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 142,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 2.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-08-09T11:00:00.000Z",
-      "cadence_min": 37,
-      "wind_dir_deg": 290,
-      "wind_speed_kmh": 2,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
