@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-10T01:30:58.140Z",
+  "generated_at": "2026-08-10T01:46:30.981Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 87,
   "stations": [
     {
       "id": "swob:1026562",
@@ -1382,40 +1382,6 @@
       "wind_speed_kn": 8.2,
       "wind_gust_kn": 11.1,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1032731",
-      "source": "swob",
-      "name": "ESTEVAN POINT CS",
-      "lat": 49.3832,
-      "lon": -126.5447,
-      "elevation_m": 8,
-      "obs_time": "2026-08-10T00:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 4,
-      "wind_speed_kmh": 17,
-      "wind_gust_kmh": 21,
-      "wind_speed_kn": 9.4,
-      "wind_gust_kn": 11.3,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054503",
-      "source": "swob",
-      "name": "LANGARA ISLAND RCS",
-      "lat": 54.2553,
-      "lon": -133.0583,
-      "elevation_m": 50.5,
-      "obs_time": "2026-08-10T00:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 337,
-      "wind_speed_kmh": 1,
-      "wind_gust_kmh": 5,
-      "wind_speed_kn": 0.5,
-      "wind_gust_kn": 2.9,
-      "stale": true,
       "quality": "ok"
     },
     {
