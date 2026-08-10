@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-10T17:01:18.462Z",
+  "generated_at": "2026-08-10T17:14:43.497Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 83,
   "stations": [
     {
       "id": "swob:1096453",
@@ -569,40 +569,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1096629",
-      "source": "swob",
-      "name": "Quesnel",
-      "lat": 53.0261,
-      "lon": -122.51,
-      "elevation_m": 545,
-      "obs_time": "2026-08-10T16:14:00.000Z",
-      "cadence_min": 17,
-      "wind_dir_deg": 338,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.1,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-08-10T16:12:00.000Z",
-      "cadence_min": 12,
-      "wind_dir_deg": 128,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:110617P",
       "source": "swob",
       "name": "Pitt Meadows",
@@ -617,23 +583,6 @@
       "wind_speed_kn": 3.5,
       "wind_gust_kn": null,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1068134",
-      "source": "swob",
-      "name": "Terrace",
-      "lat": 54.4685,
-      "lon": -128.578,
-      "elevation_m": 217.3,
-      "obs_time": "2026-08-10T16:00:00.000Z",
-      "cadence_min": 39,
-      "wind_dir_deg": 204,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 2.5,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
@@ -668,23 +617,6 @@
       "wind_speed_kn": 9,
       "wind_gust_kn": null,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1066482",
-      "source": "swob",
-      "name": "Prince Rupert",
-      "lat": 54.2859,
-      "lon": -130.445,
-      "elevation_m": 35.4,
-      "obs_time": "2026-08-10T16:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 102,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.1,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
@@ -821,23 +753,6 @@
       "wind_speed_kn": 1.7,
       "wind_gust_kn": null,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1096439",
-      "source": "swob",
-      "name": "Prince George",
-      "lat": 53.884,
-      "lon": -122.678,
-      "elevation_m": 690.7,
-      "obs_time": "2026-08-10T16:00:00.000Z",
-      "cadence_min": 12,
-      "wind_dir_deg": 308,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
@@ -1399,23 +1314,6 @@
       "wind_speed_kn": 6.5,
       "wind_gust_kn": 7.8,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054222",
-      "source": "swob",
-      "name": "KINDAKUN ROCKS (AUT)",
-      "lat": 53.3156,
-      "lon": -132.772,
-      "elevation_m": 15.15,
-      "obs_time": "2026-08-10T15:00:00.000Z",
-      "cadence_min": null,
-      "wind_dir_deg": 102,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": 13,
-      "wind_speed_kn": 4.5,
-      "wind_gust_kn": 7.2,
-      "stale": true,
       "quality": "ok"
     },
     {
