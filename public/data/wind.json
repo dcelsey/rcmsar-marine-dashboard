@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-10T12:01:15.759Z",
+  "generated_at": "2026-08-10T12:04:56.567Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 85,
   "stations": [
     {
       "id": "swob:1096439",
@@ -1045,23 +1045,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1096629",
-      "source": "swob",
-      "name": "Quesnel",
-      "lat": 53.0261,
-      "lon": -122.51,
-      "elevation_m": 545,
-      "obs_time": "2026-08-10T11:00:00.000Z",
-      "cadence_min": 24,
-      "wind_dir_deg": 168,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1032731",
       "source": "swob",
       "name": "ESTEVAN POINT CS",
@@ -1195,23 +1178,6 @@
       "wind_speed_kn": 2.5,
       "wind_gust_kn": null,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1098941",
-      "source": "swob",
-      "name": "Williams Lake",
-      "lat": 52.1834,
-      "lon": -122.054,
-      "elevation_m": 939.7,
-      "obs_time": "2026-08-10T11:00:00.000Z",
-      "cadence_min": 45,
-      "wind_dir_deg": 305,
-      "wind_speed_kmh": 19,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 10.3,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
@@ -1382,23 +1348,6 @@
       "wind_speed_kn": 2,
       "wind_gust_kn": 4,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054222",
-      "source": "swob",
-      "name": "KINDAKUN ROCKS (AUT)",
-      "lat": 53.3156,
-      "lon": -132.772,
-      "elevation_m": 15.15,
-      "obs_time": "2026-08-10T10:00:00.000Z",
-      "cadence_min": null,
-      "wind_dir_deg": 326,
-      "wind_speed_kmh": 12,
-      "wind_gust_kmh": 14,
-      "wind_speed_kn": 6.2,
-      "wind_gust_kn": 7.5,
-      "stale": true,
       "quality": "ok"
     },
     {
