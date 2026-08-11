@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-11T19:31:02.183Z",
+  "generated_at": "2026-08-11T19:46:30.954Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 88,
   "stations": [
     {
       "id": "swob:10476F0",
@@ -1399,23 +1399,6 @@
       "wind_speed_kn": 0.6,
       "wind_gust_kn": 1.8,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1066482",
-      "source": "swob",
-      "name": "Prince Rupert",
-      "lat": 54.2859,
-      "lon": -130.445,
-      "elevation_m": 35.4,
-      "obs_time": "2026-08-11T17:00:00.000Z",
-      "cadence_min": null,
-      "wind_dir_deg": 240,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
