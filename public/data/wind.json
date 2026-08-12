@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T19:31:07.268Z",
+  "generated_at": "2026-08-12T19:31:26.334Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
@@ -14,9 +14,9 @@
       "lat": 49.208307,
       "lon": -122.690076,
       "elevation_m": 6.3,
-      "obs_time": "2026-08-12T19:30:00.000Z",
+      "obs_time": "2026-08-12T19:31:00.000Z",
       "cadence_min": 1,
-      "wind_dir_deg": 258,
+      "wind_dir_deg": 259,
       "wind_speed_kmh": 11,
       "wind_gust_kmh": 17,
       "wind_speed_kn": 5.8,
@@ -416,6 +416,23 @@
       "quality": "ok"
     },
     {
+      "id": "swob:10476F0",
+      "source": "swob",
+      "name": "SQUAMISH AIRPORT",
+      "lat": 49.78319,
+      "lon": -123.161232,
+      "elevation_m": 56.6,
+      "obs_time": "2026-08-12T19:30:00.000Z",
+      "cadence_min": 1,
+      "wind_dir_deg": 163,
+      "wind_speed_kmh": 13,
+      "wind_gust_kmh": 20,
+      "wind_speed_kn": 7.1,
+      "wind_gust_kn": 10.9,
+      "stale": false,
+      "quality": "ok"
+    },
+    {
       "id": "swob:1096454",
       "source": "swob",
       "name": "PRINCE GEORGE MASSEY AUTO",
@@ -429,23 +446,6 @@
       "wind_gust_kmh": 20,
       "wind_speed_kn": 5,
       "wind_gust_kn": 10.6,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:10476F0",
-      "source": "swob",
-      "name": "SQUAMISH AIRPORT",
-      "lat": 49.78319,
-      "lon": -123.161232,
-      "elevation_m": 56.6,
-      "obs_time": "2026-08-12T19:29:00.000Z",
-      "cadence_min": 1,
-      "wind_dir_deg": 161,
-      "wind_speed_kmh": 13,
-      "wind_gust_kmh": 20,
-      "wind_speed_kn": 7,
-      "wind_gust_kn": 10.9,
       "stale": false,
       "quality": "ok"
     },
