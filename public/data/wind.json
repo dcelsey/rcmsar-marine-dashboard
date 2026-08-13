@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-13T20:46:02.228Z",
+  "generated_at": "2026-08-13T21:01:30.246Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 87,
   "stations": [
     {
       "id": "swob:1096453",
@@ -960,23 +960,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1038204",
-      "source": "swob",
-      "name": "Tofino",
-      "lat": 49.0821,
-      "lon": -125.772,
-      "elevation_m": 24.4,
-      "obs_time": "2026-08-13T20:00:00.000Z",
-      "cadence_min": 24,
-      "wind_dir_deg": 184,
-      "wind_speed_kmh": 7,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 3.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1026273",
       "source": "swob",
       "name": "PORT HARDY AIRPORT",
@@ -1399,23 +1382,6 @@
       "wind_speed_kn": 3.9,
       "wind_gust_kn": 6.1,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054222",
-      "source": "swob",
-      "name": "KINDAKUN ROCKS (AUT)",
-      "lat": 53.3156,
-      "lon": -132.772,
-      "elevation_m": 15.15,
-      "obs_time": "2026-08-13T19:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 340,
-      "wind_speed_kmh": 37,
-      "wind_gust_kmh": 45,
-      "wind_speed_kn": 19.8,
-      "wind_gust_kn": 24.3,
-      "stale": true,
       "quality": "ok"
     },
     {
