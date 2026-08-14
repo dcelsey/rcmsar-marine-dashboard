@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-14T00:30:59.077Z",
+  "generated_at": "2026-08-14T00:46:23.082Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 88,
   "stations": [
     {
       "id": "swob:1106200",
@@ -1399,23 +1399,6 @@
       "wind_speed_kn": 22.8,
       "wind_gust_kn": 28.5,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054503",
-      "source": "swob",
-      "name": "LANGARA ISLAND RCS",
-      "lat": 54.2553,
-      "lon": -133.0583,
-      "elevation_m": 50.5,
-      "obs_time": "2026-08-13T23:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 2,
-      "wind_speed_kmh": 7,
-      "wind_gust_kmh": 10,
-      "wind_speed_kn": 3.9,
-      "wind_gust_kn": 5.3,
-      "stale": true,
       "quality": "ok"
     },
     {
