@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-14T19:23:47.269Z",
+  "generated_at": "2026-08-14T19:31:29.541Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 89,
+  "degraded": true,
+  "station_count": 87,
   "stations": [
     {
       "id": "swob:1016943",
@@ -1382,40 +1382,6 @@
       "wind_speed_kn": 10.4,
       "wind_gust_kn": 13.8,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1017101",
-      "source": "swob",
-      "name": "SATURNA ISLAND",
-      "lat": 48.783215,
-      "lon": -123.045807,
-      "elevation_m": 25.4,
-      "obs_time": "2026-08-14T18:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 203,
-      "wind_speed_kmh": 21,
-      "wind_gust_kmh": 28,
-      "wind_speed_kn": 11.2,
-      "wind_gust_kn": 15.1,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054503",
-      "source": "swob",
-      "name": "LANGARA ISLAND RCS",
-      "lat": 54.2553,
-      "lon": -133.0583,
-      "elevation_m": 50.5,
-      "obs_time": "2026-08-14T18:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 306,
-      "wind_speed_kmh": 1,
-      "wind_gust_kmh": 4,
-      "wind_speed_kn": 0.7,
-      "wind_gust_kn": 2.2,
-      "stale": true,
       "quality": "ok"
     },
     {
