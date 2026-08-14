@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-14T05:45:45.417Z",
+  "generated_at": "2026-08-14T06:01:39.165Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1108291",
@@ -1113,23 +1113,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1026271",
-      "source": "swob",
-      "name": "Port Hardy",
-      "lat": 50.6806,
-      "lon": -127.367,
-      "elevation_m": 21.6,
-      "obs_time": "2026-08-14T05:00:00.000Z",
-      "cadence_min": 45,
-      "wind_dir_deg": 0,
-      "wind_speed_kmh": 2,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.2,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1088015",
       "source": "swob",
       "name": "TATLAYOKO LAKE RCS",
@@ -1227,23 +1210,6 @@
       "wind_speed_kmh": 13,
       "wind_gust_kmh": null,
       "wind_speed_kn": 6.8,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-08-14T05:00:00.000Z",
-      "cadence_min": 13,
-      "wind_dir_deg": 302,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
