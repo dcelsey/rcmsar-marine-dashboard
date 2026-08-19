@@ -82,9 +82,26 @@ export type StationConfig = {
  * an `ais` block: the box does not reach them, and claiming a feed we cannot deliver is
  * worse than showing no AIS control. Extending the box upcoast means widening BBOX_NW_LAT
  * and redeploying the Worker, after which they can be added here.
+ *
+ * ---
+ *
+ * **Switched off 2026-08-19 — aisstream.io has stopped delivering data.** The feed went
+ * silent on 2026-08-05 and has not returned; their issue tracker carries a fortnight of
+ * reports with no maintainer reply, and an offer to buy the service. Our proxy is healthy
+ * and still reports `msgs_this_connection: 0`, so there is nothing to fix on this side.
+ *
+ * This applies the same reasoning as the North Coast units above: with no data to deliver,
+ * an AIS toggle and a permanently "connecting" feed chip are worse than no AIS control at
+ * all — a crew reads a broken indicator as an outage they should do something about. See
+ * CR-003 for the outage log and the replacement-feed options.
+ *
+ * **To restore, flip `show` back to true** — one line, and all 25 covered units return
+ * together. If the replacement is a different provider, only `wsUrl` and the upstream half
+ * of `cf-workers/ais-proxy/src/durable.js` change; everything downstream of the proxy is
+ * provider-agnostic.
  */
 const AIS_COVERED = {
-  show: true,
+  show: false,
   wsUrl: 'wss://ais-proxy.fetchwind.workers.dev/ais',
 } as const;
 
