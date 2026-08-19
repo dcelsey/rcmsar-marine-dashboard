@@ -196,6 +196,25 @@ The higher socket churn exposed two defects in the watchdog work above, both now
 - **The connection clock was not cleared when a connection ended**, so `/health` reported a climbing `connection_age_ms` while the state said `reconnecting` and no socket was open — a self-contradiction in the one field added to remove exactly that ambiguity.
 
 **General lesson for any reconnecting socket here:** an event handler bound to a connection must verify the connection is still the current one before acting on shared state. The bug only appears under churn, which is when recovery matters most.
+
+### 2026-08-19 — two weeks on, aisstream looks abandoned; AIS control hidden
+
+**Status: the feed has not returned and probably will not.** Fourteen days silent. Their tracker carries ~15 open reports dated 2026-08-07 → 08-19 with **no maintainer reply on any of them**, including #269 ("silent since 2026-08-05", our exact date), #276 ("Please Explain What's Up") and — the telling one — **#278, someone offering to buy the service or run it**. Users note previous outages ran 3–4 days. Our proxy remains healthy throughout and still reports `msgs_this_connection: 0`; a bad API key is still closed in ~1.2 s, so their auth layer is alive and only the data plane is dead. **Nothing to fix on our side.**
+
+Beware the "alternate feed" thread (#273): it has attracted strangers posting personal Gmail addresses soliciting business. Lead-gen, not recommendations.
+
+**Done: the AIS control is hidden**, `AIS_COVERED.show = false` in `src/lib/stations.ts` — one line, all 25 covered units, and the same line restores it. This extends the reasoning already applied to the North Coast units: with no data to deliver, a toggle plus a permanently "connecting" chip is worse than no control, because a crew reads a broken indicator as an outage they should be acting on. **This only reaches crews once deployed** — it changes site output, unlike everything else in this outage.
+
+### Replacement feed — VesselAPI evaluated and rejected (2026-08-19)
+
+Investigated as the most promising candidate. **It does not fit, on two independent grounds.**
+
+- **The free tier is unusable and the streaming model is the wrong shape.** Free is **150 API calls/month** — about five a day — and **WebSocket/webhook delivery is paid-plan only**. Worse, their "WebSocket" is a *Notifications* API for discrete events (port arrivals, departures, ETA and speed changes, geofence crossings), **not a position firehose**. There is no equivalent of "stream every vessel in this box", which is the shape our whole proxy is built around.
+- **At a usable cadence it costs real money.** Positions come from REST `/v1/location/vessels/bounding-box` (300 requests / 5 min limit, 4-hour query window, rejects overly dense areas). One shared poll serves all 25 units, so cost is set purely by refresh interval: 5-minute polling ≈ 8,600 calls/month → **Starter $59.99/mo**; 2-minute ≈ 21,600 → **Growth $159.99/mo**; 1-minute ≈ 43,200 → **Pro $249.99/mo**. And 5-minute-old positions are a materially worse product than the ~1.5 s live feed we had.
+
+**The architecture is not the obstacle** — the proxy already caches by MMSI and broadcasts on a tick, so a REST poller could replace the WebSocket upstream with the fan-out untouched. Only `connectUpstream` / `handleUpstreamMessage` in `durable.js` are provider-specific. Cost and data shape are the obstacles.
+
+**Implication: free WebSocket AIS appears to be gone as a category.** aisstream was the only provider offering it at zero cost. That reframes the choice: pay monthly for a worse-cadence REST feed, or **put up a receiver**. An RTL-SDR or dAISy at a unit is a one-off hardware cost, gives genuinely local low-latency coverage of that unit's own operating area — arguably better for SAR than regional coverage — and contributing the feed to AISHub unlocks their global data for free. Open question for Duncan; not started.
 - **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
 - **Items to resolve before wider rollout:**
   - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.

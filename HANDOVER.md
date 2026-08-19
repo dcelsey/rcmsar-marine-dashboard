@@ -1,10 +1,12 @@
 # Handover — rcmsar-marine-dashboard
 
-> ## Parked 2026-08-06 — AIS is dark because aisstream.io is down, and commits are waiting to push
+> ## AIS is switched off — aisstream.io is gone, and a deploy is pending (2026-08-19)
 >
-> **Nothing is broken on our side and nothing is in progress.** AIS shows no vessels because the upstream feed went mute at **2026-08-05 13:31 UTC**. Other users confirm the same at `aisstream/issues` **#257** / **#259**. Targets return on their own when they recover; there is no action for us.
+> **Nothing is broken on our side.** The upstream feed went mute at **2026-08-05 13:31 UTC** and has not returned in two weeks. aisstream's tracker has ~15 open reports with **no maintainer reply**, plus **#278 — someone offering to buy the service**. Treat it as abandoned, not down. Our proxy stayed healthy throughout; `msgs_this_connection: 0` is the field that proves the fault is theirs, whatever the state field says.
 >
-> **The status chip sitting on "connecting" / "reconnecting" is the expected appearance of this outage, not a second bug.** Before 2026-08-06 it would have read a confident "live" throughout — that is the defect that hid the outage for a day. Upstream presents two ways and alternates between them: holding the socket open and silent (our 60 s watchdog closes it and re-dials), or accepting it then dropping with code 1006 (backoff re-dials, 30 s ceiling). Both look identical from the dashboard. Settle it with `curl https://ais-proxy.fetchwind.workers.dev/health` — **`msgs_this_connection: 0` means it is still them**, whatever the state field says.
+> **The AIS control is now hidden on all 25 covered units** — `AIS_COVERED.show = false` in `src/lib/stations.ts`, one line, and the same line restores it. **This has not reached crews yet**: unlike everything else in this outage it changes site output, so it needs a deploy to take effect.
+>
+> **A replacement feed is an open question, not a task in flight.** VesselAPI was evaluated and rejected — its free tier is 150 calls/month, WebSocket is paid-only and is an *event* notification channel rather than a position stream, and a usable polling cadence runs $60–250/mo. Free WebSocket AIS looks to be gone as a category; the live alternative is a local receiver feeding AISHub. Full analysis in **CR-003**.
 >
 > **Several commits sit on `main`, unpushed and deliberately so** — see `git log origin/main..main`. None changes the site output, since the Worker is not part of the Astro build, so pushing buys nothing visible while costing one deploy against the saturated budget below. **Batch them with the next real code change.** Cloudflare already runs the current Worker code (`npx wrangler deployments list` to confirm), so the repo lagging is cosmetic, not operational.
 >
