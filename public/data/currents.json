@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-08-24T19:01:51.931Z",
+  "generated_at": "2026-08-25T01:54:32.947Z",
   "tables_edition": "CHS Vol. 5, 2026/01",
   "window": {
-    "from": "2026-08-24T11:01:24Z",
-    "to": "2026-08-27T19:01:24Z"
+    "from": "2026-08-24T17:54:03Z",
+    "to": "2026-08-28T01:54:03Z"
   },
   "reference_stations": [
     {
@@ -15,16 +15,6 @@
       "floodDirection": 216,
       "ebbDirection": 55,
       "events": [
-        {
-          "t": 1787575440000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787589180000,
-          "value": 3.1,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787606160000,
           "value": 0,
@@ -144,6 +134,16 @@
           "t": 1787855160000,
           "value": 3,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787868780000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787878200000,
+          "value": 2.6,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -156,16 +156,6 @@
       "floodDirection": 130,
       "ebbDirection": 305,
       "events": [
-        {
-          "t": 1787580420000,
-          "value": 1.856,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787593080000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787607960000,
           "value": 2.832,
@@ -280,6 +270,16 @@
           "t": 1787845920000,
           "value": 2.23,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787859480000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787874120000,
+          "value": 3.256,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -292,16 +292,6 @@
       "floodDirection": 40,
       "ebbDirection": 201,
       "events": [
-        {
-          "t": 1787581620000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787593920000,
-          "value": 1.092,
-          "qualifier": "EXTREMA_FLOOD"
-        },
         {
           "t": 1787603280000,
           "value": 0,
@@ -416,6 +406,21 @@
           "t": 1787847720000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787859000000,
+          "value": 1.538,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787867640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787879160000,
+          "value": 1.096,
+          "qualifier": "EXTREMA_EBB"
         }
       ]
     },
@@ -428,16 +433,6 @@
       "floodDirection": 130,
       "ebbDirection": 310,
       "events": [
-        {
-          "t": 1787579940000,
-          "value": 0.8,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787591400000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787602740000,
           "value": 0.9,
@@ -552,6 +547,21 @@
           "t": 1787847360000,
           "value": 1.1,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787858940000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787869560000,
+          "value": 1.4,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787880060000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -564,16 +574,6 @@
       "floodDirection": 95,
       "ebbDirection": 275,
       "events": [
-        {
-          "t": 1787575080000,
-          "value": 4.912,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787585700000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787599440000,
           "value": 7.676,
@@ -693,6 +693,16 @@
           "t": 1787852760000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865180000,
+          "value": 9.21,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787877720000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -705,16 +715,6 @@
       "floodDirection": 325,
       "ebbDirection": 145,
       "events": [
-        {
-          "t": 1787578200000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787588700000,
-          "value": 1.806,
-          "qualifier": "EXTREMA_FLOOD"
-        },
         {
           "t": 1787598720000,
           "value": 0,
@@ -834,6 +834,16 @@
           "t": 1787853840000,
           "value": 3.009,
           "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787863680000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787873820000,
+          "value": 2.756,
+          "qualifier": "EXTREMA_EBB"
         }
       ]
     },
@@ -846,16 +856,6 @@
       "floodDirection": 32,
       "ebbDirection": 212,
       "events": [
-        {
-          "t": 1787580540000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787589660000,
-          "value": 0.6,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787598360000,
           "value": 0,
@@ -975,6 +975,16 @@
           "t": 1787856720000,
           "value": 2.1,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787866980000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787877660000,
+          "value": 2.2,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -987,16 +997,6 @@
       "floodDirection": 90,
       "ebbDirection": 270,
       "events": [
-        {
-          "t": 1787580720000,
-          "value": 3.86,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787593080000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787606580000,
           "value": 3.75,
@@ -1111,6 +1111,16 @@
           "t": 1787847180000,
           "value": 4.554,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787859660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787872020000,
+          "value": 4.008,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -1123,16 +1133,6 @@
       "floodDirection": 135,
       "ebbDirection": 315,
       "events": [
-        {
-          "t": 1787580360000,
-          "value": 3.378,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787593260000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787606520000,
           "value": 3.684,
@@ -1247,6 +1247,16 @@
           "t": 1787847420000,
           "value": 3.927,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787859600000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787871900000,
+          "value": 4.115,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -1259,16 +1269,6 @@
       "floodDirection": 4,
       "ebbDirection": 192,
       "events": [
-        {
-          "t": 1787580300000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787593920000,
-          "value": 1.135,
-          "qualifier": "EXTREMA_FLOOD"
-        },
         {
           "t": 1787605080000,
           "value": 0,
@@ -1383,6 +1383,21 @@
           "t": 1787845260000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787857920000,
+          "value": 1.637,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787868360000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787878500000,
+          "value": 0.877,
+          "qualifier": "EXTREMA_EBB"
         }
       ]
     },
@@ -1395,11 +1410,6 @@
       "floodDirection": 90,
       "ebbDirection": 270,
       "events": [
-        {
-          "t": 1787580780000,
-          "value": 2.224,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787594160000,
           "value": 0,
@@ -1489,6 +1499,16 @@
           "t": 1787847480000,
           "value": 2.614,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787860140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787871240000,
+          "value": 2.348,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -1501,16 +1521,6 @@
       "floodDirection": 50,
       "ebbDirection": 230,
       "events": [
-        {
-          "t": 1787573700000,
-          "value": 4.387,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787587980000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787602380000,
           "value": 3.964,
@@ -1620,6 +1630,16 @@
           "t": 1787854440000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787867880000,
+          "value": 4.103,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787877000000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -1632,16 +1652,6 @@
       "floodDirection": 45,
       "ebbDirection": 225,
       "events": [
-        {
-          "t": 1787575020000,
-          "value": 3.126,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787586720000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787599800000,
           "value": 3.969,
@@ -1761,6 +1771,16 @@
           "t": 1787853540000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865660000,
+          "value": 4.632,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787877840000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -1773,16 +1793,6 @@
       "floodDirection": 30,
       "ebbDirection": 210,
       "events": [
-        {
-          "t": 1787573400000,
-          "value": 4.564,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787584740000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787598720000,
           "value": 6.391,
@@ -1902,6 +1912,16 @@
           "t": 1787852100000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863980000,
+          "value": 7.319,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787876520000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -1914,16 +1934,6 @@
       "floodDirection": 80,
       "ebbDirection": 260,
       "events": [
-        {
-          "t": 1787571660000,
-          "value": 4.967,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787584020000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597220000,
           "value": 5.314,
@@ -2043,6 +2053,16 @@
           "t": 1787850960000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787862240000,
+          "value": 5.911,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787874060000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2055,16 +2075,6 @@
       "floodDirection": 355,
       "ebbDirection": 155,
       "events": [
-        {
-          "t": 1787572860000,
-          "value": 4.961,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787583300000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597460000,
           "value": 6.442,
@@ -2184,6 +2194,16 @@
           "t": 1787850840000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787862600000,
+          "value": 7.369,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787875080000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2196,11 +2216,6 @@
       "floodDirection": 135,
       "ebbDirection": 315,
       "events": [
-        {
-          "t": 1787586360000,
-          "value": 9.593,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787600100000,
           "value": 0,
@@ -2320,6 +2335,16 @@
           "t": 1787853300000,
           "value": 12.538,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787866440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787879340000,
+          "value": 12.324,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -2332,16 +2357,6 @@
       "floodDirection": 180,
       "ebbDirection": 0,
       "events": [
-        {
-          "t": 1787578620000,
-          "value": 6.885,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787588940000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787601360000,
           "value": 9.227,
@@ -2461,6 +2476,16 @@
           "t": 1787855760000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787867160000,
+          "value": 11.5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787879400000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2473,16 +2498,6 @@
       "floodDirection": 40,
       "ebbDirection": 220,
       "events": [
-        {
-          "t": 1787574660000,
-          "value": 5.828,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787586120000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787599500000,
           "value": 7.63,
@@ -2602,6 +2617,16 @@
           "t": 1787852880000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787864820000,
+          "value": 8.903,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787876820000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2614,16 +2639,6 @@
       "floodDirection": 120,
       "ebbDirection": 300,
       "events": [
-        {
-          "t": 1787574300000,
-          "value": 5.346,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787585340000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787599020000,
           "value": 7.727,
@@ -2743,6 +2758,16 @@
           "t": 1787852220000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787864520000,
+          "value": 8.963,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787876640000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2755,16 +2780,6 @@
       "floodDirection": 60,
       "ebbDirection": 240,
       "events": [
-        {
-          "t": 1787574540000,
-          "value": 7.284,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787586060000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787599200000,
           "value": 9.041,
@@ -2884,6 +2899,16 @@
           "t": 1787852760000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787864820000,
+          "value": 10.421,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787876460000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2896,11 +2921,6 @@
       "floodDirection": 100,
       "ebbDirection": 280,
       "events": [
-        {
-          "t": 1787575680000,
-          "value": 1,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787599800000,
           "value": 0,
@@ -2985,6 +3005,16 @@
           "t": 1787856900000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863620000,
+          "value": 0.5,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787871060000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -2997,16 +3027,6 @@
       "floodDirection": 180,
       "ebbDirection": 355,
       "events": [
-        {
-          "t": 1787577540000,
-          "value": 1.878,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787588820000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787600040000,
           "value": 1.983,
@@ -3126,6 +3146,16 @@
           "t": 1787854740000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865180000,
+          "value": 3.003,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787876760000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -3138,16 +3168,6 @@
       "floodDirection": 220,
       "ebbDirection": 40,
       "events": [
-        {
-          "t": 1787575500000,
-          "value": 3.446,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787585880000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597940000,
           "value": 3.485,
@@ -3267,6 +3287,16 @@
           "t": 1787851920000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863440000,
+          "value": 4.243,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787876160000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -3279,16 +3309,6 @@
       "floodDirection": 355,
       "ebbDirection": 175,
       "events": [
-        {
-          "t": 1787573400000,
-          "value": 9.869,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787587260000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787598420000,
           "value": 6.695,
@@ -3408,6 +3428,16 @@
           "t": 1787852220000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863140000,
+          "value": 7.76,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787873640000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -3420,16 +3450,6 @@
       "floodDirection": 20,
       "ebbDirection": 200,
       "events": [
-        {
-          "t": 1787574540000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787585520000,
-          "value": 1.157,
-          "qualifier": "EXTREMA_FLOOD"
-        },
         {
           "t": 1787596200000,
           "value": 0,
@@ -3549,6 +3569,16 @@
           "t": 1787849460000,
           "value": 1.724,
           "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787859480000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787870280000,
+          "value": 2.21,
+          "qualifier": "EXTREMA_EBB"
         }
       ]
     },
@@ -3561,16 +3591,6 @@
       "floodDirection": 10,
       "ebbDirection": 190,
       "events": [
-        {
-          "t": 1787578080000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
-        {
-          "t": 1787589780000,
-          "value": 3.602,
-          "qualifier": "EXTREMA_FLOOD"
-        },
         {
           "t": 1787600520000,
           "value": 0,
@@ -3690,6 +3710,16 @@
           "t": 1787855460000,
           "value": 5.699,
           "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787866080000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787876040000,
+          "value": 3.619,
+          "qualifier": "EXTREMA_EBB"
         }
       ]
     },
@@ -3702,16 +3732,6 @@
       "floodDirection": 140,
       "ebbDirection": 340,
       "events": [
-        {
-          "t": 1787574840000,
-          "value": 5.009,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787586420000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787600340000,
           "value": 6.667,
@@ -3831,6 +3851,16 @@
           "t": 1787853240000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865960000,
+          "value": 7.865,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787877420000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -3843,16 +3873,6 @@
       "floodDirection": 154,
       "ebbDirection": 338,
       "events": [
-        {
-          "t": 1787575620000,
-          "value": 3.452,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787591280000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787605020000,
           "value": 2.683,
@@ -3972,6 +3992,16 @@
           "t": 1787856060000,
           "value": 0,
           "qualifier": "SLACK"
+        },
+        {
+          "t": 1787864220000,
+          "value": 3.551,
+          "qualifier": "EXTREMA_FLOOD"
+        },
+        {
+          "t": 1787878020000,
+          "value": 0,
+          "qualifier": "SLACK"
         }
       ]
     },
@@ -3984,11 +4014,6 @@
       "floodDirection": 290,
       "ebbDirection": 110,
       "events": [
-        {
-          "t": 1787581740000,
-          "value": 5.351,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787595600000,
           "value": 0,
@@ -4078,6 +4103,16 @@
           "t": 1787846820000,
           "value": 5.591,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787861340000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787871660000,
+          "value": 2.834,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     }
@@ -4092,11 +4127,6 @@
       "floodDirection": 110,
       "ebbDirection": 290,
       "events": [
-        {
-          "t": 1787579280000,
-          "value": 1.5568,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787591160000,
           "value": 0,
@@ -4186,6 +4216,16 @@
           "t": 1787845980000,
           "value": 1.8297999999999999,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787857140000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787869440000,
+          "value": 1.6435999999999997,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -4198,16 +4238,6 @@
       "floodDirection": 40,
       "ebbDirection": 220,
       "events": [
-        {
-          "t": 1787572800000,
-          "value": 3.2902499999999995,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787587080000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787601480000,
           "value": 2.973,
@@ -4312,6 +4342,16 @@
           "t": 1787839500000,
           "value": 3.7552499999999998,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787853540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787866980000,
+          "value": 3.07725,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -4324,16 +4364,6 @@
       "floodDirection": 350,
       "ebbDirection": 170,
       "events": [
-        {
-          "t": 1787579700000,
-          "value": 1.9741499999999998,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787593080000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787608080000,
           "value": 1.7838,
@@ -4438,6 +4468,16 @@
           "t": 1787846400000,
           "value": 2.2531499999999998,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787859540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787873580000,
+          "value": 1.84635,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ],
       "notes": "+70 min to turn-to-ebb if preceding flood at Race Passage < 2.0 kt"
@@ -4451,16 +4491,6 @@
       "floodDirection": 330,
       "ebbDirection": 150,
       "events": [
-        {
-          "t": 1787576100000,
-          "value": 1.3160999999999998,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787591580000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787607780000,
           "value": 1.3874,
@@ -4565,6 +4595,16 @@
           "t": 1787842800000,
           "value": 1.5020999999999998,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787858040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787873280000,
+          "value": 1.4360499999999998,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -4577,16 +4617,6 @@
       "floodDirection": 330,
       "ebbDirection": 150,
       "events": [
-        {
-          "t": 1787579400000,
-          "value": 0.8774,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787593980000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787607480000,
           "value": 0.991,
@@ -4691,6 +4721,16 @@
           "t": 1787846100000,
           "value": 1.0014,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787860440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787872980000,
+          "value": 1.02575,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -4703,16 +4743,6 @@
       "floodDirection": 70,
       "ebbDirection": 250,
       "events": [
-        {
-          "t": 1787577900000,
-          "value": 1.7548,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787591580000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787606580000,
           "value": 1.982,
@@ -4817,6 +4847,16 @@
           "t": 1787844600000,
           "value": 2.0028,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787858040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787872080000,
+          "value": 2.0515,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -4829,16 +4869,6 @@
       "floodDirection": 320,
       "ebbDirection": 140,
       "events": [
-        {
-          "t": 1787576400000,
-          "value": 0.6580499999999999,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787590080000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787605380000,
           "value": 0.5946,
@@ -4943,6 +4973,16 @@
           "t": 1787843100000,
           "value": 0.7510499999999999,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787856540000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787870880000,
+          "value": 0.6154499999999999,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -4955,16 +4995,6 @@
       "floodDirection": 315,
       "ebbDirection": 135,
       "events": [
-        {
-          "t": 1787573220000,
-          "value": 1.7193,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787585820000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597400000,
           "value": 1.9845,
@@ -5079,6 +5109,16 @@
           "t": 1787840400000,
           "value": 2.2099,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787852640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863260000,
+          "value": 2.316,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5091,16 +5131,6 @@
       "floodDirection": 55,
       "ebbDirection": 235,
       "events": [
-        {
-          "t": 1787573220000,
-          "value": 3.126,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787585820000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597400000,
           "value": 3.969,
@@ -5215,6 +5245,16 @@
           "t": 1787840400000,
           "value": 4.018,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787852640000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863260000,
+          "value": 4.632,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5227,16 +5267,6 @@
       "floodDirection": 0,
       "ebbDirection": 180,
       "events": [
-        {
-          "t": 1787572920000,
-          "value": 3,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787588220000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787601300000,
           "value": 3,
@@ -5351,6 +5381,16 @@
           "t": 1787840100000,
           "value": 3,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787855040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787867160000,
+          "value": 3,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5363,16 +5403,6 @@
       "floodDirection": 295,
       "ebbDirection": 115,
       "events": [
-        {
-          "t": 1787574360000,
-          "value": 2.7285500000000003,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787583900000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787598960000,
           "value": 3.221,
@@ -5487,6 +5517,16 @@
           "t": 1787841120000,
           "value": 3.6822500000000002,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787851440000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787864100000,
+          "value": 3.6845,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5499,11 +5539,6 @@
       "floodDirection": 50,
       "ebbDirection": 230,
       "events": [
-        {
-          "t": 1787586960000,
-          "value": 1.9186,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787600700000,
           "value": 0,
@@ -5623,6 +5658,16 @@
           "t": 1787853900000,
           "value": 2.5076,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787867040000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787879940000,
+          "value": 2.4648000000000003,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5635,16 +5680,6 @@
       "floodDirection": 140,
       "ebbDirection": 320,
       "events": [
-        {
-          "t": 1787575320000,
-          "value": 11,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787585640000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787598060000,
           "value": 11,
@@ -5759,6 +5794,16 @@
           "t": 1787842020000,
           "value": 11,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787852460000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863860000,
+          "value": 11,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5771,16 +5816,6 @@
       "floodDirection": 130,
       "ebbDirection": 310,
       "events": [
-        {
-          "t": 1787572920000,
-          "value": 7,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787583840000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787596260000,
           "value": 7,
@@ -5895,6 +5930,16 @@
           "t": 1787839620000,
           "value": 7,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787850660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787862060000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -5907,16 +5952,6 @@
       "floodDirection": 355,
       "ebbDirection": 175,
       "events": [
-        {
-          "t": 1787575020000,
-          "value": 5,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787587740000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787600160000,
           "value": 5,
@@ -6031,6 +6066,16 @@
           "t": 1787841720000,
           "value": 5,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787854560000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865960000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6043,16 +6088,6 @@
       "floodDirection": 135,
       "ebbDirection": 315,
       "events": [
-        {
-          "t": 1787572620000,
-          "value": 7,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787582340000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787594760000,
           "value": 7,
@@ -6167,6 +6202,16 @@
           "t": 1787839320000,
           "value": 7,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787849160000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787860560000,
+          "value": 7,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6179,16 +6224,6 @@
       "floodDirection": 90,
       "ebbDirection": 270,
       "events": [
-        {
-          "t": 1787575920000,
-          "value": 5,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787583840000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787596260000,
           "value": 5,
@@ -6303,6 +6338,16 @@
           "t": 1787842620000,
           "value": 5,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787850660000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787862060000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6315,16 +6360,6 @@
       "floodDirection": 180,
       "ebbDirection": 0,
       "events": [
-        {
-          "t": 1787575380000,
-          "value": 8,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787587200000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787600940000,
           "value": 10,
@@ -6439,6 +6474,16 @@
           "t": 1787842500000,
           "value": 8,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787854260000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787866680000,
+          "value": 10,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6451,11 +6496,6 @@
       "floodDirection": 90,
       "ebbDirection": 270,
       "events": [
-        {
-          "t": 1787576880000,
-          "value": 1.65,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787605500000,
           "value": 0,
@@ -6535,6 +6575,16 @@
           "t": 1787842620000,
           "value": 1.815,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787854800000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865420000,
+          "value": 1.375,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6547,11 +6597,6 @@
       "floodDirection": 110,
       "ebbDirection": 290,
       "events": [
-        {
-          "t": 1787576880000,
-          "value": 6,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787607300000,
           "value": 6,
@@ -6631,6 +6676,16 @@
           "t": 1787842620000,
           "value": 6,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787855700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865420000,
+          "value": 6,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6643,11 +6698,6 @@
       "floodDirection": 65,
       "ebbDirection": 245,
       "events": [
-        {
-          "t": 1787576880000,
-          "value": 5,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787602800000,
           "value": 5,
@@ -6727,6 +6777,16 @@
           "t": 1787842620000,
           "value": 5,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787855700000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787865420000,
+          "value": 5,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6739,11 +6799,6 @@
       "floodDirection": 90,
       "ebbDirection": 270,
       "events": [
-        {
-          "t": 1787569680000,
-          "value": 0.5,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787593800000,
           "value": 0,
@@ -6823,6 +6878,16 @@
           "t": 1787835420000,
           "value": 0.55,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787850900000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787859420000,
+          "value": 0.275,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6835,11 +6900,6 @@
       "floodDirection": 90,
       "ebbDirection": 270,
       "events": [
-        {
-          "t": 1787575080000,
-          "value": 0.95,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787599800000,
           "value": 0,
@@ -6919,6 +6979,16 @@
           "t": 1787840820000,
           "value": 1.045,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787856300000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863020000,
+          "value": 0.35,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -6931,11 +7001,6 @@
       "floodDirection": 135,
       "ebbDirection": 315,
       "events": [
-        {
-          "t": 1787568780000,
-          "value": 1,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787599800000,
           "value": 1,
@@ -7015,6 +7080,16 @@
           "t": 1787834520000,
           "value": 1,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787843400000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787856720000,
+          "value": 1,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -7027,11 +7102,6 @@
       "floodDirection": 115,
       "ebbDirection": 295,
       "events": [
-        {
-          "t": 1787568780000,
-          "value": 1.5,
-          "qualifier": "EXTREMA_EBB"
-        },
         {
           "t": 1787595900000,
           "value": 1.5,
@@ -7111,6 +7181,16 @@
           "t": 1787834520000,
           "value": 1.5,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787848200000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787857020000,
+          "value": 1,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -7123,16 +7203,6 @@
       "floodDirection": 120,
       "ebbDirection": 300,
       "events": [
-        {
-          "t": 1787583000000,
-          "value": 5.921399999999999,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787604360000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787611920000,
           "value": 3.6822500000000002,
@@ -7247,6 +7317,16 @@
           "t": 1787848920000,
           "value": 6.8382,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787869320000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787876640000,
+          "value": 4.268,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -7259,16 +7339,6 @@
       "floodDirection": 100,
       "ebbDirection": 280,
       "events": [
-        {
-          "t": 1787573400000,
-          "value": 2.9606999999999997,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787588760000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787598420000,
           "value": 2.6780000000000004,
@@ -7383,6 +7453,16 @@
           "t": 1787839320000,
           "value": 3.4191,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787853720000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787863140000,
+          "value": 3.104,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -7395,16 +7475,6 @@
       "floodDirection": 5,
       "ebbDirection": 185,
       "events": [
-        {
-          "t": 1787572800000,
-          "value": 3.9476,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787586660000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597820000,
           "value": 2.6780000000000004,
@@ -7519,6 +7589,16 @@
           "t": 1787838720000,
           "value": 4.558800000000001,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787851620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787862540000,
+          "value": 3.104,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     },
@@ -7531,16 +7611,6 @@
       "floodDirection": 80,
       "ebbDirection": 260,
       "events": [
-        {
-          "t": 1787572800000,
-          "value": 5.921399999999999,
-          "qualifier": "EXTREMA_EBB"
-        },
-        {
-          "t": 1787586660000,
-          "value": 0,
-          "qualifier": "SLACK"
-        },
         {
           "t": 1787597820000,
           "value": 3.3475,
@@ -7655,6 +7725,16 @@
           "t": 1787838720000,
           "value": 6.8382,
           "qualifier": "EXTREMA_EBB"
+        },
+        {
+          "t": 1787851620000,
+          "value": 0,
+          "qualifier": "SLACK"
+        },
+        {
+          "t": 1787862540000,
+          "value": 3.88,
+          "qualifier": "EXTREMA_FLOOD"
         }
       ]
     }
