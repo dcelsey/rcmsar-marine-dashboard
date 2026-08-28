@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-28T22:45:49.467Z",
+  "generated_at": "2026-08-28T23:01:22.275Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1086081",
@@ -824,23 +824,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1038204",
-      "source": "swob",
-      "name": "Tofino",
-      "lat": 49.0821,
-      "lon": -125.772,
-      "elevation_m": 24.4,
-      "obs_time": "2026-08-28T22:00:00.000Z",
-      "cadence_min": 25,
-      "wind_dir_deg": 274,
-      "wind_speed_kmh": 10,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 5.5,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1066482",
       "source": "swob",
       "name": "Prince Rupert",
@@ -1074,23 +1057,6 @@
       "wind_speed_kmh": 20,
       "wind_gust_kmh": null,
       "wind_speed_kn": 10.7,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1096439",
-      "source": "swob",
-      "name": "Prince George",
-      "lat": 53.884,
-      "lon": -122.678,
-      "elevation_m": 690.7,
-      "obs_time": "2026-08-28T22:00:00.000Z",
-      "cadence_min": 16,
-      "wind_dir_deg": 188,
-      "wind_speed_kmh": 11,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 6,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
