@@ -1,5 +1,17 @@
 # Handover — rcmsar-marine-dashboard
 
+> ## Every map tile is watermarked "API KEY REQUIRED" — needs a key from Duncan (2026-08-31)
+>
+> CARTO began requiring an API key for basemaps. This is **live on the marine map for all 31 units**: keyless tiles still return HTTP 200 with a correctly-rendered PNG, but each one now carries a diagonal grey "API KEY REQUIRED" stamp. Nothing in our code broke and no status code would ever have flagged it.
+>
+> **Fixed and shipped.** One tile URL in [src/scripts/refresh.ts](src/scripts/refresh.ts) — the currents map, wind-barb map and AIS layer all share the one `L.map` — now appends `?key=` from `PUBLIC_CARTO_KEY`, plus [.env.example](.env.example) and [src/env.d.ts](src/env.d.ts). With the var unset the URL is byte-identical to what shipped before, so a missing key degrades to a watermark rather than a blank map. Duncan set `PUBLIC_CARTO_KEY` in Vercel on 2026-08-31; pushed the same day.
+>
+> **One thing left: confirm it by eye on the deployed site**, and check `PUBLIC_CARTO_KEY` is set for **Preview** as well as Production or branch previews stay watermarked. Because the key is inlined at build time, a key added *after* a build has landed needs a fresh deploy to take effect — if the watermark is still there, force-refresh first, then check the deployed SHA is newer than the env change.
+>
+> **The gotcha that will cost you an hour if you forget it:** a *wrong* key returns the identical watermarked tile — same 200, same byte count as no key at all. There is no error path. Verify by looking at the map, never by the network tab.
+>
+> Free tier is 5M tiles/month across raster and vector, non-commercial, nonprofits explicitly included — we are nowhere near it. **Vector vs raster was evaluated and deliberately declined**: CARTO says raster "is being retired" but gives no date, and the same key covers both, so migrating later costs no re-keying. It would mean ~230 KB gzipped of `maplibre-gl` + `maplibre-gl-leaflet` and re-testing every custom `divIcon` overlay. Full reasoning in **CR-008**.
+
 > ## AIS is switched off — aisstream.io is gone, and a deploy is pending (2026-08-19)
 >
 > **Nothing is broken on our side.** The upstream feed went mute at **2026-08-05 13:31 UTC** and has not returned in two weeks. aisstream's tracker has ~15 open reports with **no maintainer reply**, plus **#278 — someone offering to buy the service**. Treat it as abandoned, not down. Our proxy stayed healthy throughout; `msgs_this_connection: 0` is the field that proves the fault is theirs, whatever the state field says.

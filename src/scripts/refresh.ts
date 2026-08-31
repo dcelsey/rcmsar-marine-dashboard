@@ -25,6 +25,20 @@ const $ = <T extends Element = HTMLElement>(sel: string) =>
 
 let lastGood: string | null = null;
 
+// CARTO basemaps now require an API key (carto.com/basemaps/apikey). Keyless
+// requests still return 200 with a real tile, but every one is stamped with a
+// diagonal "API KEY REQUIRED" watermark — and so is a request carrying a wrong
+// key, byte-identical to the keyless one, so a typo here looks exactly like no
+// key at all. Verify by eye, not by response code.
+//
+// The key ends up in the client bundle regardless — it is a public basemap key,
+// not a secret — but it is kept out of this public repo. Set PUBLIC_CARTO_KEY in
+// the Vercel project env, and in a local `.env` for `astro dev`. See `.env.example`.
+const CARTO_KEY = import.meta.env.PUBLIC_CARTO_KEY ?? '';
+const CARTO_TILE_URL =
+  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+  + (CARTO_KEY ? `?key=${encodeURIComponent(CARTO_KEY)}` : '');
+
 function renderGlance(wx: WeatherResponse, marine: MarineResponse | null, tides: TideBundle | null, live: LiveWindPayload | null, tidesMap: TideMapPayload | null): void {
   const cur = wx.current;
 
@@ -316,7 +330,7 @@ async function ensureCurrentsMap(container: HTMLElement): Promise<CurrentsMapSta
     const zoom = station.currents?.zoom ?? station.windy.zoom;
     const map = L.map(container, { zoomControl: true, attributionControl: true, scrollWheelZoom: false });
     map.setView([c.lat, c.lon], zoom);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer(CARTO_TILE_URL, {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> · © <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
       maxZoom: 19,

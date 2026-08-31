@@ -4,6 +4,53 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
+## CR-008 — CARTO basemaps now require an API key
+
+- **Logged:** 2026-08-31
+- **Status:** done pending visual confirmation — code wired and verified, `PUBLIC_CARTO_KEY` set in Vercel by Duncan 2026-08-31, pushed the same day. Last step is looking at the deployed map to confirm the watermark is gone (there is no other way to tell — see the trap below).
+- **Prompt:** "carto basemaps now needs an api key — here are the instructions https://carto.com/basemaps/apikey/ — there is also a note about vector vs raster which is worth a look".
+
+### What is actually happening
+
+Confirmed by fetching a tile at our own zoom/extent: keyless requests still return **HTTP 200 with a real, correctly-rendered PNG**, but every tile now carries a diagonal grey **"API KEY REQUIRED / carto.com/basemaps/apikey"** stamp across it. So this is live on the marine map for **all 31 units** right now, and nothing in our logs or response codes would ever have flagged it.
+
+**The trap worth remembering:** a request carrying a *wrong* key returns the identical watermarked tile — same 200, same byte count as the keyless response. There is no error path. The only test that distinguishes a good key from a typo is looking at the map.
+
+### The fix
+
+One tile URL, in [src/scripts/refresh.ts](src/scripts/refresh.ts) — the currents map, wind-barb map and AIS layer all share the single `L.map` in `ensureCurrentsMap`, so there is only one place to change. `?key=` is appended from `PUBLIC_CARTO_KEY`:
+
+- `PUBLIC_CARTO_KEY` unset → the URL is byte-identical to what shipped before, so a missing key degrades to today's behaviour rather than a blank map.
+- Verified both ways with a real build: with the var set, `key=TEST_KEY_12345` is inlined into the client bundle; without it, the emitted URL has no query string. `astro check` clean.
+- Also added [.env.example](.env.example) and [src/env.d.ts](src/env.d.ts).
+
+**The key is public either way** — it ships in the client bundle, because that is where the map runs. Env rather than source buys two things that still matter on a public repo: it stays out of git history and out of reach of the bots that scrape GitHub for key patterns, and it can be rotated by editing one Vercel setting instead of pushing a commit against the saturated deploy budget (CR-006).
+
+### Remaining step
+
+Confirm by eye on the deployed site that the watermark is gone. Two things that make a false negative likely:
+
+- **The key is inlined at build time**, not read at runtime, so setting it in Vercel does nothing until the next build. If the map is still stamped, check the deployed SHA is newer than the env change before assuming the key is wrong.
+- **Set it for Preview as well as Production**, or branch previews stay watermarked while production is fine.
+
+For local `astro dev`, drop the same value into a `.env` — see [.env.example](.env.example).
+
+### Licensing
+
+Free tier is **5M tile requests per calendar month**, counted across raster and vector together, for non-commercial use — CARTO names nonprofits as intended users, which we are. Attribution to CARTO and OpenStreetMap must stay visible; ours is already on the tile layer and must not be removed. Nowhere near 5M at our traffic even with 24/7 ready-room kiosks, since Leaflet caches tiles and the map only moves when someone pans it.
+
+### The vector-vs-raster note: not a job for now
+
+CARTO's page argues vector is better on every axis and says **raster "is being retired"** — sharper at any zoom with no separate `@2x` request, restyleable at runtime, and (their words) *"We are considering stopping data updates to the raster basemaps"*. **No retirement date is given, and the same key covers both**, so migrating later needs no re-keying.
+
+Three findings that say "later", though:
+
+- **The page gives no vector instructions at all** — no style URL, no MapLibre example. It makes the case for vector and then only documents the raster URL. A migration is self-directed work against CARTO's other docs, not following a recipe.
+- **Leaflet cannot consume vector tiles natively.** It would mean adding `maplibre-gl` plus the `maplibre-gl-leaflet` bridge — roughly 230 KB gzipped of new dependency — to a glance dashboard where the map is one card among many, and re-testing every custom `divIcon` overlay we have (wind barbs, tide markers, current arrows, AIS vessels) against a different renderer.
+- **Vector is not being enforced yet.** `tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/{z}/{x}/{y}.mvt` currently serves 200 with or without a key — a watermark can't be baked into an `.mvt` the way it can into a PNG, so enforcement there will have to look different, and hasn't appeared. Migrating today would not even be the safer side of the key change.
+
+**Recommendation: stay on raster + key.** Revisit if CARTO announces a date, if raster cartography visibly goes stale, or if we ever want runtime restyling — a dark basemap to match the dashboard theme is the obvious one, and is the single thing vector would buy us that we can't get today.
+
 ## CR-007 — Platform limits and the "add a server" question
 
 - **Logged:** 2026-08-04
