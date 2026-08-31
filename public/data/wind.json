@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-08-31T04:45:44.664Z",
+  "generated_at": "2026-08-31T05:01:24.198Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 87,
+  "degraded": true,
+  "station_count": 84,
   "stations": [
     {
       "id": "swob:1106200",
@@ -994,23 +994,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1098941",
-      "source": "swob",
-      "name": "Williams Lake",
-      "lat": 52.1834,
-      "lon": -122.054,
-      "elevation_m": 939.7,
-      "obs_time": "2026-08-31T04:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 109,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 2.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1012475",
       "source": "swob",
       "name": "DISCOVERY ISLAND",
@@ -1024,23 +1007,6 @@
       "wind_gust_kmh": 9,
       "wind_speed_kn": 3,
       "wind_gust_kn": 4.7,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1021267",
-      "source": "swob",
-      "name": "Campbell River",
-      "lat": 49.952,
-      "lon": -125.273,
-      "elevation_m": 108.8,
-      "obs_time": "2026-08-31T04:00:00.000Z",
-      "cadence_min": 34,
-      "wind_dir_deg": 0,
-      "wind_speed_kmh": 2,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.2,
-      "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
     },
@@ -1365,23 +1331,6 @@
       "wind_speed_kn": 6.5,
       "wind_gust_kn": 12.1,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1054222",
-      "source": "swob",
-      "name": "KINDAKUN ROCKS (AUT)",
-      "lat": 53.3156,
-      "lon": -132.772,
-      "elevation_m": 15.15,
-      "obs_time": "2026-08-31T03:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 8,
-      "wind_speed_kmh": 11,
-      "wind_gust_kmh": 13,
-      "wind_speed_kn": 5.7,
-      "wind_gust_kn": 7.2,
-      "stale": true,
       "quality": "ok"
     },
     {
