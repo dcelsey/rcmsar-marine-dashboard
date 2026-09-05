@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-05T11:45:38.136Z",
+  "generated_at": "2026-09-05T12:01:36.998Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 86,
+  "degraded": true,
+  "station_count": 85,
   "stations": [
     {
       "id": "swob:1096631",
@@ -598,23 +598,6 @@
       "wind_speed_kmh": 2,
       "wind_gust_kmh": null,
       "wind_speed_kn": 1.2,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1021830",
-      "source": "swob",
-      "name": "Comox",
-      "lat": 49.71,
-      "lon": -124.89,
-      "elevation_m": 26,
-      "obs_time": "2026-09-05T11:00:00.000Z",
-      "cadence_min": 38,
-      "wind_dir_deg": 0,
-      "wind_speed_kmh": 0,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 0,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
