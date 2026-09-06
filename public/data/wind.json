@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-06T12:45:40.639Z",
+  "generated_at": "2026-09-06T13:01:31.907Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 86,
+  "degraded": true,
+  "station_count": 84,
   "stations": [
     {
       "id": "swob:1018611",
@@ -671,23 +671,6 @@
       "quality": "ok"
     },
     {
-      "id": "swob:1077499",
-      "source": "swob",
-      "name": "Smithers",
-      "lat": 54.8253,
-      "lon": -127.183,
-      "elevation_m": 523,
-      "obs_time": "2026-09-06T12:00:00.000Z",
-      "cadence_min": 13,
-      "wind_dir_deg": 245,
-      "wind_speed_kmh": 2,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
       "id": "swob:1104570",
       "source": "swob",
       "name": "Langley Regional",
@@ -802,23 +785,6 @@
       "wind_speed_kmh": 5,
       "wind_gust_kmh": null,
       "wind_speed_kn": 2.7,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1060815",
-      "source": "swob",
-      "name": "Bella Bella Campbell Island",
-      "lat": 52.1851,
-      "lon": -128.157,
-      "elevation_m": 43,
-      "obs_time": "2026-09-06T12:00:00.000Z",
-      "cadence_min": 6,
-      "wind_dir_deg": 166,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
