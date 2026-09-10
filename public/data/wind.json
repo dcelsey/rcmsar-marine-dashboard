@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-10T07:31:14.818Z",
+  "generated_at": "2026-09-10T07:46:39.534Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 87,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1018598",
@@ -1365,23 +1365,6 @@
       "wind_speed_kn": 6.2,
       "wind_gust_kn": 11.4,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:BC_WMB_211",
-      "source": "swob",
-      "name": "NAZKO",
-      "lat": 52.9575,
-      "lon": -123.5958,
-      "elevation_m": 910,
-      "obs_time": "2026-09-10T06:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 159,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
