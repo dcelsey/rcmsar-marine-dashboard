@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-12T17:45:29.077Z",
+  "generated_at": "2026-09-12T18:01:35.449Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 87,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1086081",
@@ -972,23 +972,6 @@
       "wind_speed_kmh": 5,
       "wind_gust_kmh": null,
       "wind_speed_kn": 2.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1096439",
-      "source": "swob",
-      "name": "Prince George",
-      "lat": 53.884,
-      "lon": -122.678,
-      "elevation_m": 690.7,
-      "obs_time": "2026-09-12T17:00:00.000Z",
-      "cadence_min": 5,
-      "wind_dir_deg": 323,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
       "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
