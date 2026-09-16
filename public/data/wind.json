@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-16T13:31:21.703Z",
+  "generated_at": "2026-09-16T13:46:32.132Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 86,
+  "degraded": true,
+  "station_count": 84,
   "stations": [
     {
       "id": "swob:1096453",
@@ -1331,40 +1331,6 @@
       "wind_speed_kn": 9,
       "wind_gust_kn": 12.3,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1096629",
-      "source": "swob",
-      "name": "Quesnel",
-      "lat": 53.0261,
-      "lon": -122.51,
-      "elevation_m": 545,
-      "obs_time": "2026-09-16T12:46:00.000Z",
-      "cadence_min": 8,
-      "wind_dir_deg": 6,
-      "wind_speed_kmh": 5,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 2.9,
-      "wind_gust_kn": null,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1017101",
-      "source": "swob",
-      "name": "SATURNA ISLAND",
-      "lat": 48.783215,
-      "lon": -123.045807,
-      "elevation_m": 25.4,
-      "obs_time": "2026-09-16T12:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 302,
-      "wind_speed_kmh": 1,
-      "wind_gust_kmh": 4,
-      "wind_speed_kn": 0.4,
-      "wind_gust_kn": 1.9,
-      "stale": true,
       "quality": "ok"
     },
     {
