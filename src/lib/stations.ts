@@ -85,23 +85,26 @@ export type StationConfig = {
  *
  * ---
  *
- * **Switched off 2026-08-19 — aisstream.io has stopped delivering data.** The feed went
- * silent on 2026-08-05 and has not returned; their issue tracker carries a fortnight of
- * reports with no maintainer reply, and an offer to buy the service. Our proxy is healthy
- * and still reports `msgs_this_connection: 0`, so there is nothing to fix on this side.
+ * **Switched off 2026-08-19, back on 2026-09-25.** aisstream.io went silent on 2026-08-05
+ * and stayed down for roughly six weeks, so the layer was disabled rather than show a
+ * permanently "connecting" chip — a crew reads a broken indicator as an outage they should
+ * act on. The feed recovered at some point before 2026-09-25 (proxy /health: upstream live,
+ * 485 vessels, 38k messages on one connection) and the layer is on again.
  *
- * This applies the same reasoning as the North Coast units above: with no data to deliver,
- * an AIS toggle and a permanently "connecting" feed chip are worse than no AIS control at
- * all — a crew reads a broken indicator as an outage they should do something about. See
- * CR-003 for the outage log and the replacement-feed options.
+ * Expect this to recur. The recovery was never announced and their issue tracker is
+ * unmaintained — no maintainer reply on anything, including an offer to buy the service.
+ * Treat the provider as alive but abandoned: the per-vessel staleness fading and the
+ * "connecting / last heard" wording exist so that a silent upstream degrades visibly
+ * instead of lying, which is what makes leaving this on defensible. Before touching our
+ * code, check `/health` — `msgs_this_connection: 0` means the fault is upstream, full stop.
  *
- * **To restore, flip `show` back to true** — one line, and all 25 covered units return
- * together. If the replacement is a different provider, only `wsUrl` and the upstream half
+ * **To switch off again, flip `show` to false** — one line, and all 25 covered units go
+ * together. If a replacement provider is ever needed, only `wsUrl` and the upstream half
  * of `cf-workers/ais-proxy/src/durable.js` change; everything downstream of the proxy is
- * provider-agnostic.
+ * provider-agnostic. See CR-003 for the outage log and the evaluated alternatives.
  */
 const AIS_COVERED = {
-  show: false,
+  show: true,
   wsUrl: 'wss://ais-proxy.fetchwind.workers.dev/ais',
 } as const;
 
