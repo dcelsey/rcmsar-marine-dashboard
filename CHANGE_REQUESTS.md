@@ -4,6 +4,57 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
+## CR-009 — Deployment storage nearly full; retention cut from 30 days to 1
+
+- **Logged:** 2026-09-10
+- **Status:** done — Duncan set all four retention periods to 1 day on 2026-09-10. **Storage will not drop immediately**; see the timing table below before concluding it didn't work.
+- **Prompt:** "the vercel project is using most of my deployment storage — deployment is currently set at 30 days — is there any reason to keep old deployments or can I dial this way back?"
+
+### The problem is CR-006 wearing a different hat
+
+Deployment Storage bills for retained build output. At the pinned ~95 production deploys/day (CR-005) against the Hobby default of 30-day retention on all four deployment states, the project was warehousing on the order of **2,850 deployments** — essentially all of them byte-identical builds of 95 static pages differing only in a 39 KB `wind.json`. Vercel's own troubleshooting table names this exact shape: *"Deployment volume increases unexpectedly → compare deployments with Git commits, CI jobs and coding-agent activity → fix runaway automation."*
+
+**The actual storage figure was never recorded before the change**, so there is no clean before/after. The Usage page (Usage → Deployment Storage → Projects, 30-day range) will show it falling; that's the only measurement available now.
+
+### Why nothing of value was retained
+
+The one real argument for long retention is Instant Rollback, and **it doesn't hold on this project because data is committed to the repo and baked in at build time**. Promoting a deployment from even a few hours back also rolls wind, tide and current data back to that moment — a ready-room kiosk showing a day-old forecast is worse than whatever bug prompted the rollback. The real recovery path for a bad code deploy is `git revert` plus the next bot deploy, which lands within ~15 minutes regardless.
+
+The secondary argument — keeping preview URLs alive to share — is moot while there's no headroom to push branches for previews at all.
+
+### What was changed
+
+Project → **Settings** → **Security** → **Deployment Retention Policy**. All four states (Canceled, Errored, Pre-Production, Production) set to 1 day.
+
+### Three clocks, not one
+
+| Stage | Duration |
+|---|---|
+| Policy takes effect | Immediately on save |
+| Background job marks expired deployments for deletion | Typically **within 48 h** |
+| Exception-protected deployments re-evaluated once the exception lifts | Up to **30 days** |
+| Deleted deployments permanently purged (recovery period) | **30 days** after marking |
+
+**The caveat to expect:** Vercel's docs say retained output contributes to storage "while Vercel stores it", and that resources are only "permanently removed" at the end of the 30-day recovery window. That reads as though **storage isn't freed until the purge completes, not when a deployment is marked deleted** — but Vercel doesn't state it explicitly either way, so treat it as the likely explanation if usage hasn't moved after a few days rather than as established fact. Their own wording hedges the same direction: *"Retention changes affect stored history over time."*
+
+### The floor you can't get under
+
+Retention exceptions keep deployments regardless of policy. The ones that bind here:
+
+- The last **20 production deployments** in state Ready
+- The last **10 deployments created** in the project
+- Any deployment with a **production alias assigned** — this is why the live site is never at risk
+
+At ~95 deploys/day, "last 20 production Ready" is about five hours' worth. So 1-day retention settles somewhere between 20 and ~95 retained rather than near zero — still a ~97% cut.
+
+### Reversible for 30 days
+
+Anything deleted can be restored from **Settings → Security → Recently Deleted** within the recovery period. If the ~1-day rollback reach turns out to be too short, there's a month to change your mind.
+
+### Relationship to CR-006
+
+This is a stopgap, not the fix. CR-006 (move data commits off `main`) collapses ~2,000 monthly deploys to ~100 and makes the storage question disappear on its own. Retention was worth doing anyway — it costs nothing, locks nothing in, and the retained history had no value even at the old deploy volume.
+
 ## CR-008 — CARTO basemaps now require an API key
 
 - **Logged:** 2026-08-31
@@ -246,6 +297,8 @@ The higher socket churn exposed two defects in the watchdog work above, both now
 
 ### 2026-08-19 — two weeks on, aisstream looks abandoned; AIS control hidden
 
+> **Superseded 2026-09-25 — the feed came back and the control is restored. See the 09-25 entry below before acting on anything here.** Kept as written because the reasoning for hiding the control is the reasoning for hiding it again next time.
+
 **Status: the feed has not returned and probably will not.** Fourteen days silent. Their tracker carries ~15 open reports dated 2026-08-07 → 08-19 with **no maintainer reply on any of them**, including #269 ("silent since 2026-08-05", our exact date), #276 ("Please Explain What's Up") and — the telling one — **#278, someone offering to buy the service or run it**. Users note previous outages ran 3–4 days. Our proxy remains healthy throughout and still reports `msgs_this_connection: 0`; a bad API key is still closed in ~1.2 s, so their auth layer is alive and only the data plane is dead. **Nothing to fix on our side.**
 
 Beware the "alternate feed" thread (#273): it has attracted strangers posting personal Gmail addresses soliciting business. Lead-gen, not recommendations.
@@ -262,6 +315,20 @@ Investigated as the most promising candidate. **It does not fit, on two independ
 **The architecture is not the obstacle** — the proxy already caches by MMSI and broadcasts on a tick, so a REST poller could replace the WebSocket upstream with the fan-out untouched. Only `connectUpstream` / `handleUpstreamMessage` in `durable.js` are provider-specific. Cost and data shape are the obstacles.
 
 **Implication: free WebSocket AIS appears to be gone as a category.** aisstream was the only provider offering it at zero cost. That reframes the choice: pay monthly for a worse-cadence REST feed, or **put up a receiver**. An RTL-SDR or dAISy at a unit is a one-off hardware cost, gives genuinely local low-latency coverage of that unit's own operating area — arguably better for SAR than regional coverage — and contributing the feed to AISHub unlocks their global data for free. Open question for Duncan; not started.
+### 2026-09-25 — the feed came back on its own; AIS control restored
+
+**aisstream is not dead.** The 2026-08-19 verdict above ("has not returned and probably will not") was wrong — or rather, right about the provider and wrong about the data plane. `/health` on 2026-09-25 returned `upstream: live`, 485 vessels, `msgs_this_connection: 38012`, `last_msg_age_ms: 843`, on a single unbroken 3.5-hour connection. Recovery happened silently somewhere between 08-19 and 09-25. **Nobody announced it, and nobody will announce the next outage** — there is no status page and no maintainer voice.
+
+**Done: `AIS_COVERED.show` is back to `true`** ([src/lib/stations.ts](src/lib/stations.ts)) — one line, all 25 covered units. Verified on production: sar33 / sar35 / sar05 render the AIS control; sar45 (north of the bbox) and sar106 (freshwater) render none, so the "never available here" gate still holds. Feed at time of writing: 492 vessels, last message 18 ms ago. A browser client connecting end-to-end was confirmed via `clients: 1` on `/health`, which tests the browser → Worker → aisstream path rather than just the Worker half.
+
+**Revised model of the provider: alive but abandoned.** Their tracker still shows no maintainer reply on anything — #212 ("Uptime monitor given this extended outage") open since June, and #302 (2026-09-23) reporting an **account-level 429 on connect that survives API key rotation**, so some accounts are locked out while ours is fine. Recent traffic is mostly unanswered commercial-licensing questions (#303, #304) — worth knowing if this ever stops being a volunteer non-commercial use. Plan for recurrence; do not plan for support.
+
+**Why leaving it on is defensible rather than reckless.** The per-vessel staleness fading and the "connecting / last heard" wording (built 2026-08-06) mean a silent upstream now *degrades visibly instead of lying*. That is the whole reason the layer can ride an unreliable source. If that ever stops being true, hiding the control again is the same one line.
+
+**The replacement-feed work above is not wasted — it is the contingency.** VesselAPI stays rejected on cost and data shape; the RTL-SDR / dAISy receiver route (one-off hardware, local low-latency coverage, unlocks AISHub) remains the standing answer if aisstream goes for good. Still Duncan's call, still not started.
+
+**Deploy footnote — CR-006/CR-009 pattern confirmed again.** The commit was refused by the Vercel build rate limit (GitHub commit status `failure`, `target_url` ending `?upgradeToPro=build-rate-limit`), then carried to production by the next wind-bot commit ~14 minutes later, exactly as on 2026-07-31. **A refused deploy delays rather than loses.** Also a caution for any future session: a local clone that is thousands of bot commits behind makes `git log --since` look like the bot has stopped and the deploy budget is free. It isn't — `git fetch` before drawing any conclusion about deploy headroom.
+
 - **Context:** `feat/ais-layer` shipped the minimum viable AIS overlay (CF Worker + Durable Object proxy → sar33-only, Salish Sea bbox, in-memory cache). The following items were deferred from that branch pending review.
 - **Items to resolve before wider rollout:**
   - **Persistence.** DO cache is in-memory; a proxy restart briefly blanks the map for new clients. Move cache to Supabase (or Cloudflare KV / Durable Object storage) so restarts are transparent.
