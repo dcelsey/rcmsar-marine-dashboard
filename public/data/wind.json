@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-25T23:30:11.668Z",
+  "generated_at": "2026-10-25T23:45:13.680Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 86,
   "stations": [
     {
       "id": "swob:1015630",
@@ -1365,40 +1365,6 @@
       "wind_speed_kn": 10.5,
       "wind_gust_kn": 16.7,
       "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:BC_WMB_1387",
-      "source": "swob",
-      "name": "PLUMMER HUT",
-      "lat": 51.3735,
-      "lon": -125.1645,
-      "elevation_m": 2710,
-      "obs_time": "2026-10-25T22:00:00.000Z",
-      "cadence_min": 60,
-      "wind_dir_deg": 2,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 2.1,
-      "wind_gust_kn": null,
-      "stale": true,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1048899",
-      "source": "swob",
-      "name": "Whistler",
-      "lat": 50.1667,
-      "lon": -122.9,
-      "elevation_m": 657.8,
-      "obs_time": "2026-10-25T21:00:00.000Z",
-      "cadence_min": null,
-      "wind_dir_deg": 0,
-      "wind_speed_kmh": 4,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 1.9,
-      "wind_gust_kn": null,
-      "stale": true,
       "quality": "ok"
     },
     {
