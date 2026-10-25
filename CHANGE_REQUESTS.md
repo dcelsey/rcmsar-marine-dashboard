@@ -4,6 +4,28 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
+## CR-010 — AIS layer showed no Class B vessels (SAR boats, pleasure craft)
+
+- **Logged:** 2026-10-25
+- **Status:** done — Worker version `f53e5798` deployed 2026-10-25 18:24Z. No site change, so no Vercel deploy needed.
+- **Prompt:** "noticing that there is a lot for traffic around oak bay on marine traffic.com than on my feed. specifically I know rcmsar 33 bravo is out right now and its on marinetraffic.com but but my dashboard."
+
+### Cause
+
+`SUBSCRIBE_MSG_TYPES` in `cf-workers/ais-proxy/src/durable.js` asked aisstream for `PositionReport` + `ShipStaticData` only — Class A (msgs 1–3, 5). Small craft carry **Class B** transponders, which send `StandardClassBPositionReport` (18), `ExtendedClassBPositionReport` (19) and `StaticDataReport` (24). aisstream filtered all of them out server-side, so the layer has never shown a Class B vessel — including every RCMSAR boat. Pre-fix snapshot: 528 positioned vessels, **zero** without a nav status (which only Class A sends).
+
+### Fix
+
+Subscribe to all five types; the three position types share one parse path (Class B has no `NavigationalStatus`, so `navStatus` is null — the popup already omits that line). Extended Class B's inline `Name`/`Type` and msg 24's two halves (`ReportA.Name`, `ReportB.ShipType`/`CallSign`) feed the same fields as `ShipStaticData`. No frontend change.
+
+**Result:** fleet ~530 → ~870+ vessels within minutes, ~390 of them Class B; RCMSAR 7, RCM-SAR 01, Jericho Rescue Titan and a CCG Class B unit off Oak Bay all appeared.
+
+### Not fixed by this — receiver coverage
+
+RCMSAR 33 Bravo (MMSI 316001753) went unheard for the first ~30 min after the fix, then appeared at 18:53:59Z (48.416°N 123.241°W, 18.1 kn) — reaching aisstream intermittently, not never. A CCG Class B boat on scene with it showed the same pattern: 16 min unheard against its own ~3 min cadence, at 48.421°N 123.229°W off Oak Bay. That spot is on the fringe of aisstream's receivers even for the boat with the better antenna. Class B is low power (2–5 W), so whether aisstream's volunteer receiver network hears a boat depends heavily on antenna height; MarineTraffic has a far denser receiver network plus satellite. Nothing in our stack filters it out. If own-unit visibility matters operationally, the local receiver option in CR-003 is the lever, not a code change.
+
+**Deploy note:** a Worker deploy did *not* restart the Durable Object immediately — the old upstream connection (old subscription) ran on for ~10 min before Cloudflare recycled it. Watch `connection_age_ms` reset on `/health` before judging a subscription change.
+
 ## CR-009 — Deployment storage nearly full; retention cut from 30 days to 1
 
 - **Logged:** 2026-09-10

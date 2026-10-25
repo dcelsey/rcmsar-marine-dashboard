@@ -9,7 +9,15 @@
 // - New clients get an immediate `{type:"snapshot"}` with the full cache.
 // - `/health` returns diagnostic JSON; `/keepalive` nudges the DO awake.
 
-const SUBSCRIBE_MSG_TYPES = ["PositionReport", "ShipStaticData"];
+// Class A (ships) sends PositionReport + ShipStaticData. Small craft — SAR boats,
+// pleasure craft, most fishing boats — carry Class B transponders, which use the other
+// three types. Subscribing to Class A alone silently drops every one of them.
+const POSITION_MSG_TYPES = new Set([
+  "PositionReport",                 // Class A, msgs 1–3
+  "StandardClassBPositionReport",   // Class B, msg 18
+  "ExtendedClassBPositionReport",   // Class B, msg 19
+]);
+const SUBSCRIBE_MSG_TYPES = [...POSITION_MSG_TYPES, "ShipStaticData", "StaticDataReport"];
 const RECONNECT_MIN_MS = 1000;
 const RECONNECT_MAX_MS = 30_000;
 const CADENCE_SAMPLES = 8;          // rolling window of obs times per vessel
@@ -429,8 +437,10 @@ export class AisHub {
     const now = parseUpstreamTime(meta.time_utc, recvMs);
     const existing = this.vessels.get(mmsi) || { mmsi };
 
-    if (msg.MessageType === "PositionReport") {
-      const pr = msg.Message?.PositionReport;
+    if (POSITION_MSG_TYPES.has(msg.MessageType)) {
+      // Class A and both Class B position reports share the fields we read. Class B
+      // carries no NavigationalStatus, so navStatus is null for those — correct, not missing.
+      const pr = msg.Message?.[msg.MessageType];
       if (!pr) return;
       const heading = pr.TrueHeading === 511 ? null : pr.TrueHeading;
       const cog = typeof pr.Cog === "number" ? pr.Cog : null;
@@ -438,7 +448,9 @@ export class AisHub {
       const v = {
         ...existing,
         mmsi,
-        name: existing.name || meta.ShipName || null,
+        // Extended Class B (msg 19) carries name and type inline; the others don't.
+        name: existing.name || pr.Name || meta.ShipName || null,
+        type: typeof pr.Type === "number" && pr.Type !== 0 ? pr.Type : existing.type ?? null,
         lat: pr.Latitude,
         lon: pr.Longitude,
         sog,
@@ -462,6 +474,25 @@ export class AisHub {
         destination: sd.Destination || existing.destination || null,
         lastStaticMs: now,
         // don't overwrite lastMsgMs if position is fresher
+        lastMsgMs: existing.lastMsgMs || now,
+      };
+      this.vessels.set(mmsi, v);
+      this.dirty.add(mmsi);
+    } else if (msg.MessageType === "StaticDataReport") {
+      // Class B static data (msg 24) arrives in two halves: part A has the name,
+      // part B the ship type and callsign. Each message carries only one of them.
+      const sd = msg.Message?.StaticDataReport;
+      if (!sd) return;
+      const a = sd.ReportA?.Valid ? sd.ReportA : null;
+      const b = sd.ReportB?.Valid ? sd.ReportB : null;
+      if (!a && !b) return;
+      const v = {
+        ...existing,
+        mmsi,
+        name: a?.Name || existing.name || null,
+        type: typeof b?.ShipType === "number" && b.ShipType !== 0 ? b.ShipType : existing.type ?? null,
+        callsign: b?.CallSign || existing.callsign || null,
+        lastStaticMs: now,
         lastMsgMs: existing.lastMsgMs || now,
       };
       this.vessels.set(mmsi, v);
