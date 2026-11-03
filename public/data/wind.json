@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-11-03T15:46:00.962Z",
+  "generated_at": "2026-11-03T16:01:29.753Z",
   "sources": [
     "msc-geomet-swob-realtime",
     "noaa-ndbc"
   ],
-  "degraded": false,
-  "station_count": 88,
+  "degraded": true,
+  "station_count": 87,
   "stations": [
     {
       "id": "swob:1086081",
@@ -922,23 +922,6 @@
       "wind_gust_kmh": 49,
       "wind_speed_kn": 22.6,
       "wind_gust_kn": 26.5,
-      "stale": false,
-      "quality": "ok"
-    },
-    {
-      "id": "swob:1068134",
-      "source": "swob",
-      "name": "Terrace",
-      "lat": 54.4685,
-      "lon": -128.578,
-      "elevation_m": 217.3,
-      "obs_time": "2026-11-03T15:00:00.000Z",
-      "cadence_min": 30,
-      "wind_dir_deg": 5,
-      "wind_speed_kmh": 8,
-      "wind_gust_kmh": null,
-      "wind_speed_kn": 4.5,
-      "wind_gust_kn": null,
       "stale": false,
       "quality": "ok"
     },
