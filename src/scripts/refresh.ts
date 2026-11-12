@@ -10,6 +10,7 @@ import {
   type AisVessel, type AisStatus,
 } from '../lib/sources';
 import { windBarbSvg, speedTint } from '../lib/windBarb';
+import { findWindDisagreements } from '../lib/windDisagree';
 import { currentArrowSvg, currentTint, interpolateCurrentAt, nextExtremum } from '../lib/currentArrow';
 import { tideStateAt, tideMarkerSvg } from '../lib/tideMarker';
 import { aisVesselSvg, aisVesselCategory } from '../lib/aisVessel';
@@ -269,8 +270,24 @@ type BarbEntry = {
   popupHtml: string;
 };
 
-function buildBarbEntries(rows: WindPointResponse[], live: LiveWindPayload | null): BarbEntry[] {
-  const nearbyLive = getNearbyLiveStations(live, station.center, { maxKm: 25, limit: 12 });
+/**
+ * Which wind layers are switched on. Like aisLayerEnabled(), reads the buttons the inline
+ * pre-paint script in MarineCurrents.astro already set, so the cookie has one reader.
+ */
+function windLayersEnabled(): { live: boolean; fcst: boolean } {
+  const on = (l: string) => document.querySelector(`[data-layer="${l}"]`)?.getAttribute('aria-pressed') !== 'false';
+  return { live: on('wind-live'), fcst: on('wind-fcst') };
+}
+
+function buildBarbEntries(
+  rows: WindPointResponse[],
+  live: LiveWindPayload | null,
+  show: { live: boolean; fcst: boolean } = { live: true, fcst: true },
+): BarbEntry[] {
+  // With the live layer off, forecast points under a live station are no longer hidden
+  // by it, so stop suppressing them — otherwise "forecast only" has holes exactly where
+  // a crew would most want to compare.
+  const nearbyLive = show.live ? getNearbyLiveStations(live, station.center, { maxKm: 25, limit: 12 }) : [];
   const out: BarbEntry[] = [];
 
   for (const { station: s } of nearbyLive) {
@@ -292,7 +309,7 @@ function buildBarbEntries(rows: WindPointResponse[], live: LiveWindPayload | nul
     });
   }
 
-  station.points.forEach((p, i) => {
+  if (show.fcst) station.points.forEach((p, i) => {
     if (pointHasNearbyLive(p, nearbyLive, 2)) return;
     const c = rows[i]?.current;
     if (!c) return;
@@ -637,7 +654,7 @@ async function renderCombinedWind(rows: WindPointResponse[], live: LiveWindPaylo
 
   // Look-ahead suppresses live observations — they're always "now".
   const suppressLive = currentsOffsetSec !== 0;
-  const entries = buildBarbEntries(rows, suppressLive ? null : live);
+  const entries = buildBarbEntries(rows, suppressLive ? null : live, windLayersEnabled());
 
   const seen = new Set<string>();
   for (const e of entries) {
@@ -1184,6 +1201,83 @@ document.getElementById('currents-card')?.addEventListener('click', (ev) => {
   // it binds during parse, this module is deferred, so its handler runs first.
   if (aisLayerEnabled()) startAisIfConfigured();
   else stopAis();
+});
+
+const WIND_NOTICE_MS = 5_000;
+let windNoticeTimer: number | null = null;
+let windNoticeFadeTimer: number | null = null;
+
+function hideWindMixNotice(): void {
+  const el = document.getElementById('wind-notice');
+  if (windNoticeTimer !== null) { clearTimeout(windNoticeTimer); windNoticeTimer = null; }
+  if (!el || el.hidden || windNoticeFadeTimer !== null) return;
+  el.classList.add('fading');
+  windNoticeFadeTimer = window.setTimeout(() => {
+    windNoticeFadeTimer = null;
+    el.hidden = true;
+    el.classList.remove('fading');
+  }, 200);
+}
+
+/**
+ * Heads-up when a toggle leaves both wind layers on. Names the worst live/forecast pair
+ * when they actually disagree right now, and falls back to the general caveat when they
+ * agree or there's nothing to compare — so the strong wording only appears when it's true.
+ */
+function showWindMixNotice(): void {
+  const el = document.getElementById('wind-notice');
+  if (!el) return;
+  // Compare only against forecast points the map is actually drawing. Points within 2 km
+  // of a live station are suppressed when both layers are on, and naming one of those
+  // sends the eye looking for an open dot that isn't there.
+  const nearbyLive = getNearbyLiveStations(lastLiveWind, station.center, { maxKm: 25, limit: 12 });
+  const shown = station.points.flatMap((p, i) =>
+    pointHasNearbyLive(p, nearbyLive, 2) ? [] : [{ p, row: lastWindRows?.[i] ?? {} }]);
+  const diffs = lastWindRows && currentsOffsetSec === 0
+    ? findWindDisagreements(nearbyLive, shown.map(s => s.p), shown.map(s => s.row))
+    : [];
+  const key = `<div class="wn-key">● live = measured at a station · ○ forecast = model estimate</div>`;
+
+  if (diffs.length) {
+    const d = diffs[0];
+    const more = diffs.length > 1 ? ` <span class="wn-key">+${diffs.length - 1} more</span>` : '';
+    el.innerHTML =
+      `<div class="wn-title">Live and forecast wind disagree right now</div>`
+      + `<div class="wn-pair">● ${escapeHtml(d.liveName)}: <b>${Math.round(d.liveKn)} kn ${compass(d.liveDeg)}</b><br>`
+      + `○ ${escapeHtml(d.fcstName)}: <b>${Math.round(d.fcstKn)} kn ${compass(d.fcstDeg)}</b>${more}</div>`
+      + key;
+  } else {
+    el.innerHTML = `<div class="wn-title">Live and forecast wind may differ</div>` + key;
+  }
+
+  if (windNoticeFadeTimer !== null) { clearTimeout(windNoticeFadeTimer); windNoticeFadeTimer = null; }
+  el.classList.remove('fading');
+  el.hidden = false;
+  if (windNoticeTimer !== null) clearTimeout(windNoticeTimer);
+  windNoticeTimer = window.setTimeout(hideWindMixNotice, WIND_NOTICE_MS);
+}
+
+(function wireWindNotice(): void {
+  const el = document.getElementById('wind-notice');
+  if (!el) return;
+  el.addEventListener('click', hideWindMixNotice);
+  // It sits inside the Leaflet container, so without this a tap on it also starts a map
+  // drag or zooms on double-tap.
+  for (const t of ['mousedown', 'touchstart', 'pointerdown', 'dblclick', 'wheel']) {
+    el.addEventListener(t, (e) => e.stopPropagation());
+  }
+})();
+
+document.getElementById('currents-card')?.addEventListener('click', (ev) => {
+  const btn = (ev.target as Element | null)?.closest('[data-layer="wind-live"], [data-layer="wind-fcst"]');
+  if (!btn) return;
+  // As with AIS, the inline script has already flipped aria-pressed. Re-render rather than
+  // just hide: whether forecast points under a live station are suppressed depends on
+  // the live layer being on.
+  if (lastWindRows) void renderCombinedWind(lastWindRows, lastLiveWind);
+  const { live, fcst } = windLayersEnabled();
+  if (btn.getAttribute('aria-pressed') === 'true' && live && fcst) showWindMixNotice();
+  else hideWindMixNotice();
 });
 
 window.addEventListener('pagehide', () => {

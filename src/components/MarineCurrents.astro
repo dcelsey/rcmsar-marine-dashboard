@@ -17,7 +17,16 @@ const hasAis = station.ais?.show === true;
     <div class="currents-layer-toggles" role="group" aria-label="Map layers">
       <button type="button" class="layer-toggle" data-layer="currents" aria-pressed="true">Currents</button>
       <button type="button" class="layer-toggle" data-layer="tides" aria-pressed="true">Tides</button>
-      <button type="button" class="layer-toggle" data-layer="wind" aria-pressed="true">Wind</button>
+      <!-- Live and forecast wind are separate layers. When they disagree, the solid vs
+           open dot was the only cue telling them apart, and that is too small to read
+           on a phone — so a crew can switch one off rather than squint. The dot inside
+           each pill doubles as the legend key. -->
+      <button type="button" class="layer-toggle" data-layer="wind-live" aria-pressed="true">
+        <svg class="lt-dot" viewBox="-5 -5 10 10" width="9" height="9" aria-hidden="true"><circle r="3.2" fill="currentColor" stroke="currentColor" stroke-width="1.6"/></svg>Wind live
+      </button>
+      <button type="button" class="layer-toggle" data-layer="wind-fcst" aria-pressed="true">
+        <svg class="lt-dot" viewBox="-5 -5 10 10" width="9" height="9" aria-hidden="true"><circle r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Wind forecast
+      </button>
       {hasAis && <button type="button" class="layer-toggle" data-layer="ais" aria-pressed="false">AIS</button>}
     </div>
     <!-- Feed health, deliberately NOT in the legend. It lived among the vessel-category
@@ -41,6 +50,9 @@ const hasAis = station.ais?.show === true;
 
   <div id="currents-map" class="currents-map">
     <div class="currents-map-skel skel">Loading currents…</div>
+    <!-- Shown for ~5 s when a toggle leaves both wind layers on. Filled and timed by
+         showWindMixNotice() in refresh.ts, which can say whether they actually disagree. -->
+    <div class="wind-notice" id="wind-notice" role="status" aria-live="polite" hidden></div>
   </div>
 
   <div class="currents-legend tiny muted">
@@ -69,13 +81,13 @@ const hasAis = station.ais?.show === true;
     <div class="cl-group" data-legend-layer="wind">
       <span class="cl-label">Wind</span>
       <div class="cl-items">
-        <span class="cl-item">
+        <span class="cl-item" data-legend-item="wind-live">
           <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
             <circle cx="0" cy="0" r="3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
           </svg>
           live
         </span>
-        <span class="cl-item">
+        <span class="cl-item" data-legend-item="wind-fcst">
           <svg class="cl-barb-glyph" viewBox="-8 -6 16 12" width="16" height="12" aria-hidden="true">
             <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
           </svg>
@@ -123,8 +135,10 @@ const hasAis = station.ais?.show === true;
   }
   .currents-meta { color: var(--muted); font-size: 12px; margin-left: auto; }
 
-  .currents-layer-toggles { display: inline-flex; gap: 10px; }
+  /* Wraps: five pills don't fit on one line at phone width. */
+  .currents-layer-toggles { display: inline-flex; flex-wrap: wrap; gap: 8px 10px; }
   .layer-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
     background: var(--card2);
     color: var(--muted);
     border: 1px solid var(--line);
@@ -144,14 +158,44 @@ const hasAis = station.ais?.show === true;
   /* Layer visibility — driven by classes on the card, set from the cookie in
      an inline pre-paint script and toggled from the buttons. Same classes gate
      both the map markers and the corresponding legend group. */
-  .currents-card.no-currents :global(.current-arrow-icon),
-  .currents-card.no-tides    :global(.tide-marker-icon),
-  .currents-card.no-wind     :global(.wind-barb-icon),
-  .currents-card.no-ais      :global(.ais-vessel-icon) { display: none !important; }
+  .currents-card.no-currents  :global(.current-arrow-icon),
+  .currents-card.no-tides     :global(.tide-marker-icon),
+  .currents-card.no-wind-live :global(.wind-barb-icon.wb-live),
+  .currents-card.no-wind-fcst :global(.wind-barb-icon.wb-fcst),
+  .currents-card.no-ais       :global(.ais-vessel-icon) { display: none !important; }
   .currents-card.no-currents [data-legend-layer="currents"],
   .currents-card.no-tides    [data-legend-layer="tides"],
-  .currents-card.no-wind     [data-legend-layer="wind"],
+  .currents-card.no-wind-live.no-wind-fcst [data-legend-layer="wind"],
+  .currents-card.no-wind-live [data-legend-item="wind-live"],
+  .currents-card.no-wind-fcst [data-legend-item="wind-fcst"],
   .currents-card.no-ais      [data-legend-layer="ais"] { display: none !important; }
+
+  .lt-dot { flex: none; }
+
+  /* Sits over the map rather than blocking the page: it's a heads-up about what the map
+     is showing, so the map stays usable underneath. Tap dismisses it early. */
+  .wind-notice {
+    position: absolute;
+    left: 50%; top: 14px;
+    transform: translateX(-50%);
+    z-index: 1100;               /* above Leaflet's panes (≤700) and controls (1000) */
+    width: min(320px, calc(100% - 24px));
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--warn);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 13px; line-height: 1.4;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transition: opacity 200ms ease-out;
+  }
+  .wind-notice[hidden] { display: none; }
+  .wind-notice.fading { opacity: 0; }
+  .wind-notice :global(.wn-title) { font-weight: 600; color: var(--warn); margin-bottom: 3px; }
+  .wind-notice :global(.wn-pair) { margin: 4px 0; font-variant-numeric: tabular-nums; }
+  .wind-notice :global(.wn-key) { color: var(--muted); font-size: 12px; }
+  @media (prefers-reduced-motion: reduce) { .wind-notice { transition: none; } }
 
   .currents-slider {
     display: flex;
@@ -382,11 +426,15 @@ const hasAis = station.ais?.show === true;
 
 <script is:inline>
   (function () {
-    var LAYERS = ['currents', 'tides', 'wind', 'ais'];
-    // AIS defaults OFF at first load — experimental; the other three default ON.
-    var DEFAULT_ON = ['currents', 'tides', 'wind'];
+    var LAYERS = ['currents', 'tides', 'wind-live', 'wind-fcst', 'ais'];
+    // First load: live wind on, forecast off, so a crew starts with measured wind only and
+    // opts into the model. AIS defaults OFF too — experimental.
+    var DEFAULT_ON = ['currents', 'tides', 'wind-live'];
     var m = document.cookie.match(/(?:^|; )map-layers=([^;]*)/);
     var enabled = m ? decodeURIComponent(m[1]).split(',').filter(Boolean) : DEFAULT_ON.slice();
+    // Cookies written before the wind split hold a single 'wind' — it meant both.
+    var legacy = enabled.indexOf('wind');
+    if (legacy !== -1) enabled.splice(legacy, 1, 'wind-live', 'wind-fcst');
     var card = document.getElementById('currents-card');
     if (card) {
       LAYERS.forEach(function (l) {

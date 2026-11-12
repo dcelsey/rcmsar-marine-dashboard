@@ -4,6 +4,23 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 
 ---
 
+## CR-011 — Split the map's Wind toggle into Wind live / Wind forecast
+
+- **Logged:** 2026-11-12
+- **Status:** done locally — not yet committed or deployed.
+- **Prompt:** "Split the wind toggle into wind live and wind forecast (when they agree its fine but yesterday they were different and the solid vs empty circle is hard to see on a phone). If both toggles are enabled by switching either one show a modal for approx 5 seconds warning that forecast and actual winds may differ - or we could even check if they do differ - significantly different speed/direction)"
+
+### What changed
+
+- `map-layers` cookie keys `wind-live` / `wind-fcst` replace `wind`; a legacy `wind` entry is expanded to both, so nobody's saved map changes on upgrade. **With no saved selection, live is on and forecast off** (Duncan's call, 2026-11-12). Consequence: sar61 and sar70 have no live station within 25 km, so a first visit there shows no wind barbs until forecast is switched on.
+- With live off, forecast points within 2 km of a live station are no longer suppressed (they were hidden *by* the live barb). Toggling wind re-renders rather than only hiding via CSS for that reason.
+- Each pill carries its solid / open dot, so the toggle doubles as the legend key. Pills now wrap at phone width.
+- Switching either toggle *on* so both are on shows a ~5 s notice over the map (tap to dismiss; map stays usable). It names the worst live/forecast pair when they actually disagree, otherwise says they "may differ". Logic in `src/lib/windDisagree.ts`: each live station is paired with the nearest **visible** forecast point within 10 km; significant = speed gap ≥ 8 kn, or direction gap ≥ 60° when both are ≥ 8 kn (direction is noise in light air). Under look-ahead, live is hidden, so the notice falls back to the generic wording.
+
+### Verified
+
+Real data at 2026-11-12 ~17:15Z flagged hq and sar37 (RACE ROCKS live 11 kn NE vs forecast 2 kn) — the thresholds fire on a genuine case and stay quiet on the other 26 units with live stations. Clicked through headless Edge at 390 px on hq and sar37: layer counts, legend, notice text, 5 s auto-dismiss and cookie all as expected.
+
 ## CR-010 — AIS layer showed no Class B vessels (SAR boats, pleasure craft)
 
 - **Logged:** 2026-10-25
