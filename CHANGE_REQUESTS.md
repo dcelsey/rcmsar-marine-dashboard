@@ -7,7 +7,7 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 ## CR-011 — Split the map's Wind toggle into Wind live / Wind forecast
 
 - **Logged:** 2026-11-12
-- **Status:** done locally — not yet committed or deployed.
+- **Status:** done — `c976b9adb`, pushed 2026-11-12 18:19Z. Its own deploy was rate-limited; the next wind-bot deploy carried it, and Duncan confirmed it live the same day.
 - **Prompt:** "Split the wind toggle into wind live and wind forecast (when they agree its fine but yesterday they were different and the solid vs empty circle is hard to see on a phone). If both toggles are enabled by switching either one show a modal for approx 5 seconds warning that forecast and actual winds may differ - or we could even check if they do differ - significantly different speed/direction)"
 
 ### What changed
@@ -16,6 +16,8 @@ Log of user-requested changes. Newest at top. Status: `open`, `in-progress`, `do
 - With live off, forecast points within 2 km of a live station are no longer suppressed (they were hidden *by* the live barb). Toggling wind re-renders rather than only hiding via CSS for that reason.
 - Each pill carries its solid / open dot, so the toggle doubles as the legend key. Pills now wrap at phone width.
 - Switching either toggle *on* so both are on shows a ~5 s notice over the map (tap to dismiss; map stays usable). It names the worst live/forecast pair when they actually disagree, otherwise says they "may differ". Logic in `src/lib/windDisagree.ts`: each live station is paired with the nearest **visible** forecast point within 10 km; significant = speed gap ≥ 8 kn, or direction gap ≥ 60° when both are ≥ 8 kn (direction is noise in light air). Under look-ahead, live is hidden, so the notice falls back to the generic wording.
+
+**Follow-up 2026-11-13:** the notice's pair lines now say **Live** / **Forecast** in words beside the ●/○ — the dots alone were the very thing that's hard to tell apart on a phone. Laid out as a tag column + value column so long station names wrap under themselves.
 
 ### Verified
 

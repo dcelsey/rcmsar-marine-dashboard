@@ -193,8 +193,17 @@ const hasAis = station.ais?.show === true;
   .wind-notice[hidden] { display: none; }
   .wind-notice.fading { opacity: 0; }
   .wind-notice :global(.wn-title) { font-weight: 600; color: var(--warn); margin-bottom: 3px; }
-  .wind-notice :global(.wn-pair) { margin: 4px 0; font-variant-numeric: tabular-nums; }
+  /* Tag column + value column, so a long station name wraps under itself, not the tag. */
+  .wind-notice :global(.wn-pair) {
+    display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; align-items: baseline;
+    margin: 6px 0; font-variant-numeric: tabular-nums;
+  }
+  .wind-notice :global(.wn-pair b) { white-space: nowrap; }   /* keep "3 kn WNW" together */
   .wind-notice :global(.wn-key) { color: var(--muted); font-size: 12px; }
+  .wind-notice :global(.wn-tag) {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); white-space: nowrap;
+  }
   @media (prefers-reduced-motion: reduce) { .wind-notice { transition: none; } }
 
   .currents-slider {

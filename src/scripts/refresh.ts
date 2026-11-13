@@ -1240,12 +1240,15 @@ function showWindMixNotice(): void {
 
   if (diffs.length) {
     const d = diffs[0];
-    const more = diffs.length > 1 ? ` <span class="wn-key">+${diffs.length - 1} more</span>` : '';
+    const more = diffs.length > 1 ? `<div class="wn-key">+${diffs.length - 1} more nearby</div>` : '';
     el.innerHTML =
       `<div class="wn-title">Live and forecast wind disagree right now</div>`
-      + `<div class="wn-pair">● ${escapeHtml(d.liveName)}: <b>${Math.round(d.liveKn)} kn ${compass(d.liveDeg)}</b><br>`
-      + `○ ${escapeHtml(d.fcstName)}: <b>${Math.round(d.fcstKn)} kn ${compass(d.fcstDeg)}</b>${more}</div>`
-      + key;
+      // Spelled out, not just ●/○ — the dots are the thing that's hard to tell apart on a phone.
+      + `<div class="wn-pair">`
+      + `<span class="wn-tag">● Live</span><span>${escapeHtml(d.liveName)}: <b>${Math.round(d.liveKn)} kn ${compass(d.liveDeg)}</b></span>`
+      + `<span class="wn-tag">○ Forecast</span><span>${escapeHtml(d.fcstName)}: <b>${Math.round(d.fcstKn)} kn ${compass(d.fcstDeg)}</b></span>`
+      + `</div>`
+      + more + key;
   } else {
     el.innerHTML = `<div class="wn-title">Live and forecast wind may differ</div>` + key;
   }
